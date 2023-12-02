@@ -160,6 +160,23 @@ a {
     align-items: center;
     margin-top: 25px;
 }
+
+.col_container .right_col .section {
+    display: none;
+    position: absolute;
+    width: 100%;
+    transform: translateX(100%);
+    transition: transform 0.5s ease;
+    z-index: 1;
+}
+
+.right_col .section.active {
+    display: block;
+    width: 100%;
+    transform: translateX(0);
+    z-index: 2;
+}
+
 .col_container .right_col nav {
     display: flex;
     align-items: center;
