@@ -1,0 +1,222 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+.nav_header {
+    top: 0;
+    left: 0;
+    padding: 20px 50px;
+    background-color: #7a9b76;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: white;
+    text-decoration: none;
+    filter: invert(100%);
+    cursor: pointer;
+}
+
+.navigation .nav-link {
+    position: relative;
+    font-size: 1.1em;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 40px;
+}
+
+.navigation a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 3px;
+    background: white;
+    border-radius: 5px;
+    transform: scaleX(0);
+    transition: transform 0.3s;
+}
+
+.navigation a:hover::after {
+    transform: scaleX(1);
+}
+
+.navigation .Login-popup {
+    width: 130px;
+    height: 50px;
+    background: transparent;
+    border: 2px solid white;
+    outline: none;
+    font-weight: 500;
+    color: white;
+    margin-left: 40px;
+    transition: 0.3s;
+}
+
+.navigation .Login-popup:hover {
+    background: white;
+    color: black;
+}
+
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    min-height: 100vh;
+    font-family: "Poppins", sans-serif;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+a {
+    text-decoration: none;
+}
+
+.prof_wrapper header {
+    width: 100%;
+    background: url("../cap_images/Banner1.png") no-repeat 50% 90% / cover;
+    min-height: calc(50px + 15vw);
+}
+
+.col_container .left_col {
+    padding: 25px 20px;
+    text-align: center;
+    position: relative;
+    margin: 0 auto;
+}
+
+.col_container .left_col .prof_pic {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translatex(-50%);
+}
+.col_container .left_col .prof_pic img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    box-shadow: 1px 3px 12px rgba(0, 0, 0, 0.18);
+}
+.col_container .left_col h2 {
+    margin-top: 60px;
+    font-weight: 600;
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+.col_container .left_col p {
+    font-size: 0.9rem;
+    color: #818181;
+    margin: 0;
+}
+.col_container .left_col .about {
+    justify-content: space-between;
+    position: relative;
+    margin: 35px 0;
+}
+.col_container .left_col .about li {
+    display: flex;
+    flex-direction: column;
+    color: #818181;
+    font-size: 0.9rem;
+}
+.col_container .left_col .about li span {
+    color: #1d1d1d;
+    font-weight: 600;
+}
+.col_container .left_col .about:after {
+    position: absolute;
+    content: "";
+    bottom: -16px;
+    display: block;
+    background: #cccccc;
+    height: 1px;
+    width: 100%;
+}
+.col_container .bio p {
+    font-size: 1rem;
+    color: #1d1d1d;
+    line-height: 1.8em;
+}
+.col_container .bio ul {
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+}
+.col_container .right_col nav {
+    display: flex;
+    align-items: center;
+    padding: 30px 0;
+    justify-content: space-between;
+    flex-direction: column;
+}
+.col_container .right_col nav ul {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+}
+.col_container .right_col nav ul li a {
+    text-transform: uppercase;
+    color: #818181;
+    transition: 0.25s;
+}
+
+.col_container .right_col nav ul li a:hover {
+    color: black;
+}
+
+/* Responsiveness */
+
+@media (min-width: 868px) {
+    .col_container {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 90%;
+        justify-content: space-between;
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 50px;
+    }
+    .col_container .left_col {
+        padding: 25px 0px;
+    }
+    .col_container .right_col nav ul {
+        flex-direction: row;
+        gap: 30px;
+    }
+    .col_container .right_col .breed {
+        height: 365px;
+        overflow: auto;
+        padding: 0 0 30px;
+    }
+}
+
+@media (min-width: 1017px) {
+    .col_container .left_col {
+        margin: 0;
+        margin-right: auto;
+    }
+    .col_container .right_col nav {
+        flex-direction: row;
+    }
+    .col_container .right_col nav button {
+        margin-top: 0;
+    }
+}
