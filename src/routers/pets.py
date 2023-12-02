@@ -3,7 +3,6 @@ from decimal import Decimal
 from app.models import Breed, Pet
 from app.utils import get_current_user, get_session
 from sqlalchemy import select
-from dateutil import parser
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from routers.breeds import _get_breed_name

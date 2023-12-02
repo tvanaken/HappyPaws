@@ -1,5 +1,5 @@
 from app.models import Breed
-from app.utils import get_current_user, get_session
+from app.utils import get_session
 from sqlalchemy import select
 
 from fastapi import APIRouter, HTTPException

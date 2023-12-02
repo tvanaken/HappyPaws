@@ -1,8 +1,8 @@
 from app.models import Food
-from app.utils import get_current_user, get_session
+from app.utils import get_session
 from sqlalchemy import select
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
 router = APIRouter()

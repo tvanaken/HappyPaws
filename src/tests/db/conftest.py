@@ -2,7 +2,7 @@ import pytest
 import pytest_asyncio
 from app import server, utils
 from app.db import DBManager, DBManagerAsync
-from app.models import Base, Task, User
+from app.models import Base, User
 from httpx import AsyncClient
 
 DB_NAME_TEST = "test_pet_parent"
@@ -111,39 +111,3 @@ async def create_fake_users():
         users.append(user)
     await session.commit()
     return users
-
-
-@pytest_asyncio.fixture()
-async def create_fake_tasks(create_fake_users):
-    fake_task_json = [
-        {
-            "name": "Groceries",
-            "description": "Buy groceries",
-            "done": False,
-            "user_id": 1,
-        },
-        {
-            "name": "Trash",
-            "description": "Take out the trash",
-            "done": False,
-            "user_id": 1,
-        },
-        {
-            "name": "Trash",
-            "description": "Take out the trash",
-            "done": False,
-            "user_id": 2,
-        },
-        {"name": "Mow", "description": "Mow the lawn", "done": False, "user_id": 2},
-        {"name": "Exercise", "description": "Go run", "done": False, "user_id": 3},
-        {"name": "Sleep", "description": "Go to sleep", "done": False, "user_id": 3},
-    ]
-    session = await utils.get_session()
-    tasks = []
-    for task_json in fake_task_json:
-        task = Task(**task_json)
-        session.add(task)
-        await session.commit()
-        tasks.append(task)
-    await session.commit()
-    return tasks

@@ -1,5 +1,4 @@
-from datetime import date
-from sqlalchemy import Column, ForeignKey, Integer, String, Numeric, Date, Text
+from sqlalchemy import Column, ForeignKey, Integer, String, Date
 from sqlalchemy.orm import mapped_column, relationship
 from .base import Base
 
