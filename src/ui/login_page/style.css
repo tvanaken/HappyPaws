@@ -12,7 +12,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: url("../cap_Images/Background.png") no-repeat;
+    background: url("../cap_Images/BackgroundScaled.webp") no-repeat;
     background-size: cover;
     background-position: center;
 }

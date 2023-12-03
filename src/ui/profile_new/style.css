@@ -167,14 +167,12 @@ a {
     width: 100%;
     transform: translateX(100%);
     transition: transform 0.5s ease;
-    z-index: 1;
 }
 
 .right_col .section.active {
     display: block;
-    width: 100%;
+    width: inherit;
     transform: translateX(0);
-    z-index: 2;
 }
 
 .col_container .right_col nav {
