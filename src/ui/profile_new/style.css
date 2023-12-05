@@ -89,7 +89,7 @@ a {
 
 .prof_wrapper header {
     width: 100%;
-    background: url("../cap_images/Banner1.png") no-repeat 50% 90% / cover;
+    background: url("../cap_images/Banner1.webp") no-repeat 50% 90% / cover;
     min-height: calc(50px + 15vw);
 }
 
@@ -171,7 +171,8 @@ a {
 
 .right_col .section.active {
     display: block;
-    width: inherit;
+    width: 50%;
+    margin-right: 10%;
     transform: translateX(0);
 }
 
