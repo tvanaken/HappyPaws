@@ -1,7 +1,6 @@
 import random
-
-from app.db.db_manager import DBManager
 from app.models import Base, User, Breed, Food, Pet, Reminder
+from db_manager import DBManager
 from faker import Faker
 
 fake = Faker()
@@ -134,5 +133,5 @@ def generate_data():
     db_manager.cleanup()
 
 
-# if __name__ == "__main__":
-#     generate_data()
+if __name__ == "__main__":
+    generate_data()
