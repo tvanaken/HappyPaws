@@ -6,6 +6,7 @@ from .breed import Breed
 from .pet import Pet
 from .reminder import Reminder
 from .food import Food
+from .supplement import Supplement
 
 
-__all__ = ["Base", "User", "Breed", "Pet", "Food", "Reminder"]
+__all__ = ["Base", "User", "Breed", "Pet", "Food", "Reminder", "Supplement"]

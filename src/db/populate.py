@@ -1,5 +1,5 @@
 import random
-from app.models import Base, User, Breed, Food, Pet, Reminder
+from app.models import Base, User, Breed, Food, Pet, Reminder, Supplement
 from db_manager import DBManager
 from faker import Faker
 
@@ -59,9 +59,14 @@ def create_fake_pets(session):
     session.commit()
 
 
-def create_fake_foods(session):
-    orijen_senior_dry = Food(type='dry', name='Orijen: Senior', ingredients=None, crude_protein=38, crude_fat=15, crude_fiber=8, moisture=12, dietary_starch=17, epa=0.2, calcium=1.3, phosphorus=0.9, vitamin_e=750, omega_6=3, omega_3=0.8, glucosamine=600, microorganisms=1000000)
-    session.add(orijen_senior_dry)
+# def create_fake_foods(session):
+#     orijen_senior_dry = Food(type='dry', name='Orijen: Senior', ingredients=None, crude_protein=38, crude_fat=15, crude_fiber=8, moisture=12, dietary_starch=17, epa=0.2, calcium=1.3, phosphorus=0.9, vitamin_e=750, omega_6=3, omega_3=0.8, glucosamine=600, microorganisms=1000000)
+#     session.add(orijen_senior_dry)
+#     session.commit()
+    
+def create_fake_supplements(session):
+    test = Supplement(name='Tester', description='This is a test', ailment='Hip/Joint')
+    session.add(test)
     session.commit()
 
 
@@ -115,8 +120,13 @@ def generate_data():
     step += 1
 
     #fake foods
-    print("{0}. creating some fake foods...".format(step))
-    foods = create_fake_foods(session)
+    # print("{0}. creating some fake foods...".format(step))
+    # foods = create_fake_foods(session)
+    # step += 1
+
+    #fake supplements
+    print("{0}. creating some fake supplements...".format(step))
+    supplements = create_fake_supplements(session)
     step += 1
 
     #fake pets
