@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException
 import requests
@@ -10,10 +10,19 @@ import time
 PATH = r"C:\Users\khemo\Desktop\geckodriver.exe"
 service = Service(executable_path=PATH)
 driver = webdriver.Firefox(service=service)
-driver.get("https://www.chewy.com/b/vitamins-supplements-374")
+
+#Currently crawling the chewy website for hip/joint supplements
+driver.get("https://www.chewy.com/b/hip-joint-1568")
 driver.implicitly_wait(1)
 
-columns = []
+columns = ["name", "description", "lifestage", "ailment", "health_condition", "breed_size"]
+
+dropdown = WebDriverWait(driver, 20).until(
+    EC.element_to_be_clickable((By.CSS_SELECTOR, "select.kib-input-select__control"))
+)
+
+select = Select(dropdown)
+select.select_by_value("byPopularity")
 
 while True:
 
@@ -36,12 +45,13 @@ while True:
             try:
                 description_element = driver.find_element(By.XPATH, '//section[@class="styles_infoGroupSection__ArCb9"]/p')
                 description = description_element.text
+                print(description)
             except Exception as e:
                 print("Description missed...")
 
-            product_info = {"name": name}
+            product_info = {"name": name, "health_condition": "Osteoarthritis, Hip Dysplasia, Joint Inflammation, Joint Pain, Joint Stiffness, Joint Support, Mobility", "description": description}
 
-            table_rows = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, '//div[contains(text(), "Specifications")]//table/tbody/tr')))
+            table_rows = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, '//div[contains(@class, "infoGroupSectionTitle") and contains(., "Specifications")]//following-sibling::div[contains(@class, "markdownTable")]//table/tbody/tr')))
 
             for row in table_rows:
 

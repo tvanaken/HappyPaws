@@ -23,7 +23,9 @@ async def create_supplement(supplement: dict):
     supplement = Supplement(
         name = supplement.get("name"),
         description = supplement.get("description"),
-        ailment = supplement.get("Health Condition")
+        lifestage = supplement.get("lifestage"),
+        ailment = supplement.get("health_condition"),
+        breed_size = supplement.get("breed_size")
     )
     session.add(supplement)
     await session.commit()
