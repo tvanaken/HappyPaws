@@ -10,29 +10,24 @@ import time
 PATH = r"C:\Users\khemo\Desktop\geckodriver.exe"
 service = Service(executable_path=PATH)
 driver = webdriver.Firefox(service=service)
-
-#Currently crawling the chewy website for hip/joint supplements
-driver.get("https://www.akc.org/dog-breeds/")
 driver.implicitly_wait(2)
 
 columns = []
+page = 1
 
-dropdown = WebDriverWait(driver, 20).until(
-    EC.presence_of_element_located((By.CLASS_NAME, "selectize-control custom-select__select single"))
-)
+driver.get("https://www.akc.org/dog-breeds/")
 
-try:
-    dropdown.click()
-except Exception as e:
-    print("Exception print: " + str(e))
 
-options = WebDriverWait(driver, 10).until(
-    EC.presence_of_all_elements_located((By.XPATH, "//div[contains(@class,'option') and @data-selectable='']"))
-)
+while page < 25:
 
-links = [option.get_attribute("data-value") for option in options]
+    url = f"https://www.akc.org/dog-breeds/page/{page}/"
+    driver.get(url)
 
-while True:
+    WebDriverWait(driver, 20).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "attachment-rectangle_thumbnail size-rectangle_thumbnail wp-post-image lozad ")))
+    elements = driver.find_elements(By.CLASS_NAME, "link-with-arrow mbauto")
+    links = [element.get_attribute('href') for element in elements]
+
+    print(links)
 
     for link in links:
         driver.get(link)
@@ -46,3 +41,5 @@ while True:
 
         except Exception as e:
             print(f"Error processing {link}: {e}")
+
+    page += 1
