@@ -10,6 +10,8 @@ router = APIRouter()
 
 
 def _validate_user(user: dict):
+    if user.get("username") is None:
+        raise HTTPException(status_code=400, detail="Username cannot be empty")
     if user.get("email") is None:
         raise HTTPException(status_code=400, detail="Email cannot be empty")
     if user.get("password") is None:
