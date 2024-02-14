@@ -1,0 +1,3 @@
+docker exec -it [container_id_or_name] psql -U postgres
+CREATE ROLE app_user WITH LOGIN PASSWORD '12345';
+ALTER ROLE app_user CREATEDB;
