@@ -23,7 +23,7 @@ photosLink.addEventListener("click", () => {
     sections.forEach((section) => {
         section.classList.remove("active");
     });
-    document.querySelector(".photos").classList.add("active");
+    document.querySelector(".health").classList.add("active");
 });
 
 scheduleLink.addEventListener("click", () => {
