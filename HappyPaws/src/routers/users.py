@@ -38,10 +38,15 @@ async def get_user():
 
 @router.get("/api/users")
 async def get_users():
-    query = select(User)
-    session = await get_session()
-    users = await session.scalars(query)
-    return JSONResponse(content=[user.to_dict() for user in users], status_code=200)
+    user = await get_current_user()
+
+    if user.id == 2:
+        query = select(User)
+        session = await get_session()
+        users = await session.scalars(query)
+        return JSONResponse(content=[user.to_dict() for user in users], status_code=200)
+    else:
+        return JSONResponse(content={"message": "Not authorized"}, status_code=401)
 
 
 @router.get("/api/users/{user_id}")

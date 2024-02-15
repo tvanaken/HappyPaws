@@ -2,6 +2,7 @@
     "name": "ui",
     "version": "1.0.0",
     "description": "",
+    "proxy": "http://localhost:8000",
     "scripts": {
         "build": "npm ci && parcel build index.html",
         "check": "prettier --check . && eslint --ignore-pattern dist . && echo 🆗",
@@ -17,6 +18,12 @@
     "author": "",
     "license": "ISC",
     "type": "module",
+    "dependencies": {
+        "@fullcalendar/bootstrap5": "^6.1.10",
+        "@fullcalendar/core": "^6.1.10",
+        "bootstrap": "^5.3.2",
+        "bootstrap-icons": "^1.11.2"
+    },
     "devDependencies": {
         "eslint": "^8.52.0",
         "eslint-config-airbnb": "^19.0.4",

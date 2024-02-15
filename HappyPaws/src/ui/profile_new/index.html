@@ -18,19 +18,17 @@
     <body>
         <header class="nav_header">
             <h2 class="logo">
-                <a href="http://localhost:8000/Profile_new/index.html#">
-                    <img src="../Cap_images/Logo.png" width="75" alt="Logo" />
-                </a>
+                <img src="../cap_images/Logo.png" width="75" alt="Logo" img />
             </h2>
             <nav class="navigation">
                 <a
-                    href="http://localhost:8000/Profile_new/index.html#"
+                    href="http://localhost:8000/profile_new/index.html"
                     class="nav-link"
                     >Home</a
                 >
                 <a href="#" class="nav-link">Calendar</a>
                 <a href="#" class="nav-link">Services</a>
-                <a href="http://localhost:8000/login_page/index.html#">
+                <a href="http://localhost:8000/Login_page/index.html">
                     <button class="Login-popup">Login</button>
                 </a>
             </nav>
@@ -138,12 +136,41 @@
                     <div class="section diet"></div>
                     <div class="section photos"></div>
                     <div class="section schedule">
+                        <button id="addReminderBtn">Create Reminder</button>
                         <div id="calendar"></div>
                     </div>
                 </div>
             </div>
         </div>
-        <script src="script.js"></script>
+        <div id="reminderFormModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form id="reminderForm">
+                    <label for="title">Title:</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        required
+                    /><br /><br />
+                    <label for="start">Start Date:</label>
+                    <input
+                        type="datetime-local"
+                        id="start"
+                        name="start"
+                        required
+                    /><br /><br />
+                    <label for="end">End Date:</label>
+                    <input
+                        type="datetime-local"
+                        id="end"
+                        name="end"
+                    /><br /><br />
+                    <input type="submit" value="Submit" />
+                </form>
+            </div>
+        </div>
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.10/index.global.min.js"></script>
+        <script src="script.js"></script>
     </body>
 </html>
