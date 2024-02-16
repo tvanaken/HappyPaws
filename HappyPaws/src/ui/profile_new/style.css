@@ -23,6 +23,11 @@
     cursor: pointer;
 }
 
+.fa-solid.fa-bars {
+    display: flex;
+    color: white;
+}
+
 .navigation .nav-link {
     position: relative;
     font-size: 1.1em;
@@ -202,10 +207,13 @@ table {
     width: 70%;
     border-collapse: collapse;
 }
-table, th, td {
+table,
+th,
+td {
     border: 1px solid black;
 }
-th, td {
+th,
+td {
     padding: 8px;
     text-align: left;
 }

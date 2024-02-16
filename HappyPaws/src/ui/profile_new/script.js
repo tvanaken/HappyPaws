@@ -5,28 +5,32 @@ const photosLink = document.querySelector(".photos-link");
 const scheduleLink = document.querySelector(".schedule-link");
 const sections = document.querySelectorAll(".right_col .section");
 
-breedLink.addEventListener("click", () => {
+breedLink.addEventListener("click", (ev) => {
+    ev.preventDefault();
     sections.forEach((section) => {
         section.classList.remove("active");
     });
     document.querySelector(".breed").classList.add("active");
 });
 
-dietLink.addEventListener("click", () => {
+dietLink.addEventListener("click", (ev) => {
+    ev.preventDefault();
     sections.forEach((section) => {
         section.classList.remove("active");
     });
     document.querySelector(".diet").classList.add("active");
 });
 
-photosLink.addEventListener("click", () => {
+photosLink.addEventListener("click", (ev) => {
+    ev.preventDefault();
     sections.forEach((section) => {
         section.classList.remove("active");
     });
-    document.querySelector(".health").classList.add("active");
+    document.querySelector(".photos").classList.add("active");
 });
 
-scheduleLink.addEventListener("click", () => {
+scheduleLink.addEventListener("click", (ev) => {
+    ev.preventDefault();
     sections.forEach((section) => {
         section.classList.remove("active");
     });
@@ -40,10 +44,9 @@ async function initializeCalendar() {
     const reminders = await response.json();
     const eventData = reminders.map((reminder) => {
         return {
-            title: reminder.title,
+            type: reminder.type,
             start: reminder.start,
             end: reminder.end,
-            description: "Hello World",
         };
     });
     console.log(reminders);
@@ -79,16 +82,16 @@ document
     .addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        const title = document.getElementById("title").value;
+        const type = document.getElementById("type").value;
         const start = document.getElementById("start").value;
         const end = document.getElementById("end").value;
 
-        const response = await fetch('http://localhost:8000/api/reminders', {
+        const response = await fetch("http://localhost:8000/api/reminders", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ title, start, end }),
+            body: JSON.stringify({ type, start, end }),
         });
         const result = await response.json();
 

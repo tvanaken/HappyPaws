@@ -10,8 +10,8 @@ router = APIRouter()
 
 
 async def _validate_reminder(reminder: dict):
-    if reminder.get("title") is None:
-        raise HTTPException(status_code=400, detail="Must define a title")
+    if reminder.get("type") is None:
+        raise HTTPException(status_code=400, detail="Must define a type")
     if reminder.get("start") is None:
         raise HTTPException(status_code=400, detail="Must give a start date")
     if reminder.get("end") is None:
@@ -72,7 +72,7 @@ async def create_reminder(reminder: dict):
 
     reminder = Reminder(
         user_id = user.id,
-        title=reminder.get("title"),
+        type=reminder.get("type"),
         start=start,
         end=end
     )
@@ -103,8 +103,8 @@ async def update_reminder(reminder_id: int, reminder_updates: dict):
     if not reminder:
         return JSONResponse(content={"message": "Reminder not found"}, status_code=404)
     
-    if reminder_updates.get("title") is not None:
-        reminder.title = reminder_updates.get("title")
+    if reminder_updates.get("type") is not None:
+        reminder.type = reminder_updates.get("type")
     if reminder_updates.get("start") is not None:
         start_str = reminder_updates.get("start")
         if start_str:

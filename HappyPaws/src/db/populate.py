@@ -40,9 +40,9 @@ def create_fake_users(session, n=5):
 
 
 def create_fake_reminders(session):
-    med_reminder = Reminder(user_id=1, title='Medication', start='2023-12-10T07:00', end='2023-12-10T08:30')
-    play_reminder = Reminder(user_id=1, title='play', start='2023-12-05', end='2023-12-05')
-    exercise_reminder = Reminder(user_id=2, title='exercise', start='2023-12-21', end='2023-12-23')
+    med_reminder = Reminder(user_id=1, type='Medication', start='2023-12-10T07:00', end='2023-12-10T08:30')
+    play_reminder = Reminder(user_id=1, type='play', start='2023-12-05', end='2023-12-05')
+    exercise_reminder = Reminder(user_id=2, type='exercise', start='2023-12-21', end='2023-12-23')
     session.add(med_reminder)
     session.add(play_reminder)
     session.add(exercise_reminder)
