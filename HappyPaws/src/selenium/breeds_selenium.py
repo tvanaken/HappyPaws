@@ -17,29 +17,45 @@ page = 1
 
 driver.get("https://www.akc.org/dog-breeds/")
 
+letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-while page < 25:
+for letter in letters:
 
-    url = f"https://www.akc.org/dog-breeds/page/{page}/"
+    url = f"https://www.akc.org/dog-breeds/?letter={letter}"
     driver.get(url)
 
-    WebDriverWait(driver, 20).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "attachment-rectangle_thumbnail size-rectangle_thumbnail wp-post-image lozad ")))
-    elements = driver.find_elements(By.CLASS_NAME, "link-with-arrow mbauto")
-    links = [element.get_attribute('href') for element in elements]
+    keep_checking = True
+    while keep_checking:
+        try:
+            button = driver.find_element(By.ID, "load-more-btn")
+        except:
+            button = None
+            keep_checking = False
+            print(f"No more button found")
+            break
+        button.click()
+        time.sleep(2)
 
-    print(links)
+    elements = driver.find_elements(By.CSS_SELECTOR, ".breed-type-card__content a")
+    links = [element.get_attribute('href') for element in elements]
+    print (links)
+
 
     for link in links:
         driver.get(link)
-        try:
-            breed_name = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "page-header__title"))
-            ).text
-            print(breed_name)
 
-            breed_info = {"name": breed_name}
+        #Breed name
+        breed_name = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "page-header__title"))).text
+        print(breed_name)
 
-        except Exception as e:
-            print(f"Error processing {link}: {e}")
+        #Breed Description
+        breed_description = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "breed-page__about__read-more__text"))).text
+        print(breed_description)
 
-    page += 1
+        #Health Description
+        element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//h3[contains(text(), 'Health')]")))
+        element.click()
+        health_description = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "breed-table__accordion-padding__p")))
+        print(health_description[1].text)
+
+        
