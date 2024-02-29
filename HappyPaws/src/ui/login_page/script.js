@@ -15,16 +15,15 @@ document
     .addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        const username = document.getElementById("username").value;
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+        const email = document.getElementById("email2").value;
+        const password = document.getElementById("password2").value;
 
-        const response = await fetch("http://localhost:8000/api/user", {
+        const response = await fetch("http://localhost:8000/api/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ username, email, password }),
+            body: JSON.stringify({ email: email, password: password }),
         });
         const result = await response.json();
     });

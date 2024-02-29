@@ -65,12 +65,15 @@ async def get_breed(breed_id: int):
 @router.post("/api/breeds")
 async def create_breed(breed: dict):
     session = await get_session()
-    breed = _validate_breed(breed)
+    breed = await _validate_breed(breed)
 
     breed = Breed(
         name=breed.get("name"),
-        suggested_supplements=breed.get("suggested_supplements"),
-        suggested_exercise=breed.get("suggested_exercise"),
+        weights=breed.get("weights"),
+        breed_description=breed.get("breed_description"),
+        health_description=breed.get("health_description"),
+        groom_description=breed.get("groom_description"),
+        nutrition_description=breed.get("nutrition_description"),
     )
     session.add(breed)
     await session.commit()
@@ -100,10 +103,6 @@ async def update_breed(breed_id: int, breed_updates: dict):
     # modify values based on request body:
     if breed_updates.get("name") is not None:
         breed.name = breed_updates.get("name")
-    if breed_updates.get("suggested_supplements") is not None:
-        breed.suggested_supplements = breed_updates.get("suggested_supplements")
-    if breed_updates.get("suggested_exercise") is not None:
-        breed.suggested_exercise = breed_updates.get("suggested_exercise")
     await session.commit()
 
     return JSONResponse(content=breed.to_dict(), status_code=200)

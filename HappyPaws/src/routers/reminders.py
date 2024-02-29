@@ -1,6 +1,7 @@
 from datetime import datetime
 from app.models import Reminder
-from app.utils import get_current_user, get_session
+from app.utils import get_session
+from app.models.login import get_current_user
 from sqlalchemy import select
 
 from fastapi import APIRouter, HTTPException

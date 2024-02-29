@@ -12,7 +12,6 @@ class Pet(Base):
     breed_id = mapped_column(Integer, ForeignKey("breeds.id"))
     breed = relationship("Breed")
     name = Column(String)
-    age = Column(Integer)
     weight = Column(Numeric(precision=5, scale=2))
     birthday = Column(Date)
 
@@ -22,7 +21,6 @@ class Pet(Base):
             "user_id": self.user_id,
             "breed_id": self.breed_id,
             "name": self.name,
-            "age": self.age,
             "weight": str(self.weight),
             "birthday": self.birthday.isoformat() if self.birthday else None
         }

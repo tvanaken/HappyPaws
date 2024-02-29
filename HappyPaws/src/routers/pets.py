@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from app.models import Breed, Pet
-from app.utils import get_current_user, get_session
+from app.utils import get_session
 from sqlalchemy import select
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
@@ -74,7 +74,6 @@ async def create_pet(pet: dict):
         user_id = user.id,
         breed_id = breed.id,
         name=pet.get("name"),
-        age=int(pet.get("age")),
         weight=Decimal(pet.get("weight")),
         birthday=birthday
     )
@@ -110,8 +109,6 @@ async def update_pet(pet_id: int, pet_updates: dict):
         pet.name = pet_updates.get("name")
     if pet_updates.get("breed") is not None:
         pet.breed = breed
-    if pet_updates.get("age") is not None:
-        pet.age = int(pet_updates.get("age"))
     if pet_updates.get("weight") is not None:
         pet.weight = pet_updates.get("weight")
     if pet_updates.get("birthday") is not None:

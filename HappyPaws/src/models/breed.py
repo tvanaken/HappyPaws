@@ -7,5 +7,8 @@ class Breed(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    suggested_supplements = Column(String)
-    suggested_exercise = Column(String)
+    weights = Column(String)
+    breed_description = Column(String)
+    health_description = Column(String)
+    groom_description = Column(String)
+    nutrition_description = Column(String)

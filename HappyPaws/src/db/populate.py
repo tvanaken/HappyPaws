@@ -50,14 +50,13 @@ def create_fake_reminders(session):
 
 
 def create_fake_pets(session):
-    boo = Pet(user_id=1, breed_id=2, name='Boo', age=11, weight='25', birthday='2012-10-05')
+    boo = Pet(user_id=1, breed_id=2, name='Boo', weight='25', birthday='2012-10-05')
     session.add(boo)
-    miles = Pet(user_id=1, breed_id=1, name='Miles', age=8, weight='75', birthday='2015-03-15')
+    miles = Pet(user_id=1, breed_id=1, name='Miles', weight='75', birthday='2015-03-15')
     session.add(miles)
-    flare = Pet(user_id=1, breed_id=1, name='Flare', age=7, weight='67', birthday='2016-08-21')
+    flare = Pet(user_id=1, breed_id=1, name='Flare', weight='67', birthday='2016-08-21')
     session.add(flare)
     session.commit()
-
 
 # def create_fake_foods(session):
 #     orijen_senior_dry = Food(type='dry', name='Orijen: Senior', ingredients=None, crude_protein=38, crude_fat=15, crude_fiber=8, moisture=12, dietary_starch=17, epa=0.2, calcium=1.3, phosphorus=0.9, vitamin_e=750, omega_6=3, omega_3=0.8, glucosamine=600, microorganisms=1000000)
@@ -115,9 +114,9 @@ def generate_data():
     step += 1
 
     #fake breeds
-    print("{0}. creating some fake breeds...".format(step))
-    breeds = create_fake_breeds(session)
-    step += 1
+    # print("{0}. creating some fake breeds...".format(step))
+    # breeds = create_fake_breeds(session)
+    # step += 1
 
     #fake foods
     # print("{0}. creating some fake foods...".format(step))
@@ -130,9 +129,9 @@ def generate_data():
     step += 1
 
     #fake pets
-    print("{0}. creating some fake pets...".format(step))
-    pets = create_fake_pets(session)
-    step += 1
+    # print("{0}. creating some fake pets...".format(step))
+    # pets = create_fake_pets(session)
+    # step += 1
 
     #fake reminders
     print("{0}. creating some fake reminders...".format(step))

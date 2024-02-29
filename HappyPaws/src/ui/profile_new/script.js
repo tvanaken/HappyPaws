@@ -37,6 +37,46 @@ scheduleLink.addEventListener("click", (ev) => {
     document.querySelector(".schedule").classList.add("active");
 });
 
+document.getElementById('addPetLink').addEventListener('click', function(event) {
+    event.preventDefault();
+    document.getElementById('addPetModal').style.display = 'block';
+});
+
+document.querySelector('#addPetModal .close').addEventListener('click', function() {
+    document.getElementById('addPetModal').style.display = 'none';
+});
+
+const today = new Date();
+const todayStr = today.toISOString().split('T')[0];
+
+const minDate = new Date(today.getFullYear() - 30, today.getMonth(), today.getDate());
+const minDateStr = minDate.toISOString().split('T')[0];
+
+document.getElementById('Birthday').setAttribute('max', todayStr);
+document.getElementById('Birthday').setAttribute('min', minDateStr);
+
+document
+    .getElementById("addPetForm")
+    .addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const name = document.getElementById("Name").value;
+        const breed = document.getElementById("Breed").value;
+        const weight = document.getElementById("Weight").value;
+        const birthday = document.getElementById("Birthday").value;
+
+        const response = await fetch("http://localhost:8000/api/pets", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name, breed, weight, birthday }),
+        });
+        const result = await response.json();
+
+        document.getElementById("addPetModal").style.display = "none";
+    });
+
 var calendar;
 
 async function initializeCalendar() {
@@ -70,7 +110,7 @@ document
         document.getElementById("reminderFormModal").style.display = "block";
     });
 
-var span = document.getElementsByClassName("close")[0];
+var span = document.querySelector("#reminderFormModal .close");
 
 span.onclick = function () {
     document.getElementById("reminderFormModal").style.display = "none";
