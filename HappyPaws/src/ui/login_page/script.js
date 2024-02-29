@@ -17,6 +17,12 @@ document
 
         const email = document.getElementById("email2").value;
         const password = document.getElementById("password2").value;
+        const retypePassword = document.getElementById("retypePassword").value;
+
+        if (retypePassword !== password) {
+            alert("Passwords do not match. Please retype your password.");
+            return;
+        }
 
         const response = await fetch("http://localhost:8000/api/users", {
             method: "POST",

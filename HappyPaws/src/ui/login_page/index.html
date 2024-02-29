@@ -24,7 +24,7 @@
                 >
                 <a href="#" class="nav-link">Forum</a>
                 <a href="#" class="nav-link">Services</a>
-                <a href="http://localhost:8000/login_page/index.html#">
+                <a href="http://localhost:8000/login_page/index.html#" id="authButton">
                     <button class="Login-popup">Login</button>
                 </a>
             </nav>
@@ -79,6 +79,11 @@
                         <input type="password" id="password2" required />
                         <label>Password</label> 
                     </div>
+                    <div class="input-box" id="retype-password">
+                        <span class="icon"><i class="fa-solid fa-key"></i></span>
+                        <input type="password" id="retypePassword" required />
+                        <label>Re-enter Password</label> 
+                    </div>                    
                     <button type="submit" class="btn">Register</button>
                     <div class="register">
                         <p>

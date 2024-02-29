@@ -10,9 +10,7 @@ from passlib.context import CryptContext
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from starlette import status
 from models.pet import Pet
-from routers import pets
 from dotenv import load_dotenv
 import os
 
