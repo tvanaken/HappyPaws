@@ -1,5 +1,6 @@
 from typing import Annotated
 from jose import jwt, JWTError
+from app.utils import get_session
 from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -8,6 +9,7 @@ from app.models.user import User
 from starlette import status
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from sqlalchemy.ext.asyncio import AsyncSession
 import os
 
 
@@ -31,7 +33,8 @@ class AccessToken(BaseModel):
     access_token: str
     token_type: str
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> User:
+
+async def get_current_user(token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)) -> User:
     from app.routers.users import get_user_by_email
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -46,7 +49,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> Use
         token_data = TokenData(email=email)
     except JWTError:
         raise credentials_exception
-    user = get_user_by_email(email=token_data.username)
+    user = await get_user_by_email(token, session=session)
     if user is None:
         raise credentials_exception
     return user

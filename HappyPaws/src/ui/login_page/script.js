@@ -11,6 +11,46 @@ loginLink.addEventListener("click", () => {
 });
 
 document
+    .getElementById("loginForm")
+    .addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+            const response = await fetch(
+                "http://localhost:8000/api/users/token",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        username: email,
+                        password: password,
+                    }),
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("Login successful", data);
+
+            localStorage.setItem("token", data.access_token);
+
+            window.location.href =
+                "http://localhost:8000/Profile_new/index.html#";
+        } catch (error) {
+            console.error("Login failed:", error);
+            alert("Login failed. Please check your credentials and try again.");
+        }
+    });
+
+document
     .getElementById("signupForm")
     .addEventListener("submit", async function (event) {
         event.preventDefault();
@@ -23,13 +63,25 @@ document
             alert("Passwords do not match. Please retype your password.");
             return;
         }
+        try {
+            const response = await fetch("http://localhost:8000/api/users", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: email, password: password }),
+            });
 
-        const response = await fetch("http://localhost:8000/api/users", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email: email, password: password }),
-        });
-        const result = await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            alert("Registration successful! Please log in.");
+            wrapper.classList.remove("active");
+        } catch (error) {
+            console.error("Registration failed:", error);
+            alert("Registration failed. Please try again later.");
+        }
     });

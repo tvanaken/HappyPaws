@@ -37,23 +37,31 @@ scheduleLink.addEventListener("click", (ev) => {
     document.querySelector(".schedule").classList.add("active");
 });
 
-document.getElementById('addPetLink').addEventListener('click', function(event) {
-    event.preventDefault();
-    document.getElementById('addPetModal').style.display = 'block';
-});
+document
+    .getElementById("addPetLink")
+    .addEventListener("click", function (event) {
+        event.preventDefault();
+        document.getElementById("addPetModal").style.display = "block";
+    });
 
-document.querySelector('#addPetModal .close').addEventListener('click', function() {
-    document.getElementById('addPetModal').style.display = 'none';
-});
+document
+    .querySelector("#addPetModal .close")
+    .addEventListener("click", function () {
+        document.getElementById("addPetModal").style.display = "none";
+    });
 
 const today = new Date();
-const todayStr = today.toISOString().split('T')[0];
+const todayStr = today.toISOString().split("T")[0];
 
-const minDate = new Date(today.getFullYear() - 30, today.getMonth(), today.getDate());
-const minDateStr = minDate.toISOString().split('T')[0];
+const minDate = new Date(
+    today.getFullYear() - 30,
+    today.getMonth(),
+    today.getDate(),
+);
+const minDateStr = minDate.toISOString().split("T")[0];
 
-document.getElementById('Birthday').setAttribute('max', todayStr);
-document.getElementById('Birthday').setAttribute('min', minDateStr);
+document.getElementById("Birthday").setAttribute("max", todayStr);
+document.getElementById("Birthday").setAttribute("min", minDateStr);
 
 document
     .getElementById("addPetForm")
@@ -122,7 +130,18 @@ document
     .addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        const type = document.getElementById("type").value;
+        console.log("Script running...");
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("You must be logged in to perform this action.");
+            return;
+        }
+
+        console.log("Token found...");
+        console.log(token);
+
+        const title = document.getElementById("title").value;
         const start = document.getElementById("start").value;
         const end = document.getElementById("end").value;
 
@@ -130,10 +149,19 @@ document
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ type, start, end }),
+            body: JSON.stringify({ title, start, end }),
         });
+
+        if (!response.ok) {
+            const errorMsg = await response.text();
+            alert(`Failed to create reminder: ${errorMsg}`);
+            return;
+        }
+
         const result = await response.json();
+        console.log(result);
 
         document.getElementById("reminderFormModal").style.display = "none";
 

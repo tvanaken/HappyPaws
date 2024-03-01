@@ -59,9 +59,9 @@ def create_fake_pets(session):
     session.commit()
 
 # def create_fake_foods(session):
-#     orijen_senior_dry = Food(type='dry', name='Orijen: Senior', ingredients=None, crude_protein=38, crude_fat=15, crude_fiber=8, moisture=12, dietary_starch=17, epa=0.2, calcium=1.3, phosphorus=0.9, vitamin_e=750, omega_6=3, omega_3=0.8, glucosamine=600, microorganisms=1000000)
-#     session.add(orijen_senior_dry)
-#     session.commit()
+    orijen_senior_dry = Food(type='dry', name='Orijen: Senior', ingredients=None, crude_protein=38, crude_fat=15, crude_fiber=8, moisture=12, dietary_starch=17, epa=0.2, calcium=1.3, phosphorus=0.9, vitamin_e=750, omega_6=3, omega_3=0.8, glucosamine=600, microorganisms=1000000)
+    session.add(orijen_senior_dry)
+    session.commit()
     
 def create_fake_supplements(session):
     test = Supplement(name='Tester', description='This is a test', ailment='Hip/Joint')
@@ -109,9 +109,9 @@ def generate_data():
     step += 1
 
     # fake users:
-    print("{0}. creating some fake users...".format(step))
-    users = create_fake_users(session, 5)
-    step += 1
+    # print("{0}. creating some fake users...".format(step))
+    # users = create_fake_users(session, 5)
+    # step += 1
 
     #fake breeds
     # print("{0}. creating some fake breeds...".format(step))
@@ -124,9 +124,9 @@ def generate_data():
     # step += 1
 
     #fake supplements
-    print("{0}. creating some fake supplements...".format(step))
-    supplements = create_fake_supplements(session)
-    step += 1
+    # print("{0}. creating some fake supplements...".format(step))
+    # supplements = create_fake_supplements(session)
+    # step += 1
 
     #fake pets
     # print("{0}. creating some fake pets...".format(step))
@@ -134,8 +134,8 @@ def generate_data():
     # step += 1
 
     #fake reminders
-    print("{0}. creating some fake reminders...".format(step))
-    reminders = create_fake_reminders(session)
+    # print("{0}. creating some fake reminders...".format(step))
+    # reminders = create_fake_reminders(session)
 
 
     # cleanup

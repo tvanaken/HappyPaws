@@ -4,15 +4,24 @@ from app.utils import get_session
 from app.models.login import get_current_user
 from sqlalchemy import select
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
+from app.routers.users import oauth2_scheme
+from sqlalchemy.ext.asyncio import AsyncSession
+from pydantic import BaseModel
+from datetime import datetime
 
 router = APIRouter()
 
 
+class ReminderCreate(BaseModel):
+    title: str
+    start: datetime
+    end: datetime
+
 async def _validate_reminder(reminder: dict):
-    if reminder.get("type") is None:
-        raise HTTPException(status_code=400, detail="Must define a type")
+    if reminder.get("title") is None:
+        raise HTTPException(status_code=400, detail="Must define a title")
     if reminder.get("start") is None:
         raise HTTPException(status_code=400, detail="Must give a start date")
     if reminder.get("end") is None:
@@ -53,34 +62,32 @@ async def get_user_reminders(user_id: int):
     
 
 @router.post("/api/reminders")
-async def create_reminder(reminder: dict):
-    user = await get_current_user()
-    session = await get_session()
-    reminder = await _validate_reminder(reminder)
+async def create_reminder(reminder_data: ReminderCreate, token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
+    user = await get_current_user(token, session)
+    reminder = await _validate_reminder(reminder_data.dict())
 
-    # if reminder:
     start_str = reminder.get("start")
     if start_str:
-        start = datetime.strptime(start_str, "%Y-%m-%dT%H:%M")
+        reminder_data.start = datetime.strptime(start_str, "%Y-%m-%dT%H:%M")
     else:
-        start = None
+        reminder_data.start = None
 
     end_str = reminder.get("end")
     if end_str:
-        end = datetime.strptime(end_str, "%Y-%m-%dT%H:%M")
+        reminder_data.end = datetime.strptime(end_str, "%Y-%m-%dT%H:%M")
     else:
-        end = None
+        reminder_data.end = None
 
     reminder = Reminder(
         user_id = user.id,
-        type=reminder.get("type"),
-        start=start,
-        end=end
+        title=reminder_data.title,
+        start=reminder_data.start,
+        end=reminder_data.end
     )
     session.add(reminder)
     await session.commit()
 
-    return JSONResponse(content=reminder.to_dict(), status_code=201)
+    return JSONResponse(content={"message": "Reminder created"}, status_code=201)
 
 
 @router.delete("/api/reminders/{reminder_id}")
@@ -104,8 +111,8 @@ async def update_reminder(reminder_id: int, reminder_updates: dict):
     if not reminder:
         return JSONResponse(content={"message": "Reminder not found"}, status_code=404)
     
-    if reminder_updates.get("type") is not None:
-        reminder.type = reminder_updates.get("type")
+    if reminder_updates.get("title") is not None:
+        reminder.title = reminder_updates.get("title")
     if reminder_updates.get("start") is not None:
         start_str = reminder_updates.get("start")
         if start_str:

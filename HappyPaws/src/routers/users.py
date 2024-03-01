@@ -8,11 +8,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from models.pet import Pet
 from dotenv import load_dotenv
 import os
+
 
 
 
@@ -24,6 +26,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 20
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
 
 async def _validate_user(user: dict):
     if user.get("email") is None:
@@ -32,11 +39,11 @@ async def _validate_user(user: dict):
         raise HTTPException(status_code=400, detail="Password cannot be empty")
     return user
 
-async def authenticate_user(email: str, password: str) -> Optional[User]:
-    user = await get_user_by_email(email=email)
+async def authenticate_user(email: str, password: str, session: AsyncSession) -> Optional[User]:
+    user = await get_user_by_email(email=email, session=session)
     if not user:
         return None
-    if not verify_password(password, user.password_hash):
+    if not verify_password(password, user.password):
         return None
     return user
 
@@ -52,7 +59,6 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 
 async def get_user_by_email(email: str, session: AsyncSession) -> Optional[User]:
     query = select(User).where(User.email == email)
-    session = await get_session()
     result = await session.execute(query)
     record = result.fetchone()
     if record:
@@ -79,9 +85,8 @@ async def _get_user(user_id: int):
         return None
 
 
-
-@router.get("/api/users")
-async def get_user(current_user: dict = Depends(get_current_user)):
+@router.get("/api/users/me")
+async def get_user_me(current_user: User = Depends(get_current_user)):
     user = await get_current_user()
     if user:
         return JSONResponse(content=user.to_dict(), status_code=200)
@@ -144,10 +149,10 @@ async def create_user(user_details: UserCreate, session: AsyncSession = Depends(
 #         return JSONResponse(content={"message": "User deleted"}, status_code=200)
 #     else:
 #         return JSONResponse(content={"message": "Not authorized"}, status_code=401)
-    
+
 @router.post("/api/users/token")
-async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    user = await authenticate_user(form_data.email, form_data.password)
+async def login(login_request: LoginRequest, session: AsyncSession = Depends(get_session)):
+    user = await authenticate_user(login_request.username, login_request.password, session)
     if not user:
         raise HTTPException(
             status_code=401,
@@ -158,4 +163,4 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    return AccessToken(access_token=access_token, token_type="bearer")
+    return {"access_token": access_token, "token_type": "bearer"}
