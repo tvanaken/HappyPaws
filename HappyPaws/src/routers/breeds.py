@@ -2,7 +2,7 @@ from app.models import Breed
 from app.utils import get_session
 from sqlalchemy import select
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import JSONResponse
 
 router = APIRouter()
@@ -37,9 +37,11 @@ async def _get_breed_name(name: str):
 
 
 @router.get("/api/breeds")
-async def get_breeds():
-    query = select(Breed)
+async def get_breeds(search: str = Query(None, min_length=2)):
     session = await get_session()
+    query = select(Breed)
+    if search:
+        query = query.where(Breed.name.ilike(f"%{search}%"))
     breeds = await session.scalars(query)
     return JSONResponse(content=[breed.to_dict() for breed in breeds], status_code=200)
 

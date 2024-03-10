@@ -3,13 +3,11 @@ from app.models import Reminder
 from app.utils import get_session
 from app.models.login import get_current_user
 from sqlalchemy import select
-
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from app.routers.users import oauth2_scheme
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
-from datetime import datetime
 
 router = APIRouter()
 
@@ -61,22 +59,9 @@ async def get_user_reminders(user_id: int):
         return JSONResponse(content={"message": "Not authorized"}, status_code=404)
     
 
-@router.post("/api/reminders")
+@router.post("/api/reminders", response_model=ReminderCreate)
 async def create_reminder(reminder_data: ReminderCreate, token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
     user = await get_current_user(token, session)
-    reminder = await _validate_reminder(reminder_data.dict())
-
-    start_str = reminder.get("start")
-    if start_str:
-        reminder_data.start = datetime.strptime(start_str, "%Y-%m-%dT%H:%M")
-    else:
-        reminder_data.start = None
-
-    end_str = reminder.get("end")
-    if end_str:
-        reminder_data.end = datetime.strptime(end_str, "%Y-%m-%dT%H:%M")
-    else:
-        reminder_data.end = None
 
     reminder = Reminder(
         user_id = user.id,
@@ -86,6 +71,7 @@ async def create_reminder(reminder_data: ReminderCreate, token: str = Depends(oa
     )
     session.add(reminder)
     await session.commit()
+    await session.refresh(reminder)
 
     return JSONResponse(content={"message": "Reminder created"}, status_code=201)
 

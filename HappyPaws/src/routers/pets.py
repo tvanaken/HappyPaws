@@ -1,6 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from app.models import Breed, Pet
+from app.models.login import get_current_user
 from app.utils import get_session
 from sqlalchemy import select
 from fastapi import APIRouter, HTTPException

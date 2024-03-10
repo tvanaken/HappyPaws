@@ -12,7 +12,7 @@ class Reminder(Base):
     id = Column(Integer, primary_key=True)
     user_id = mapped_column(Integer, ForeignKey("users.id"))
     user = relationship("User")
-    type = Column(String)
+    title = Column(String)
     start = Column(DateTime)
     end = Column(DateTime)
     # Recurring reminder fields
@@ -26,7 +26,7 @@ class Reminder(Base):
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "type": self.type,
+            "title": self.title,
             "start": self.start.isoformat() if self.start else None,
             "end": self.end.isoformat() if self.end else None,
             # "startTime": self.startTime.isoformat() if self.startTime else None,
