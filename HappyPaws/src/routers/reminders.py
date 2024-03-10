@@ -1,5 +1,5 @@
 from datetime import datetime
-from app.models import Reminder
+from app.models import Reminder, User
 from app.utils import get_session
 from app.models.login import get_current_user
 from sqlalchemy import select
@@ -40,9 +40,9 @@ async def _get_reminder(reminder_id: int):
 
 
 @router.get("/api/reminders")
-async def get_reminders():
-    query = select(Reminder)
+async def get_reminders(user: User = Depends(get_current_user)):
     session = await get_session()
+    query = select(Reminder).where(Reminder.user_id == user.id)
     reminders = await session.scalars(query)
     return JSONResponse(content=[reminder.to_dict() for reminder in reminders], status_code=200)
 

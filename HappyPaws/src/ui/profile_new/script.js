@@ -4,6 +4,8 @@ const dietLink = document.querySelector(".diet-link");
 const photosLink = document.querySelector(".photos-link");
 const scheduleLink = document.querySelector(".schedule-link");
 const sections = document.querySelectorAll(".right_col .section");
+var calendar;
+
 
 breedLink.addEventListener("click", (ev) => {
     ev.preventDefault();
@@ -36,6 +38,12 @@ scheduleLink.addEventListener("click", (ev) => {
     });
     document.querySelector(".schedule").classList.add("active");
 });
+
+document
+    .getElementById("calendarSection")
+    .addEventListener("click", function () {
+        initializeCalendar();
+    });
 
 document
     .getElementById("addPetLink")
@@ -85,55 +93,53 @@ document
         document.getElementById("addPetModal").style.display = "none";
     });
 
-document.addEventListener("DOMContentLoaded", async function () {
+// Handle "Mixed" checkbox changes
+document.getElementById("Mixed").addEventListener("change", function () {
+    var displayStyle = this.checked ? "block" : "none";
+    document.getElementById("secondBreedContainer").style.display = displayStyle;
 
-    function initializeAutocomplete(breedInputId, suggestionsContainerId) {
-
-        var breedInput = document.getElementById(breedInputId);
-        var suggestionsContainer = document.getElementById(suggestionsContainerId);
-
-        breedInput.addEventListener("input", async function () {
-            var inputValue = this.value;
-            if (inputValue.length > 1) {
-                fetch(`/api/breeds?search=${inputValue}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('data', data);
-                        suggestionsContainer.innerHTML = '';
-                        data.forEach(breed => {
-                            var suggestionItem = document.createElement('div');
-                            suggestionItem.innerHTML = breed.name; // Assuming breed.to_dict() includes a 'name' field
-                            suggestionItem.addEventListener('click', function() {
-                                breedInput.value = this.textContent;
-                                suggestionsContainer.innerHTML = '';
-                            });
-                            suggestionsContainer.appendChild(suggestionItem);
-                        });
-                    })
-                    .catch(error => console.log('error', error));
-            } else {
-                suggestionsContainer.innerHTML = '';
-            }
-        });
+    if (this.checked) {
+        initializeAutocomplete("Breed2", "breedList2");
     }
-
-    // Initialize autocomplete for the first breed input
-    initializeAutocomplete("Breed", "breedList");
-
-    // Handle "Mixed" checkbox changes
-    document.getElementById("Mixed").addEventListener("change", function () {
-        var displayStyle = this.checked ? "block" : "none";
-        document.getElementById("secondBreedContainer").style.display = displayStyle;
-
-        // Initialize autocomplete for the second breed input if "Mixed" is checked
-        if (this.checked) {
-            initializeAutocomplete("Breed2", "breedList2");
-        }
-    });
-    toggleLoginLogoutButtons();
 });
 
-function toggleLoginLogoutButtons() {
+document.addEventListener("DOMContentLoaded", async function () {
+
+    await initializeAutocomplete("Breed", "breedList");
+    await toggleLoginLogoutButtons();
+});
+
+async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
+
+    var breedInput = document.getElementById(breedInputId);
+    var suggestionsContainer = document.getElementById(suggestionsContainerId);
+
+    breedInput.addEventListener("input", async function () {
+        var inputValue = this.value;
+        if (inputValue.length > 1) {
+            fetch(`/api/breeds?search=${inputValue}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('data', data);
+                    suggestionsContainer.innerHTML = '';
+                    data.forEach(breed => {
+                        var suggestionItem = document.createElement('div');
+                        suggestionItem.innerHTML = breed.name; // Assuming breed.to_dict() includes a 'name' field
+                        suggestionItem.addEventListener('click', function() {
+                            breedInput.value = this.textContent;
+                            suggestionsContainer.innerHTML = '';
+                        });
+                        suggestionsContainer.appendChild(suggestionItem);
+                    });
+                })
+                .catch(error => console.log('error', error));
+        } else {
+            suggestionsContainer.innerHTML = '';
+        }
+    });
+}
+
+async function toggleLoginLogoutButtons() {
 
     const token = localStorage.getItem("token");
     const loginButton = document.getElementById("loginButton");
@@ -141,21 +147,36 @@ function toggleLoginLogoutButtons() {
 
     if (token) {
         loginButton.style.display = "none";
-        logoutButton.style.display = "block";
+        logoutButton.style.display = "inline-block";
         logoutButton.addEventListener("click", function () {
             localStorage.removeItem("token");
             window.location.href = "http://localhost:8000/Login_page/index.html"
         });
     } else {
-        loginButton.style.display = "block";
+        loginButton.style.display = "inline-block";
         logoutButton.style.display = "none";
     }
 }
 
-var calendar;
-
 async function initializeCalendar() {
-    const response = await fetch("http://localhost:8000/api/reminders");
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+        console.error("User is not logged in.")
+        return;
+    }
+    const response = await fetch("http://localhost:8000/api/reminders", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        const errorMsg = await response.text();
+        console.error(`Failed to fetch reminders: ${errorMsg}`);
+        return;
+    }
+
     const reminders = await response.json();
     const eventData = reminders.map((reminder) => {
         return {
@@ -167,17 +188,14 @@ async function initializeCalendar() {
     console.log(reminders);
     console.log(eventData);
     var calendarEl = document.getElementById("calendar");
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+    calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: "dayGridMonth",
         height: 650,
         schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
         events: eventData,
     });
-    calendar.render();
+    await calendar.render();
 }
-
-// Calendar scripts
-document.addEventListener("DOMContentLoaded", initializeCalendar);
 
 document
     .getElementById("addReminderBtn")
@@ -195,18 +213,14 @@ span.onclick = function () {
 document
     .getElementById("reminderForm")
     .addEventListener("submit", async function (event) {
+
         event.preventDefault();
-
-        console.log("Script running...");
-
         const token = localStorage.getItem("token");
+
         if (!token) {
             alert("You must be logged in to perform this action.");
             return;
         }
-
-        console.log("Token found...");
-        console.log(token);
 
         const title = document.getElementById("title").value;
         const start = document.getElementById("start").value;
@@ -221,9 +235,6 @@ document
             body: JSON.stringify({ title, start, end }),
         });
 
-        console.log("Response received...");
-        console.log(response);
-
         if (!response.ok) {
             const errorMsg = await response.text();
             alert(`Failed to create reminder: ${errorMsg}`);
@@ -231,9 +242,8 @@ document
         }
 
         const result = await response.json();
-        console.log(result);
 
         document.getElementById("reminderFormModal").style.display = "none";
 
-        //await calendar.render();
+        await calendar.render(); 
     });
