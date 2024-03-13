@@ -6,7 +6,6 @@ const scheduleLink = document.querySelector(".schedule-link");
 const sections = document.querySelectorAll(".right_col .section");
 var calendar;
 
-
 breedLink.addEventListener("click", (ev) => {
     ev.preventDefault();
     sections.forEach((section) => {
@@ -75,9 +74,11 @@ document
     .getElementById("addPetForm")
     .addEventListener("submit", async function (event) {
         event.preventDefault();
+        const token = localStorage.getItem("token");
 
         const name = document.getElementById("Name").value;
-        const breed = document.getElementById("Breed").value;
+        const breed1 = document.getElementById("Breed").value;
+        const breed2 = document.getElementById("Breed2").value;
         const weight = document.getElementById("Weight").value;
         const birthday = document.getElementById("Birthday").value;
 
@@ -85,8 +86,9 @@ document
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ name, breed, weight, birthday }),
+            body: JSON.stringify({ name, breed1, breed2, weight, birthday }),
         });
         const result = await response.json();
 
@@ -95,7 +97,8 @@ document
 
 document.getElementById("Mixed").addEventListener("change", function () {
     var displayStyle = this.checked ? "block" : "none";
-    document.getElementById("secondBreedContainer").style.display = displayStyle;
+    document.getElementById("secondBreedContainer").style.display =
+        displayStyle;
 
     if (this.checked) {
         initializeAutocomplete("Breed2", "breedList2");
@@ -103,13 +106,11 @@ document.getElementById("Mixed").addEventListener("change", function () {
 });
 
 document.addEventListener("DOMContentLoaded", async function () {
-
     await initializeAutocomplete("Breed", "breedList");
     await toggleLoginLogoutButtons();
 });
 
 async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
-
     var breedInput = document.getElementById(breedInputId);
     var suggestionsContainer = document.getElementById(suggestionsContainerId);
 
@@ -117,29 +118,28 @@ async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
         var inputValue = this.value;
         if (inputValue.length > 1) {
             fetch(`/api/breeds?search=${inputValue}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('data', data);
-                    suggestionsContainer.innerHTML = '';
-                    data.forEach(breed => {
-                        var suggestionItem = document.createElement('div');
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log("data", data);
+                    suggestionsContainer.innerHTML = "";
+                    data.forEach((breed) => {
+                        var suggestionItem = document.createElement("div");
                         suggestionItem.innerHTML = breed.name;
-                        suggestionItem.addEventListener('click', function() {
+                        suggestionItem.addEventListener("click", function () {
                             breedInput.value = this.textContent;
-                            suggestionsContainer.innerHTML = '';
+                            suggestionsContainer.innerHTML = "";
                         });
                         suggestionsContainer.appendChild(suggestionItem);
                     });
                 })
-                .catch(error => console.log('error', error));
+                .catch((error) => console.log("error", error));
         } else {
-            suggestionsContainer.innerHTML = '';
+            suggestionsContainer.innerHTML = "";
         }
     });
 }
 
 async function toggleLoginLogoutButtons() {
-
     const token = localStorage.getItem("token");
     const loginButton = document.getElementById("loginButton");
     const logoutButton = document.getElementById("logoutButton");
@@ -149,7 +149,8 @@ async function toggleLoginLogoutButtons() {
         logoutButton.style.display = "inline-block";
         logoutButton.addEventListener("click", function () {
             localStorage.removeItem("token");
-            window.location.href = "http://localhost:8000/Login_page/index.html"
+            window.location.href =
+                "http://localhost:8000/Login_page/index.html";
         });
     } else {
         loginButton.style.display = "inline-block";
@@ -158,10 +159,9 @@ async function toggleLoginLogoutButtons() {
 }
 
 async function initializeCalendar() {
-
     const token = localStorage.getItem("token");
     if (!token) {
-        console.error("User is not logged in.")
+        console.error("User is not logged in.");
         return;
     }
     const response = await fetch("http://localhost:8000/api/reminders", {
@@ -212,7 +212,6 @@ span.onclick = function () {
 document
     .getElementById("reminderForm")
     .addEventListener("submit", async function (event) {
-
         event.preventDefault();
         const token = localStorage.getItem("token");
 
@@ -244,5 +243,5 @@ document
 
         document.getElementById("reminderFormModal").style.display = "none";
 
-        await calendar.render(); 
+        await calendar.render();
     });

@@ -2,13 +2,24 @@ from datetime import datetime
 from decimal import Decimal
 from app.models import Breed, Pet
 from app.models.login import get_current_user
+from app.routers.users import oauth2_scheme
 from app.utils import get_session
 from sqlalchemy import select
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 from routers.breeds import _get_breed_name
+from pydantic import BaseModel
+
 
 router = APIRouter()
+
+class PetCreate(BaseModel):
+    name: str
+    breed1: str
+    breed2: str | None = None
+    weight: Decimal
+    birthday: datetime | None = None
 
 
 def _validate_pet(pet: dict):
@@ -17,6 +28,13 @@ def _validate_pet(pet: dict):
     if pet.get("breed") is None:
         raise HTTPException(status_code=400, detail="Breed cannot be empty")
     return pet
+
+
+async def get_breed_id_by_name(session, breed_name):
+    breed_id = await session.execute(
+        select(Breed.id).where(Breed.name == breed_name)
+    )
+    return breed_id.scalar_one_or_none()
 
 
 async def _get_pet(pet_id: int):
@@ -58,25 +76,17 @@ async def get_pet(pet_id: int):
         return JSONResponse(content={"message": "Not found."}, status_code=404)
     
 
-@router.post("/api/pets")
-async def create_pet(pet: dict):
-    user = await get_current_user()
-    session = await get_session()
-    pet = _validate_pet(pet)
-    breed = await _get_breed_name(pet.get("breed"))
-
-    birthday_str = pet.get("birthday")
-    if birthday_str:
-        birthday = datetime.strptime(birthday_str, "%Y-%m-%d").date()
-    else:
-        birthday = None
+@router.post("/api/pets", response_model=PetCreate)
+async def create_pet(pet_data: PetCreate, token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
+    user = await get_current_user(token, session)
 
     pet = Pet( 
         user_id = user.id,
-        breed_id = breed.id,
-        name=pet.get("name"),
-        weight=Decimal(pet.get("weight")),
-        birthday=birthday
+        breed_id1 = await get_breed_id_by_name(session, pet_data.breed1),
+        breed_id2 = await get_breed_id_by_name(session, pet_data.breed2),
+        name = pet_data.name,
+        weight = pet_data.weight,
+        birthday = pet_data.birthday
     )
     session.add(pet)
     await session.commit()
