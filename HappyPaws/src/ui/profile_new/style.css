@@ -237,6 +237,7 @@ table {
 
 table, th, td {
     border: 1px solid black;
+    margin-bottom: 20px;
 }
 
 th, td {

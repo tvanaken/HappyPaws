@@ -93,7 +93,6 @@ document
         document.getElementById("addPetModal").style.display = "none";
     });
 
-// Handle "Mixed" checkbox changes
 document.getElementById("Mixed").addEventListener("change", function () {
     var displayStyle = this.checked ? "block" : "none";
     document.getElementById("secondBreedContainer").style.display = displayStyle;
@@ -124,7 +123,7 @@ async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
                     suggestionsContainer.innerHTML = '';
                     data.forEach(breed => {
                         var suggestionItem = document.createElement('div');
-                        suggestionItem.innerHTML = breed.name; // Assuming breed.to_dict() includes a 'name' field
+                        suggestionItem.innerHTML = breed.name;
                         suggestionItem.addEventListener('click', function() {
                             breedInput.value = this.textContent;
                             suggestionsContainer.innerHTML = '';
