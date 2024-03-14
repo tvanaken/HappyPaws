@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from app.routers.users import oauth2_scheme
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
+from typing import Optional
 
 router = APIRouter()
 
@@ -15,7 +16,7 @@ router = APIRouter()
 class ReminderCreate(BaseModel):
     title: str
     start: datetime
-    end: datetime
+    end: Optional[datetime] = None
 
 async def _validate_reminder(reminder: dict):
     if reminder.get("title") is None:

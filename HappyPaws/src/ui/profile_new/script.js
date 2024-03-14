@@ -222,7 +222,12 @@ document
 
         const title = document.getElementById("title").value;
         const start = document.getElementById("start").value;
-        const end = document.getElementById("end").value;
+        let end = document.getElementById("end").value;
+
+        let payload = { title, start };
+        if (end) {
+            payload.end = end;
+        }
 
         const response = await fetch("http://localhost:8000/api/reminders", {
             method: "POST",
@@ -230,7 +235,7 @@ document
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ title, start, end }),
+            body: JSON.stringify(payload),
         });
 
         if (!response.ok) {
@@ -238,8 +243,6 @@ document
             alert(`Failed to create reminder: ${errorMsg}`);
             return;
         }
-
-        const result = await response.json();
 
         document.getElementById("reminderFormModal").style.display = "none";
 
