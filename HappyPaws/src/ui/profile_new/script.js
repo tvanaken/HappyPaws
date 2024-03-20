@@ -249,28 +249,65 @@ document
         await calendar.render();
     });
 
+document
+    .querySelector(".nav-link")
+    .addEventListener("mouseover", async function () {
+        const dropdown = document.getElementById("petDropdown");
 
-document.querySelector('.nav-link').addEventListener('mouseover', async function() {
-    const dropdown = document.getElementById('petDropdown');
-    const token = localStorage.getItem('token');
-    if (token) {
-        const response = await fetch('/api/pets', {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        },
-        });
-        if (response.ok) {
-        const pets = await response.json();
-        // Clear previous pets
-        dropdown.innerHTML = '';
-        // Add pets to dropdown
-        pets.forEach(pet => {
-            const petElement = document.createElement('div');
-            petElement.textContent = pet.name; // Adjust depending on pet data structure
-            dropdown.appendChild(petElement);
-        });
-        } else {
-        // Handle errors, e.g., not authorized
+        const token = localStorage.getItem("token");
+        if (token) {
+            const response = await fetch("/api/pets", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.ok) {
+                const pets = await response.json();
+                dropdown.innerHTML = "";
+                pets.forEach((pet) => {
+                    const petElement = document.createElement("div");
+                    petElement.textContent = pet.name;
+                    petElement.dataset.petId = pet.id;
+                    dropdown.appendChild(petElement);
+                });
+            } else {
+                console.error("Failed to fetch pets");
+            }
         }
-    }
+    });
+
+document
+    .getElementById("petDropdown")
+    .addEventListener("click", async function (event) {
+        let petId = event.target.dataset.petId;
+        if (petId) {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`/api/pets/${petId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.ok) {
+                const petDetails = await response.json();
+                // Update the pet details
+                document.getElementById("petName").textContent =
+                    petDetails.name;
+                document.getElementById("petBreed1").textContent =
+                    petDetails.breed_id1;
+                document.getElementById("petBreed2").textContent =
+                    petDetails.breed_id2;
+                document
+                    .querySelector(".left_col .about")
+                    .querySelectorAll(
+                        "li",
+                    )[0].innerHTML = `<span>${petDetails.weight}</span> Pounds`;
+                document
+                    .querySelector(".left_col .about")
+                    .querySelectorAll(
+                        "li",
+                    )[1].innerHTML = `<span>${petDetails.age}</span> Years old`;
+                document.querySelector(".left_col .bio p").textContent =
+                    petDetails.bio;
+            }
+        }
     });

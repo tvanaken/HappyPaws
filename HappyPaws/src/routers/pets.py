@@ -20,6 +20,7 @@ class PetCreate(BaseModel):
     breed2: str | None = None
     weight: Decimal
     birthday: datetime | None = None
+    bio: str | None = None
 
 
 def _validate_pet(pet: dict):
@@ -37,9 +38,8 @@ async def get_breed_id_by_name(session, breed_name):
     return breed_id.scalar_one_or_none()
 
 
-async def _get_pet(pet_id: int):
-    session = await get_session()
-    user = await get_current_user()
+async def _get_pet(pet_id: int, token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
+    user = await get_current_user(token, session)
     query = select(Pet).where(Pet.id == pet_id).where(Pet.user_id == user.id).order_by(Pet.id)
     result = await session.execute(query)
     result = result.fetchone()
@@ -77,7 +77,8 @@ async def create_pet(pet_data: PetCreate, token: str = Depends(oauth2_scheme), s
         breed_id2 = await get_breed_id_by_name(session, pet_data.breed2),
         name = pet_data.name,
         weight = pet_data.weight,
-        birthday = pet_data.birthday
+        birthday = pet_data.birthday,
+        bio = pet_data.bio
     )
     session.add(pet)
     await session.commit()

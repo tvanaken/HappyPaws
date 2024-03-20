@@ -21,11 +21,11 @@
                 <img src="../cap_images/Logo.png" width="75" alt="Logo" img />
             </h2>
             <nav class="navigation">
+                <a href="#" class="nav-link" id="myPetsLink"
+                    >My pets
+                    <div id="petDropdown" class="dropdown-content"></div>
+                </a>
                 <a href="#" class="nav-link">Forum</a>
-                <a href="#" class="nav-link">My pets
-                    <div id="petDropdown" class="dropdown-content">
-                    </div>
-                  </a>
                 <a href="#" id="addPetLink" class="nav-link">Add a Pet</a>
                 <a
                     href="http://localhost:8000/Login_page/index.html"
@@ -49,13 +49,14 @@
                             img
                         />
                     </div>
-                    <h2>Miles</h2>
-                    <p>Siberian Husky</p>
+                    <h2 id="petName">Pet name</h2>
+                    <p id="petBreed1">Pet breed</p>
+                    <p id="petBreed2"></p>
 
                     <ul class="about">
                         <!-- user input based on pet's page-->
-                        <li><span>72</span>Pounds</li>
-                        <li><span>8</span>Years old</li>
+                        <li><span>Weight</span>Pounds</li>
+                        <li><span>Age</span>Years old</li>
                     </ul>
 
                     <div class="bio">
@@ -331,6 +332,15 @@
                             name="Birthday"
                         /><br /><br />
                     </div>
+                    <label for="Bio">Bio:</label>
+                    <div>
+                        <textarea
+                            id="Bio"
+                            name="Bio"
+                            rows="4"
+                            cols="17"
+                        ></textarea
+                        ><br /><br />
                     <input type="submit" value="Submit" />
                 </form>
             </div>
