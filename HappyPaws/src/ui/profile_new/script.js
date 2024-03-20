@@ -248,3 +248,29 @@ document
 
         await calendar.render();
     });
+
+
+document.querySelector('.nav-link').addEventListener('mouseover', async function() {
+    const dropdown = document.getElementById('petDropdown');
+    const token = localStorage.getItem('token');
+    if (token) {
+        const response = await fetch('/api/pets', {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+        });
+        if (response.ok) {
+        const pets = await response.json();
+        // Clear previous pets
+        dropdown.innerHTML = '';
+        // Add pets to dropdown
+        pets.forEach(pet => {
+            const petElement = document.createElement('div');
+            petElement.textContent = pet.name; // Adjust depending on pet data structure
+            dropdown.appendChild(petElement);
+        });
+        } else {
+        // Handle errors, e.g., not authorized
+        }
+    }
+    });

@@ -270,6 +270,34 @@ th, td {
     cursor: pointer;
 }
 
+.dropdown-content {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    background-color: #f9f9f9;
+    color: black;
+    text-align: center;
+    border-radius: 10px;
+    top: 100%;
+    left: -62%;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    transform: translateY(-20px);
+    transition: visibility 0s, opacity .3s linear, transform .25s linear;
+}
+
+.dropdown-content :hover {
+    background-color: #f1f1f1;
+    border-radius: 10px;
+}
+  
+.nav-link:hover .dropdown-content {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
 /* Responsiveness */
 
 @media (min-width: 868px) {

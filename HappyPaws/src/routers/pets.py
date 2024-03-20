@@ -50,17 +50,8 @@ async def _get_pet(pet_id: int):
 
 
 @router.get("/api/pets")
-async def get_all_pets():
-    user = await get_current_user()
-    query = select(Pet).order_by(Pet.id)
-    session = await get_session()
-    pets = await session.scalars(query)
-    return JSONResponse(content=[pet.to_dict() for pet in pets], status_code=200)
-
-
-@router.get("/api/pets")
-async def get_pets_for_user():
-    user = await get_current_user()
+async def get_pets_for_user(token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
+    user = await get_current_user(token, session)
     query = select(Pet).where(Pet.user_id == user.id).order_by(Pet.id)
     session = await get_session()
     pets = await session.scalars(query)
