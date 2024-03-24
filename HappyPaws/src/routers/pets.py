@@ -20,6 +20,7 @@ class PetCreate(BaseModel):
     breed2: str | None = None
     weight: Decimal
     birthday: datetime | None = None
+    age: int | None = None
     bio: str | None = None
 
 
@@ -78,6 +79,7 @@ async def create_pet(pet_data: PetCreate, token: str = Depends(oauth2_scheme), s
         name = pet_data.name,
         weight = pet_data.weight,
         birthday = pet_data.birthday,
+        age = pet_data.age,
         bio = pet_data.bio
     )
     session.add(pet)

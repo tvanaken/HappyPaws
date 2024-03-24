@@ -18,9 +18,10 @@ class Pet(Base):
     name = Column(String)
     weight = Column(Numeric(precision=5, scale=2))
     birthday = Column(Date)
+    age = Column(Integer)
     bio = Column(String)
 
-    def age(self):
+    def age_calc(self):
         today = date.today()
         if self.birthday:
             return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
@@ -36,6 +37,6 @@ class Pet(Base):
             "name": self.name,
             "weight": str(self.weight),
             "birthday": self.birthday.isoformat() if self.birthday else None,
-            "age": self.age() if self.birthday else None,
+            "age": self.age_calc() if self.birthday else None,
             "bio": self.bio
         }

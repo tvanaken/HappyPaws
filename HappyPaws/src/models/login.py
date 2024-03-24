@@ -46,6 +46,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), session: AsyncSe
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
+        #payload not encrypted, try using user_id
         token_data = TokenData(email=email)
     except JWTError:
         raise credentials_exception

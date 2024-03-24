@@ -81,6 +81,12 @@ document
         const breed2 = document.getElementById("Breed2").value;
         const weight = document.getElementById("Weight").value;
         const birthday = document.getElementById("Birthday").value;
+        let age = null;
+        const bio = document.getElementById("Bio").value;
+
+        if (birthday) {
+            age = today.getFullYear() - new Date(birthday).getFullYear();
+        }
 
         const response = await fetch("http://localhost:8000/api/pets", {
             method: "POST",
@@ -88,7 +94,7 @@ document
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ name, breed1, breed2, weight, birthday }),
+            body: JSON.stringify({ name, breed1, breed2, weight, birthday, age, bio }),
         });
         const result = await response.json();
 
@@ -251,7 +257,7 @@ document
 
 document
     .querySelector(".nav-link")
-    .addEventListener("mouseover", async function () {
+    .addEventListener("click", async function () {
         const dropdown = document.getElementById("petDropdown");
 
         const token = localStorage.getItem("token");
@@ -280,6 +286,7 @@ document
     .getElementById("petDropdown")
     .addEventListener("click", async function (event) {
         let petId = event.target.dataset.petId;
+        print(petId)
         if (petId) {
             const token = localStorage.getItem("token");
             const response = await fetch(`/api/pets/${petId}`, {
@@ -289,7 +296,6 @@ document
             });
             if (response.ok) {
                 const petDetails = await response.json();
-                // Update the pet details
                 document.getElementById("petName").textContent =
                     petDetails.name;
                 document.getElementById("petBreed1").textContent =
