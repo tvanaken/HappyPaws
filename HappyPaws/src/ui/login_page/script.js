@@ -82,6 +82,6 @@ document
             wrapper.classList.remove("active");
         } catch (error) {
             console.error("Registration failed:", error);
-            alert("Registration failed. Please try again later.");
+            alert("Registration failed. User already exists.");
         }
     });

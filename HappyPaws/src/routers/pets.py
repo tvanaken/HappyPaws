@@ -60,8 +60,8 @@ async def get_pets_for_user(token: str = Depends(oauth2_scheme), session: AsyncS
 
 
 @router.get("/api/pets/{pet_id}")
-async def get_pet(pet_id: int):
-    pet = await _get_pet(pet_id)
+async def get_pet(pet_id: int, token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
+    pet = await _get_pet(pet_id, token, session)
     if pet:
         return pet.to_dict()
     else:

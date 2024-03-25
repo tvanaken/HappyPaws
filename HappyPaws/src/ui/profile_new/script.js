@@ -252,11 +252,11 @@ document
 
         document.getElementById("reminderFormModal").style.display = "none";
 
-        await calendar.render();
+        await initializeCalendar();
     });
 
 document
-    .querySelector(".nav-link")
+    .getElementById("myPetsLink")
     .addEventListener("click", async function () {
         const dropdown = document.getElementById("petDropdown");
 
@@ -286,7 +286,6 @@ document
     .getElementById("petDropdown")
     .addEventListener("click", async function (event) {
         let petId = event.target.dataset.petId;
-        print(petId)
         if (petId) {
             const token = localStorage.getItem("token");
             const response = await fetch(`/api/pets/${petId}`, {
