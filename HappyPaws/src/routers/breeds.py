@@ -46,13 +46,13 @@ async def get_breeds(search: str = Query(None, min_length=2)):
     return JSONResponse(content=[breed.to_dict() for breed in breeds], status_code=200)
 
 
-@router.get("/api/breeds/{name}")
-async def get_breed(name: str):
-    breed = await _get_breed_name(name)
-    if breed:
-        return breed.to_dict()
-    else:
-        return JSONResponse(content={"message": "Not found."}, status_code=404)
+# @router.get("/api/breeds/{name}")
+# async def get_breed(name: str):
+#     breed = await _get_breed_name(name)
+#     if breed:
+#         return breed.to_dict()
+#     else:
+#         return JSONResponse(content={"message": "Not found."}, status_code=404)
     
 
 @router.get("/api/breeds/{breed_id}")

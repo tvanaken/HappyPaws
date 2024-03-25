@@ -38,6 +38,64 @@ scheduleLink.addEventListener("click", (ev) => {
     document.querySelector(".schedule").classList.add("active");
 });
 
+document.addEventListener("DOMContentLoaded", async function () {
+    await initializeAutocomplete("Breed", "breedList");
+    await toggleLoginLogoutButtons();
+    await displayUserPet();
+});
+
+async function displayUserPet() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        console.error("User is not logged in.");
+        return;
+    }
+    const response = await fetch("http://localhost:8000/api/pets", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        const errorMsg = await response.text();
+        console.error(`Failed to fetch pets: ${errorMsg}`);
+        return;
+    }
+
+    const pets = await response.json();
+    if (pets.length > 0) {
+        const pet = pets[0];
+
+        const breed1Response = await fetch(`/api/breeds/${pet.breed_id1}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const breed1Name = await breed1Response.json();
+
+        let breed2Name = { name: "" };
+        if (pet.breed_id2) {
+            const breed2Response = await fetch(`/api/breeds/${pet.breed_id2}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            breed2Name = await breed2Response.json();
+        }
+
+        document.getElementById("petName").textContent = pet.name;
+        document.getElementById("petBreed1").textContent = breed1Name.name;
+        document.getElementById("petBreed2").textContent = breed2Name.name;
+        document
+            .querySelector(".left_col .about")
+            .querySelectorAll("li")[0].innerHTML = `<span>${pet.weight}</span> Pounds`;
+        document
+            .querySelector(".left_col .about")
+            .querySelectorAll("li")[1].innerHTML = `<span>${pet.age}</span> Years old`;
+        document.querySelector(".left_col .bio p").textContent = pet.bio;
+    }
+}
+
 document
     .getElementById("calendarSection")
     .addEventListener("click", function () {
@@ -111,10 +169,6 @@ document.getElementById("Mixed").addEventListener("change", function () {
     }
 });
 
-document.addEventListener("DOMContentLoaded", async function () {
-    await initializeAutocomplete("Breed", "breedList");
-    await toggleLoginLogoutButtons();
-});
 
 async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
     var breedInput = document.getElementById(breedInputId);
@@ -295,12 +349,31 @@ document
             });
             if (response.ok) {
                 const petDetails = await response.json();
+                console.log(petDetails);
+
+                const breed1Response = await fetch(`/api/breeds/${petDetails.breed_id1}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const breed1Name = await breed1Response.json();
+
+                let breed2Name = { name: "" };
+                if (petDetails.breed_id2) {
+                    const breed2Response = await fetch(`/api/breeds/${petDetails.breed_id2}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    breed2Name = await breed2Response.json();
+                }
+
                 document.getElementById("petName").textContent =
                     petDetails.name;
                 document.getElementById("petBreed1").textContent =
-                    petDetails.breed_id1;
+                    breed1Name.name;
                 document.getElementById("petBreed2").textContent =
-                    petDetails.breed_id2;
+                    breed2Name.name;
                 document
                     .querySelector(".left_col .about")
                     .querySelectorAll(
@@ -312,7 +385,7 @@ document
                         "li",
                     )[1].innerHTML = `<span>${petDetails.age}</span> Years old`;
                 document.querySelector(".left_col .bio p").textContent =
-                    petDetails.bio;
+                    petDetails.bio; 
             }
         }
     });
