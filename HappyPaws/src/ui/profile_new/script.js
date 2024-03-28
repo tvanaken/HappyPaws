@@ -27,7 +27,7 @@ photosLink.addEventListener("click", (ev) => {
     sections.forEach((section) => {
         section.classList.remove("active");
     });
-    document.querySelector(".photos").classList.add("active");
+    document.querySelector(".health").classList.add("active");
 });
 
 scheduleLink.addEventListener("click", (ev) => {
@@ -161,11 +161,32 @@ document
 
 document.getElementById("Mixed").addEventListener("change", function () {
     var displayStyle = this.checked ? "block" : "none";
+    var checkStyle = this.checked ? "none" : "initial";
+
     document.getElementById("secondBreedContainer").style.display =
         displayStyle;
+    document.getElementById("Unknown").style.display = checkStyle;
+    document.querySelector('label[for="Unknown"]').style.display = checkStyle;
 
     if (this.checked) {
         initializeAutocomplete("Breed2", "breedList2");
+    }
+});
+
+document.getElementById("Unknown").addEventListener("change", function () {
+    var displayStyle = this.checked ? "none" : "block";
+    var checkStyle = this.checked ? "none" : "initial";
+    var mixedLabel = document.querySelector('label[for="Mixed"]');
+    document.getElementById("breedContainer").style.display = displayStyle;
+    document.getElementById("secondBreedContainer").style.display = displayStyle;
+    document.getElementById("Mixed").style.display = checkStyle;
+    mixedLabel.style.display = checkStyle;
+
+    if (!this.checked) {
+        document.getElementById("secondBreedContainer").style.display = "none";
+        document.getElementById("Breed").value = "";
+    } else {
+        document.getElementById("Breed").value = "Unknown";
     }
 });
 
@@ -356,24 +377,58 @@ document
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                const breed1Name = await breed1Response.json();
+                const breed1 = await breed1Response.json();
 
-                let breed2Name = { name: "" };
+                document.getElementById("breedDescription").querySelector('h2').textContent = breed1.name;
+                document.getElementById("breedDescription").querySelector('p').textContent = breed1.breed_description;
+
+                let breed2 = { name: "" };
                 if (petDetails.breed_id2) {
                     const breed2Response = await fetch(`/api/breeds/${petDetails.breed_id2}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     });
-                    breed2Name = await breed2Response.json();
+                    console.log(breed2Response);
+                    if (breed2Response.ok) {
+                        breed2 = await breed2Response.json();
+
+                        if (!secondBreedName || !secondBreedDescription) {
+                            const breedDescriptionSection = document.getElementById("breedDescription");
+
+                            secondBreedName = document.createElement("h2");
+                            secondBreedDescription = document.createElement("p");
+
+                            secondBreedName.setAttribute("id", "secondBreedName");
+                            secondBreedDescription.setAttribute("id", "secondBreedDescription");
+
+                            breedDescriptionSection.appendChild(secondBreedName);
+                            breedDescriptionSection.appendChild(secondBreedDescription);
+                        }
+
+                        secondBreedName.style.display = "";
+                        secondBreedDescription.style.display = "";
+                        secondBreedName.textContent = breed2.name;
+                        secondBreedDescription.textContent = breed2.breed_description;
+                    } 
+                } else {
+    
+                    if (secondBreedName && secondBreedDescription) {
+                        secondBreedName.style.display = "none";
+                        secondBreedDescription.style.display = "none";
+                        secondBreedName.textContent = "";
+                        secondBreedDescription.textContent = "";
+                        document.getElementById("petBreed2").textContent = "";
+                    } 
                 }
+            
 
                 document.getElementById("petName").textContent =
                     petDetails.name;
                 document.getElementById("petBreed1").textContent =
-                    breed1Name.name;
+                    breed1.name;
                 document.getElementById("petBreed2").textContent =
-                    breed2Name.name;
+                    breed2.name;
                 document
                     .querySelector(".left_col .about")
                     .querySelectorAll(
@@ -386,6 +441,9 @@ document
                     )[1].innerHTML = `<span>${petDetails.age}</span> Years old`;
                 document.querySelector(".left_col .bio p").textContent =
                     petDetails.bio; 
+
+
+                
             }
         }
     });

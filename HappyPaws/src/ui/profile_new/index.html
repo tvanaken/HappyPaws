@@ -93,30 +93,14 @@
                         </ul>
                     </nav>
 
-                    <div class="section breed active">
-                        <h2>Siberian Husky</h2>
+                    <div class="section breed active" id="breedDescription">
+                        <h2>Breed description</h2>
                         <p>
-                            Siberian Husky, a thickly coated, compact sled dog
-                            of medium size and great endurance, was developed to
-                            work in packs, pulling light loads at moderate
-                            speeds over vast frozen expanses. Sibes are
-                            friendly, fastidious, and dignified. The graceful,
-                            medium-sized Siberian Husky's almond-shaped eyes can
-                            be either brown or blue'and sometimes one of
-                            each'and convey a keen but amiable and even
-                            mischievous expression. Quick and nimble-footed,
-                            Siberians are known for their powerful but seemingly
-                            effortless gait. Tipping the scales at no more than
-                            60 pounds, they are noticeably smaller and lighter
-                            than their burly cousin, the Alaskan Malamute. As
-                            born pack dogs, they enjoy family life and get on
-                            well with other dogs. The Sibe's innate friendliness
-                            render them indifferent watchdogs. These are
-                            energetic dogs who can't resist chasing small
-                            animals, so secure running room is a must. An
-                            attractive feature of the breed: Sibes are naturally
-                            clean, with little doggy odor.
+                            Welcome to the beginning of your pet ownership journey! While you currently don't have a pet registered, it's the perfect time to explore the vast world of breeds. Each breed has its own unique characteristics, history, and needs. From the energetic and loyal dogs to the independent and graceful cats, and even the diverse world of small mammals, birds, reptiles, and fish, there's a pet for every lifestyle. Consider what traits and behaviors would best fit your daily routine, your living environment, and your ability to provide care, training, and affection.
                         </p>
+                        <br />
+                        <h2 id="secondBreedName" style="display:none;"></h2>
+                        <p id="secondBreedDescription" style="display:none;"></p>
                     </div>
                     <div class="section diet">
                         <h2>Diet recommendations</h2>
@@ -223,7 +207,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="section photos">
+                    <div class="section health">
                         <h2>Health</h2>
                         <p>
                             Fortunately, the Siberian Husky is a relatively
@@ -286,10 +270,12 @@
                             required
                         /><br /><br />
                     </div>
-                    <label for="Breed">Breed:</label>
-                    <div class="autocomplete">
-                        <input type="text" id="Breed" name="Breed" required />
-                        <div id="breedList" class="autocomplete-items"></div>
+                        <div id="breedContainer" style="display: block">
+                        <label for="Breed">Breed:</label>
+                        <div class="autocomplete">
+                            <input type="text" id="Breed" name="Breed" required />
+                            <div id="breedList" class="autocomplete-items"></div>
+                        </div>
                     </div>
                     <label for="Mixed">Mixed:</label>
                     <input type="checkbox" id="Mixed" name="Mixed" /><br />
