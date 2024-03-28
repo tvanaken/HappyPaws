@@ -4,7 +4,16 @@ const dietLink = document.querySelector(".diet-link");
 const photosLink = document.querySelector(".photos-link");
 const scheduleLink = document.querySelector(".schedule-link");
 const sections = document.querySelectorAll(".right_col .section");
+
 let calendar;
+const today = new Date();
+const todayStr = today.toISOString().split("T")[0];
+const minDate = new Date(
+    today.getFullYear() - 30,
+    today.getMonth(),
+    today.getDate(),
+);
+const minDateStr = minDate.toISOString().split("T")[0];
 
 breedLink.addEventListener("click", (ev) => {
     ev.preventDefault();
@@ -58,40 +67,178 @@ async function displayUserPet() {
 
     const pets = await response.json();
     if (pets.length > 0) {
-        const pet = pets[0];
+        const petDetails = pets[0];
 
-        const breed1Response = await fetch(`/api/breeds/${pet.breed_id1}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        const breed1Name = await breed1Response.json();
-
-        let breed2Name = { name: "" };
-        if (pet.breed_id2) {
-            const breed2Response = await fetch(`/api/breeds/${pet.breed_id2}`, {
+        const breed1Response = await fetch(
+            `/api/breeds/${petDetails.breed_id1}`,
+            {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-            });
-            breed2Name = await breed2Response.json();
+            },
+        );
+        const breed1 = await breed1Response.json();
+        console.log(breed1);
+
+        document
+            .getElementById("breedDescription")
+            .querySelector("h2").textContent = breed1.name;
+        document
+            .getElementById("breedDescription")
+            .querySelector("p").textContent = breed1.breed_description;
+        document
+            .getElementById("healthDescription")
+            .querySelector("h2").textContent = "Health (" + breed1.name + ")";
+        document
+            .getElementById("healthDescription")
+            .querySelector("p").textContent = breed1.health_description;
+
+        let breed2 = { name: "" };
+        if (petDetails.breed_id2) {
+            const breed2Response = await fetch(
+                `/api/breeds/${petDetails.breed_id2}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+            breed2 = await breed2Response.json();
+
+            if (breed2Response.ok) {
+                breed2 = await breed2Response.json();
+
+                if (!secondBreedName || !secondBreedDescription) {
+                    const breedDescriptionSection =
+                        document.getElementById("breedDescription");
+
+                    secondBreedName = document.createElement("h2");
+                    secondBreedDescription = document.createElement("p");
+
+                    secondBreedName.setAttribute("id", "secondBreedName");
+                    secondBreedDescription.setAttribute(
+                        "id",
+                        "secondBreedDescription",
+                    );
+
+                    breedDescriptionSection.appendChild(secondBreedName);
+                    breedDescriptionSection.appendChild(secondBreedDescription);
+                }
+
+                secondBreedName.style.display = "";
+                secondBreedDescription.style.display = "";
+                secondBreedName.textContent = breed2.name;
+                secondBreedDescription.textContent = breed2.breed_description;
+            }
+        } else if (secondBreedName && secondBreedDescription) {
+            secondBreedName.style.display = "none";
+            secondBreedDescription.style.display = "none";
+            secondBreedName.textContent = "";
+            secondBreedDescription.textContent = "";
+            document.getElementById("petBreed2").textContent = "";
         }
 
-        document.getElementById("petName").textContent = pet.name;
-        document.getElementById("petBreed1").textContent = breed1Name.name;
-        document.getElementById("petBreed2").textContent = breed2Name.name;
+        document.getElementById("petName").textContent = petDetails.name;
+        document.getElementById("petBreed1").textContent = breed1.name;
+        document.getElementById("petBreed2").textContent = breed2.name;
         document
             .querySelector(".left_col .about")
             .querySelectorAll(
                 "li",
-            )[0].innerHTML = `<span>${pet.weight}</span> Pounds`;
+            )[0].innerHTML = `<span>${petDetails.weight}</span> Pounds`;
         document
             .querySelector(".left_col .about")
             .querySelectorAll(
                 "li",
-            )[1].innerHTML = `<span>${pet.age}</span> Years old`;
-        document.querySelector(".left_col .bio p").textContent = pet.bio;
+            )[1].innerHTML = `<span>${petDetails.age}</span> Years old`;
+        document.querySelector(".left_col .bio p").textContent = petDetails.bio;
     }
+}
+
+async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
+    const breedInput = document.getElementById(breedInputId);
+    const suggestionsContainer = document.getElementById(
+        suggestionsContainerId,
+    );
+
+    breedInput.addEventListener("input", async function () {
+        const inputValue = this.value;
+        if (inputValue.length > 1) {
+            fetch(`/api/breeds?search=${inputValue}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log("data", data);
+                    suggestionsContainer.innerHTML = "";
+                    data.forEach((breed) => {
+                        const suggestionItem = document.createElement("div");
+                        suggestionItem.innerHTML = breed.name;
+                        suggestionItem.addEventListener("click", function () {
+                            breedInput.value = this.textContent;
+                            suggestionsContainer.innerHTML = "";
+                        });
+                        suggestionsContainer.appendChild(suggestionItem);
+                    });
+                })
+                .catch((error) => console.log("error", error));
+        } else {
+            suggestionsContainer.innerHTML = "";
+        }
+    });
+}
+
+async function toggleLoginLogoutButtons() {
+    const token = localStorage.getItem("token");
+    const loginButton = document.getElementById("loginButton");
+    const logoutButton = document.getElementById("logoutButton");
+
+    if (token) {
+        loginButton.style.display = "none";
+        logoutButton.style.display = "inline-block";
+        logoutButton.addEventListener("click", () => {
+            localStorage.removeItem("token");
+            window.location.href =
+                "http://localhost:8000/Login_page/index.html";
+        });
+    } else {
+        loginButton.style.display = "inline-block";
+        logoutButton.style.display = "none";
+    }
+}
+
+async function initializeCalendar() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        console.error("User is not logged in.");
+        return;
+    }
+    const response = await fetch("http://localhost:8000/api/reminders", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        const errorMsg = await response.text();
+        console.error(`Failed to fetch reminders: ${errorMsg}`);
+        return;
+    }
+
+    const reminders = await response.json();
+    const eventData = reminders.map((reminder) => ({
+        title: reminder.title,
+        start: reminder.start,
+        end: reminder.end,
+    }));
+    console.log(reminders);
+    console.log(eventData);
+    const calendarEl = document.getElementById("calendar");
+    calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: "dayGridMonth",
+        height: 650,
+        schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
+        events: eventData,
+    });
+    await calendar.render();
 }
 
 document.getElementById("calendarSection").addEventListener("click", () => {
@@ -106,16 +253,6 @@ document.getElementById("addPetLink").addEventListener("click", (event) => {
 document.querySelector("#addPetModal .close").addEventListener("click", () => {
     document.getElementById("addPetModal").style.display = "none";
 });
-
-const today = new Date();
-const todayStr = today.toISOString().split("T")[0];
-
-const minDate = new Date(
-    today.getFullYear() - 30,
-    today.getMonth(),
-    today.getDate(),
-);
-const minDateStr = minDate.toISOString().split("T")[0];
 
 document.getElementById("Birthday").setAttribute("max", todayStr);
 document.getElementById("Birthday").setAttribute("min", minDateStr);
@@ -163,7 +300,8 @@ document.getElementById("Mixed").addEventListener("change", function () {
     const displayStyle = this.checked ? "block" : "none";
     const checkStyle = this.checked ? "none" : "initial";
 
-    document.getElementById("secondBreedContainer").style.display = displayStyle;
+    document.getElementById("secondBreedContainer").style.display =
+        displayStyle;
     document.getElementById("Unknown").style.display = checkStyle;
     document.querySelector('label[for="Unknown"]').style.display = checkStyle;
 
@@ -177,7 +315,8 @@ document.getElementById("Unknown").addEventListener("change", function () {
     const checkStyle = this.checked ? "none" : "initial";
     const mixedLabel = document.querySelector('label[for="Mixed"]');
     document.getElementById("breedContainer").style.display = displayStyle;
-    document.getElementById("secondBreedContainer").style.display = displayStyle;
+    document.getElementById("secondBreedContainer").style.display =
+        displayStyle;
     document.getElementById("Mixed").style.display = checkStyle;
     mixedLabel.style.display = checkStyle;
 
@@ -188,91 +327,6 @@ document.getElementById("Unknown").addEventListener("change", function () {
         document.getElementById("Breed").value = "Unknown";
     }
 });
-
-async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
-    const breedInput = document.getElementById(breedInputId);
-    const suggestionsContainer = document.getElementById(
-        suggestionsContainerId,
-    );
-
-    breedInput.addEventListener("input", async function () {
-        const inputValue = this.value;
-        if (inputValue.length > 1) {
-            fetch(`/api/breeds?search=${inputValue}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log("data", data);
-                    suggestionsContainer.innerHTML = "";
-                    data.forEach((breed) => {
-                        const suggestionItem = document.createElement("div");
-                        suggestionItem.innerHTML = breed.name;
-                        suggestionItem.addEventListener("click", function () {
-                            breedInput.value = this.textContent;
-                            suggestionsContainer.innerHTML = "";
-                        });
-                        suggestionsContainer.appendChild(suggestionItem);
-                    });
-                })
-                .catch((error) => console.log("error", error));
-        } else {
-            suggestionsContainer.innerHTML = "";
-        }
-    });
-}
-
-async function toggleLoginLogoutButtons() {
-    const token = localStorage.getItem("token");
-    const loginButton = document.getElementById("loginButton");
-    const logoutButton = document.getElementById("logoutButton");
-
-    if (token) {
-        loginButton.style.display = "none";
-        logoutButton.style.display = "inline-block";
-        logoutButton.addEventListener("click", () => {
-            localStorage.removeItem("token");
-            window.location.href = "http://localhost:8000/Login_page/index.html";
-        });
-    } else {
-        loginButton.style.display = "inline-block";
-        logoutButton.style.display = "none";
-    }
-}
-
-async function initializeCalendar() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        console.error("User is not logged in.");
-        return;
-    }
-    const response = await fetch("http://localhost:8000/api/reminders", {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
-    if (!response.ok) {
-        const errorMsg = await response.text();
-        console.error(`Failed to fetch reminders: ${errorMsg}`);
-        return;
-    }
-
-    const reminders = await response.json();
-    const eventData = reminders.map((reminder) => ({
-        title: reminder.title,
-        start: reminder.start,
-        end: reminder.end,
-    }));
-    console.log(reminders);
-    console.log(eventData);
-    const calendarEl = document.getElementById("calendar");
-    calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: "dayGridMonth",
-        height: 650,
-        schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
-        events: eventData,
-    });
-    await calendar.render();
-}
 
 document.getElementById("addReminderBtn").addEventListener("click", () => {
     document.getElementById("reminderFormModal").style.display = "block";
@@ -374,6 +428,7 @@ document
                     },
                 );
                 const breed1 = await breed1Response.json();
+                console.log(breed1);
 
                 document
                     .getElementById("breedDescription")
@@ -381,6 +436,13 @@ document
                 document
                     .getElementById("breedDescription")
                     .querySelector("p").textContent = breed1.breed_description;
+                document
+                    .getElementById("healthDescription")
+                    .querySelector("h2").textContent =
+                    "Health (" + breed1.name + ")";
+                document
+                    .getElementById("healthDescription")
+                    .querySelector("p").textContent = breed1.health_description;
 
                 let breed2 = { name: "" };
                 if (petDetails.breed_id2) {
@@ -392,17 +454,28 @@ document
                             },
                         },
                     );
-                    console.log(breed2Response);
                     if (breed2Response.ok) {
                         breed2 = await breed2Response.json();
 
                         if (!secondBreedName || !secondBreedDescription) {
-                            const breedDescriptionSection = document.getElementById("breedDescription");
+                            const breedDescriptionSection =
+                                document.getElementById("breedDescription");
+                            const breedHealthSection =
+                                document.getElementById("healthDescription");
 
                             secondBreedName = document.createElement("h2");
-                            secondBreedDescription = document.createElement("p");
+                            secondBreedNameHealth =
+                                document.createElement("h2");
+                            secondBreedDescription =
+                                document.createElement("p");
+                            secondHealthDescription =
+                                document.createElement("p");
 
                             secondBreedName.setAttribute(
+                                "id",
+                                "secondBreedName",
+                            );
+                            secondBreedNameHealth.setAttribute(
                                 "id",
                                 "secondBreedName",
                             );
@@ -417,22 +490,39 @@ document
                             breedDescriptionSection.appendChild(
                                 secondBreedDescription,
                             );
+                            breedHealthSection.appendChild(
+                                secondBreedNameHealth,
+                            );
+                            breedHealthSection.appendChild(
+                                secondHealthDescription,
+                            );
                         }
 
                         secondBreedName.style.display = "";
+                        secondBreedNameHealth.style.display = "";
                         secondBreedDescription.style.display = "";
+                        secondHealthDescription.style.display = "";
                         secondBreedName.textContent = breed2.name;
-                        secondBreedDescription.textContent = breed2.breed_description;
+                        secondBreedNameHealth.textContent =
+                            "Health (" + breed2.name + ")";
+                        secondBreedDescription.textContent =
+                            breed2.breed_description;
+                        secondHealthDescription.textContent =
+                            breed2.health_description;
                     }
                 } else if (secondBreedName && secondBreedDescription) {
                     secondBreedName.style.display = "none";
+                    secondBreedNameHealth.style.display = "none";
                     secondBreedDescription.style.display = "none";
                     secondBreedName.textContent = "";
+                    secondBreedNameHealth.textContent = "";
                     secondBreedDescription.textContent = "";
+                    secondHealthDescription.textContent = "";
                     document.getElementById("petBreed2").textContent = "";
                 }
 
-                document.getElementById("petName").textContent = petDetails.name;
+                document.getElementById("petName").textContent =
+                    petDetails.name;
                 document.getElementById("petBreed1").textContent = breed1.name;
                 document.getElementById("petBreed2").textContent = breed2.name;
                 document
@@ -445,7 +535,8 @@ document
                     .querySelectorAll(
                         "li",
                     )[1].innerHTML = `<span>${petDetails.age}</span> Years old`;
-                document.querySelector(".left_col .bio p").textContent = petDetails.bio;
+                document.querySelector(".left_col .bio p").textContent =
+                    petDetails.bio;
             }
         }
     });
