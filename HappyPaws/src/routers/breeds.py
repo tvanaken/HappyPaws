@@ -53,7 +53,7 @@ async def get_breeds(search: str = Query(None, min_length=2)):
 #         return breed.to_dict()
 #     else:
 #         return JSONResponse(content={"message": "Not found."}, status_code=404)
-    
+
 
 @router.get("/api/breeds/{breed_id}")
 async def get_breed(breed_id: int):
@@ -62,7 +62,7 @@ async def get_breed(breed_id: int):
         return breed.to_dict()
     else:
         return JSONResponse(content={"message": "Not found."}, status_code=404)
-    
+
 
 @router.post("/api/breeds")
 async def create_breed(breed: dict):
@@ -93,7 +93,7 @@ async def delete_breed(name: str):
         return JSONResponse(content={"message": "breed deleted"}, status_code=200)
     else:
         return JSONResponse(content={"message": "Not found."}, status_code=404)
-    
+
 
 @router.patch("/api/breeds/{breed_id}")
 async def update_breed(breed_id: int, breed_updates: dict):

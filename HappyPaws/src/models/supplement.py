@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String
+
 from .base import Base
 
 
@@ -13,7 +14,7 @@ class Supplement(Base):
     breed_size = Column(String)
 
     def to_dict(self):
-        return{
+        return {
             "id": self.id,
             "name": self.name,
             "description": self.description,

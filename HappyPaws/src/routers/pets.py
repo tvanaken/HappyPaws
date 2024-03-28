@@ -1,18 +1,20 @@
 from datetime import datetime
 from decimal import Decimal
+
 from app.models import Breed, Pet
 from app.models.login import get_current_user
 from app.routers.users import oauth2_scheme
 from app.utils import get_session
-from sqlalchemy import select
-from fastapi import APIRouter, HTTPException, Depends
-from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncSession
-from routers.breeds import _get_breed_name
 from pydantic import BaseModel
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import JSONResponse
+from routers.breeds import _get_breed_name
 
 router = APIRouter()
+
 
 class PetCreate(BaseModel):
     name: str
@@ -33,15 +35,22 @@ def _validate_pet(pet: dict):
 
 
 async def get_breed_id_by_name(session, breed_name):
-    breed_id = await session.execute(
-        select(Breed.id).where(Breed.name == breed_name)
-    )
+    breed_id = await session.execute(select(Breed.id).where(Breed.name == breed_name))
     return breed_id.scalar_one_or_none()
 
 
-async def _get_pet(pet_id: int, token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
+async def _get_pet(
+    pet_id: int,
+    token: str = Depends(oauth2_scheme),
+    session: AsyncSession = Depends(get_session),
+):
     user = await get_current_user(token, session)
-    query = select(Pet).where(Pet.id == pet_id).where(Pet.user_id == user.id).order_by(Pet.id)
+    query = (
+        select(Pet)
+        .where(Pet.id == pet_id)
+        .where(Pet.user_id == user.id)
+        .order_by(Pet.id)
+    )
     result = await session.execute(query)
     result = result.fetchone()
     if result:
@@ -51,7 +60,9 @@ async def _get_pet(pet_id: int, token: str = Depends(oauth2_scheme), session: As
 
 
 @router.get("/api/pets")
-async def get_pets_for_user(token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
+async def get_pets_for_user(
+    token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)
+):
     user = await get_current_user(token, session)
     query = select(Pet).where(Pet.user_id == user.id).order_by(Pet.id)
     session = await get_session()
@@ -60,27 +71,35 @@ async def get_pets_for_user(token: str = Depends(oauth2_scheme), session: AsyncS
 
 
 @router.get("/api/pets/{pet_id}")
-async def get_pet(pet_id: int, token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
+async def get_pet(
+    pet_id: int,
+    token: str = Depends(oauth2_scheme),
+    session: AsyncSession = Depends(get_session),
+):
     pet = await _get_pet(pet_id, token, session)
     if pet:
         return pet.to_dict()
     else:
         return JSONResponse(content={"message": "Not found."}, status_code=404)
-    
+
 
 @router.post("/api/pets", response_model=PetCreate)
-async def create_pet(pet_data: PetCreate, token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
+async def create_pet(
+    pet_data: PetCreate,
+    token: str = Depends(oauth2_scheme),
+    session: AsyncSession = Depends(get_session),
+):
     user = await get_current_user(token, session)
 
-    pet = Pet( 
-        user_id = user.id,
-        breed_id1 = await get_breed_id_by_name(session, pet_data.breed1),
-        breed_id2 = await get_breed_id_by_name(session, pet_data.breed2),
-        name = pet_data.name,
-        weight = pet_data.weight,
-        birthday = pet_data.birthday,
-        age = pet_data.age,
-        bio = pet_data.bio
+    pet = Pet(
+        user_id=user.id,
+        breed_id1=await get_breed_id_by_name(session, pet_data.breed1),
+        breed_id2=await get_breed_id_by_name(session, pet_data.breed2),
+        name=pet_data.name,
+        weight=pet_data.weight,
+        birthday=pet_data.birthday,
+        age=pet_data.age,
+        bio=pet_data.bio,
     )
     session.add(pet)
     await session.commit()
@@ -99,7 +118,7 @@ async def delete_pet(pet_id: int):
         return JSONResponse(content={"message": "pet deleted"}, status_code=200)
     else:
         return JSONResponse(content={"message": "Not found."}, status_code=404)
-    
+
 
 @router.patch("/api/pets/{pet_id}")
 async def update_pet(pet_id: int, pet_updates: dict):

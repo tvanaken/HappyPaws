@@ -12,7 +12,7 @@ loginLink.addEventListener("click", () => {
 
 document
     .getElementById("loginForm")
-    .addEventListener("submit", async function (event) {
+    .addEventListener("submit", async (event) => {
         event.preventDefault();
 
         const email = document.getElementById("email").value;
@@ -28,7 +28,7 @@ document
                     },
                     body: JSON.stringify({
                         username: email,
-                        password: password,
+                        password,
                     }),
                 },
             );
@@ -52,7 +52,7 @@ document
 
 document
     .getElementById("signupForm")
-    .addEventListener("submit", async function (event) {
+    .addEventListener("submit", async (event) => {
         event.preventDefault();
 
         const email = document.getElementById("email2").value;
@@ -69,7 +69,7 @@ document
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ email: email, password: password }),
+                body: JSON.stringify({ email, password }),
             });
 
             if (!response.ok) {

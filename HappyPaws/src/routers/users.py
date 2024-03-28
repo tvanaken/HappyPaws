@@ -1,22 +1,21 @@
+import os
 from datetime import datetime, timedelta
 from typing import Annotated, Optional
-from app.utils import get_session
+
 from app.models import User, UserCreate
-from app.models.login import get_current_user, AccessToken
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from app.models.login import AccessToken, get_current_user
+from app.utils import get_session
+from dotenv import load_dotenv
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from models.pet import Pet
-from dotenv import load_dotenv
-import os
-
-
-
 
 router = APIRouter()
 load_dotenv()
@@ -26,10 +25,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 20
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 class LoginRequest(BaseModel):
     username: str
     password: str
-
 
 
 async def _validate_user(user: dict):
@@ -39,13 +38,17 @@ async def _validate_user(user: dict):
         raise HTTPException(status_code=400, detail="Password cannot be empty")
     return user
 
-async def authenticate_user(email: str, password: str, session: AsyncSession) -> Optional[User]:
+
+async def authenticate_user(
+    email: str, password: str, session: AsyncSession
+) -> Optional[User]:
     user = await get_user_by_email(email=email, session=session)
     if not user:
         return None
     if not verify_password(password, user.password):
         return None
     return user
+
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
@@ -57,6 +60,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
 async def get_user_by_email(email: str, session: AsyncSession) -> Optional[User]:
     query = select(User).where(User.email == email)
     result = await session.execute(query)
@@ -67,8 +71,10 @@ async def get_user_by_email(email: str, session: AsyncSession) -> Optional[User]
         return None
     return user
 
+
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
+
 
 def verify_password(password: str, hashed_password: str) -> bool:
     return pwd_context.verify(password, hashed_password)
@@ -117,21 +123,22 @@ async def get_user(user_id: int):
 
 
 @router.post("/api/users")
-async def create_user(user_details: UserCreate, session: AsyncSession = Depends(get_session)):
+async def create_user(
+    user_details: UserCreate, session: AsyncSession = Depends(get_session)
+):
     user = await get_user_by_email(email=user_details.email, session=session)
     if user:
         return JSONResponse(content={"message": "User already exists"}, status_code=400)
     else:
         hashed_password = get_password_hash(user_details.password)
-        user = User(
-            email=user_details.email,
-            password=hashed_password
-        )
+        user = User(email=user_details.email, password=hashed_password)
 
         session.add(user)
         await session.commit()
 
-        return JSONResponse(content={"message": "User successfully created"}, status_code=201)
+        return JSONResponse(
+            content={"message": "User successfully created"}, status_code=201
+        )
 
 
 # @router.delete("/api/user/{user_id}")
@@ -150,9 +157,14 @@ async def create_user(user_details: UserCreate, session: AsyncSession = Depends(
 #     else:
 #         return JSONResponse(content={"message": "Not authorized"}, status_code=401)
 
+
 @router.post("/api/users/token")
-async def login(login_request: LoginRequest, session: AsyncSession = Depends(get_session)):
-    user = await authenticate_user(login_request.username, login_request.password, session)
+async def login(
+    login_request: LoginRequest, session: AsyncSession = Depends(get_session)
+):
+    user = await authenticate_user(
+        login_request.username, login_request.password, session
+    )
     if not user:
         raise HTTPException(
             status_code=401,

@@ -1,8 +1,9 @@
 from datetime import date
-from sqlalchemy import Column, ForeignKey, Integer, String, Numeric, Date
-from sqlalchemy.orm import mapped_column, relationship
-from .base import Base
 
+from sqlalchemy import Column, Date, ForeignKey, Integer, Numeric, String
+from sqlalchemy.orm import mapped_column, relationship
+
+from .base import Base
 
 
 class Pet(Base):
@@ -24,12 +25,16 @@ class Pet(Base):
     def age_calc(self):
         today = date.today()
         if self.birthday:
-            return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
+            return (
+                today.year
+                - self.birthday.year
+                - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
+            )
         else:
             return None
 
     def to_dict(self):
-        return{
+        return {
             "id": self.id,
             "user_id": self.user_id,
             "breed_id1": self.breed_id1,
@@ -38,5 +43,5 @@ class Pet(Base):
             "weight": str(self.weight),
             "birthday": self.birthday.isoformat() if self.birthday else None,
             "age": self.age_calc() if self.birthday else None,
-            "bio": self.bio
+            "bio": self.bio,
         }

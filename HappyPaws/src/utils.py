@@ -1,9 +1,4 @@
-from datetime import datetime, timedelta
-from typing import Annotated, Optional
 from app.db import DBManagerAsync
-from app.models import User
-from sqlalchemy import select
-
 
 _user = None
 db_manager = DBManagerAsync()
@@ -33,4 +28,3 @@ async def get_session():
 #         else:
 #             raise Exception(f"No User in database with id={user_id}")
 #     return _user
-

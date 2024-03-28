@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Numeric
+from sqlalchemy import Column, Integer, Numeric, String
+
 from .base import Base
 
 
@@ -39,7 +40,7 @@ class Food(Base):
     total_microorganisms = Column(String)
 
     def to_dict(self):
-        return{
+        return {
             "id": self.id,
             "type": self.type,
             "name": self.name,
@@ -66,5 +67,5 @@ class Food(Base):
             "zinc": self.zinc,
             "selenium": self.selenium,
             "microorganisms": self.microorganisms,
-            "total_microorganisms": self.total_microorganisms
+            "total_microorganisms": self.total_microorganisms,
         }

@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from app.routers import users, breeds, foods, reminders, pets, supplements
+from app.routers import breeds, foods, pets, reminders, supplements, users
 from app.utils import get_session
 
 from fastapi import FastAPI
