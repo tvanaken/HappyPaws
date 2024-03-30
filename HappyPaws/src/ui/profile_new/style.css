@@ -304,6 +304,11 @@ td {
     transform: translateY(0);
 }
 
+#addReminderBtn {
+    border-radius: 4px;
+    padding: 6px 16px;
+}
+
 /* Responsiveness */
 
 @media (min-width: 868px) {

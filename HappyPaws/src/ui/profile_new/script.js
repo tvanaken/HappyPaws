@@ -1,7 +1,8 @@
 const wrapper = document.querySelector(".right_col");
 const breedLink = document.querySelector(".breed-link");
 const dietLink = document.querySelector(".diet-link");
-const photosLink = document.querySelector(".photos-link");
+const healthLink = document.querySelector(".health-link");
+const groomingLink = document.querySelector(".grooming-link");
 const scheduleLink = document.querySelector(".schedule-link");
 const sections = document.querySelectorAll(".right_col .section");
 
@@ -31,12 +32,20 @@ dietLink.addEventListener("click", (ev) => {
     document.querySelector(".diet").classList.add("active");
 });
 
-photosLink.addEventListener("click", (ev) => {
+healthLink.addEventListener("click", (ev) => {
     ev.preventDefault();
     sections.forEach((section) => {
         section.classList.remove("active");
     });
     document.querySelector(".health").classList.add("active");
+});
+
+groomingLink.addEventListener("click", (ev) => {
+    ev.preventDefault();
+    sections.forEach((section) => {
+        section.classList.remove("active");
+    });
+    document.querySelector(".grooming").classList.add("active");
 });
 
 scheduleLink.addEventListener("click", (ev) => {
@@ -92,6 +101,12 @@ async function displayUserPet() {
         document
             .getElementById("healthDescription")
             .querySelector("p").textContent = breed1.health_description;
+        document
+            .getElementById("groomingDescription")
+            .querySelector("h2").textContent = "Grooming (" + breed1.name + ")";
+        document
+            .getElementById("groomingDescription")
+            .querySelector("p").textContent = breed1.groom_description;
 
         let breed2 = { name: "" };
         if (petDetails.breed_id2) {
@@ -106,35 +121,80 @@ async function displayUserPet() {
             breed2 = await breed2Response.json();
 
             if (breed2Response.ok) {
-                breed2 = await breed2Response.json();
-
                 if (!secondBreedName || !secondBreedDescription) {
                     const breedDescriptionSection =
                         document.getElementById("breedDescription");
+                    const breedHealthSection =
+                        document.getElementById("healthDescription");
+                    const breedGroomingSection = document.getElementById(
+                        "groomingDescription",
+                    );
 
                     secondBreedName = document.createElement("h2");
+                    secondBreedNameHealth = document.createElement("h2");
+                    secondBreedNameGroom = document.createElement("h2");
                     secondBreedDescription = document.createElement("p");
+                    secondHealthDescription = document.createElement("p");
+                    secondGroomDescription = document.createElement("p");
 
                     secondBreedName.setAttribute("id", "secondBreedName");
+                    secondBreedNameHealth.setAttribute(
+                        "id",
+                        "secondBreedNameHealth",
+                    );
+                    secondBreedNameGroom.setAttribute(
+                        "id",
+                        "secondBreedNameGroom",
+                    );
                     secondBreedDescription.setAttribute(
                         "id",
                         "secondBreedDescription",
                     );
+                    secondHealthDescription.setAttribute(
+                        "id",
+                        "secondHealthDescription",
+                    );
+                    secondGroomDescription.setAttribute(
+                        "id",
+                        "secondGroomDescription",
+                    );
 
                     breedDescriptionSection.appendChild(secondBreedName);
                     breedDescriptionSection.appendChild(secondBreedDescription);
+                    breedHealthSection.appendChild(secondBreedNameHealth);
+                    breedHealthSection.appendChild(secondHealthDescription);
+                    breedGroomingSection.appendChild(secondBreedNameGroom);
+                    breedGroomingSection.appendChild(secondGroomDescription);
                 }
 
                 secondBreedName.style.display = "";
+                secondBreedNameHealth.style.display = "";
+                secondBreedNameGroom.style.display = "";
                 secondBreedDescription.style.display = "";
+                secondHealthDescription.style.display = "";
+                secondGroomDescription.style.display = "";
                 secondBreedName.textContent = breed2.name;
+                secondBreedNameHealth.textContent =
+                    "Health (" + breed2.name + ")";
+                secondBreedNameGroom.textContent =
+                    "Grooming (" + breed2.name + ")";
                 secondBreedDescription.textContent = breed2.breed_description;
+                secondHealthDescription.textContent = breed2.health_description;
+                secondGroomDescription.textContent = breed2.groom_description;
             }
         } else if (secondBreedName && secondBreedDescription) {
             secondBreedName.style.display = "none";
+            secondBreedNameHealth.style.display = "none";
+            secondBreedNameGroom.style.display = "none";
             secondBreedDescription.style.display = "none";
+            secondHealthDescription.style.display = "none";
+            secondGroomDescription.style.display = "none";
             secondBreedName.textContent = "";
+            secondBreedNameHealth.textContent = "";
+            secondBreedNameGroom.textContent = "";
             secondBreedDescription.textContent = "";
+            secondHealthDescription.textContent = "";
+            secondGroomDescription.textContent = "";
             document.getElementById("petBreed2").textContent = "";
         }
 
@@ -233,12 +293,54 @@ async function initializeCalendar() {
     console.log(eventData);
     const calendarEl = document.getElementById("calendar");
     calendar = new FullCalendar.Calendar(calendarEl, {
+        customButtons: {
+            addReminder: {
+                text: "Add Reminder",
+                click: function () {
+                    document.getElementById("reminderFormModal").style.display =
+                        "block";
+                },
+            },
+        },
+        headerToolbar: {
+            left: "prev,next today addReminder",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
+        },
         initialView: "dayGridMonth",
         height: 650,
         schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
         events: eventData,
     });
     await calendar.render();
+}
+
+async function getPresignedUrl(fileName) {
+    const response = await fetch(
+        `http://localhost:8000/api/s3PresignedUrl?fileName=${fileName}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    );
+    if (!response.ok) {
+        throw new Error("Failed to fetch pre-signed URL");
+    }
+    return response.json();
+}
+
+async function uploadImageToS3(file, presignedUrl) {
+    const response = await fetch(presignedUrl, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "image/jpeg",
+        },
+        body: file,
+    });
+    if (!response.ok) {
+        throw new Error("Failed to upload image to S3");
+    }
 }
 
 document.getElementById("calendarSection").addEventListener("click", () => {
@@ -328,17 +430,12 @@ document.getElementById("Unknown").addEventListener("change", function () {
     }
 });
 
-document.getElementById("addReminderBtn").addEventListener("click", () => {
-    document.getElementById("reminderFormModal").style.display = "block";
-});
-
 const span = document.querySelector("#reminderFormModal .close");
 
 span.onclick = function () {
     document.getElementById("reminderFormModal").style.display = "none";
 };
 
-// Form Submission
 document
     .getElementById("reminderForm")
     .addEventListener("submit", async (event) => {
@@ -348,6 +445,19 @@ document
         if (!token) {
             alert("You must be logged in to perform this action.");
             return;
+        }
+
+        const fileInput = document.getElementById("ProfilePicture");
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            try {
+                const { url, fileName } = await getPresignedUrl(file.name);
+                await uploadImageToS3(file, url);
+            } catch (error) {
+                console.error(error);
+                alert("Failed to upload profile picture.");
+                return;
+            }
         }
 
         const title = document.getElementById("title").value;
@@ -436,6 +546,7 @@ document
                 document
                     .getElementById("breedDescription")
                     .querySelector("p").textContent = breed1.breed_description;
+
                 document
                     .getElementById("healthDescription")
                     .querySelector("h2").textContent =
@@ -443,6 +554,14 @@ document
                 document
                     .getElementById("healthDescription")
                     .querySelector("p").textContent = breed1.health_description;
+
+                document
+                    .getElementById("groomingDescription")
+                    .querySelector("h2").textContent =
+                    "Grooming (" + breed1.name + ")";
+                document
+                    .getElementById("groomingDescription")
+                    .querySelector("p").textContent = breed1.groom_description;
 
                 let breed2 = { name: "" };
                 if (petDetails.breed_id2) {
@@ -462,13 +581,18 @@ document
                                 document.getElementById("breedDescription");
                             const breedHealthSection =
                                 document.getElementById("healthDescription");
+                            const breedGroomingSection =
+                                document.getElementById("groomingDescription");
 
                             secondBreedName = document.createElement("h2");
                             secondBreedNameHealth =
                                 document.createElement("h2");
+                            secondBreedNameGroom = document.createElement("h2");
                             secondBreedDescription =
                                 document.createElement("p");
                             secondHealthDescription =
+                                document.createElement("p");
+                            secondGroomDescription =
                                 document.createElement("p");
 
                             secondBreedName.setAttribute(
@@ -477,11 +601,23 @@ document
                             );
                             secondBreedNameHealth.setAttribute(
                                 "id",
-                                "secondBreedName",
+                                "secondBreedNameHealth",
+                            );
+                            secondBreedNameGroom.setAttribute(
+                                "id",
+                                "secondBreedNameGroom",
                             );
                             secondBreedDescription.setAttribute(
                                 "id",
                                 "secondBreedDescription",
+                            );
+                            secondHealthDescription.setAttribute(
+                                "id",
+                                "secondHealthDescription",
+                            );
+                            secondGroomDescription.setAttribute(
+                                "id",
+                                "secondGroomDescription",
                             );
 
                             breedDescriptionSection.appendChild(
@@ -496,28 +632,45 @@ document
                             breedHealthSection.appendChild(
                                 secondHealthDescription,
                             );
+                            breedGroomingSection.appendChild(
+                                secondBreedNameGroom,
+                            );
+                            breedGroomingSection.appendChild(
+                                secondGroomDescription,
+                            );
                         }
 
                         secondBreedName.style.display = "";
                         secondBreedNameHealth.style.display = "";
+                        secondBreedNameGroom.style.display = "";
                         secondBreedDescription.style.display = "";
                         secondHealthDescription.style.display = "";
+                        secondGroomDescription.style.display = "";
                         secondBreedName.textContent = breed2.name;
                         secondBreedNameHealth.textContent =
                             "Health (" + breed2.name + ")";
+                        secondBreedNameGroom.textContent =
+                            "Grooming (" + breed2.name + ")";
                         secondBreedDescription.textContent =
                             breed2.breed_description;
                         secondHealthDescription.textContent =
                             breed2.health_description;
+                        secondGroomDescription.textContent =
+                            breed2.groom_description;
                     }
                 } else if (secondBreedName && secondBreedDescription) {
                     secondBreedName.style.display = "none";
                     secondBreedNameHealth.style.display = "none";
+                    secondBreedNameGroom.style.display = "none";
                     secondBreedDescription.style.display = "none";
+                    secondHealthDescription.style.display = "none";
+                    secondGroomDescription.style.display = "none";
                     secondBreedName.textContent = "";
                     secondBreedNameHealth.textContent = "";
+                    secondBreedNameGroom.textContent = "";
                     secondBreedDescription.textContent = "";
                     secondHealthDescription.textContent = "";
+                    secondGroomDescription.textContent = "";
                     document.getElementById("petBreed2").textContent = "";
                 }
 

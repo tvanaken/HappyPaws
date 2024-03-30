@@ -76,10 +76,16 @@
                                 >
                             </li>
                             <li>
-                                <a href="#" class="nav-button photos-link"
+                                <a href="#" class="nav-button health-link"
                                     >health</a
                                 >
                             </li>
+                            <li>
+                                <a href="#" class="nav-button grooming-link"
+                                    >grooming</a
+                                >
+                            </li>
+
                             <li>
                                 <a
                                     href="#"
@@ -244,8 +250,32 @@
                             style="display: none"
                         ></p>
                     </div>
+                    <div class="section grooming" id="groomingDescription">
+                        <h2>Grooming</h2>
+                        <p>
+                            Grooming is not just about keeping your pet looking
+                            good; it's also crucial for their health. Regular
+                            grooming sessions are an excellent opportunity to
+                            check for signs of health issues, such as skin
+                            problems or parasites. The grooming needs vary
+                            significantly across different types of pets, from
+                            daily brushing for long-haired dogs or cats to the
+                            specific habitat cleaning requirements for reptiles
+                            and fish. Establishing a grooming routine helps in
+                            bonding with your pet and ensures they are
+                            comfortable and clean.
+                        </p>
+                        <br />
+                        <h2
+                            id="secondBreedNameGroom"
+                            style="display: none"
+                        ></h2>
+                        <p
+                            id="secondGroomDescription"
+                            style="display: none"
+                        ></p>
+                    </div>
                     <div class="section schedule">
-                        <button id="addReminderBtn">Create Reminder</button>
                         <div id="calendar"></div>
                     </div>
                 </div>
@@ -343,6 +373,15 @@
                             cols="17"
                         ></textarea
                         ><br /><br />
+                    </div>
+                    <label for="ProfilePicture">Profile Picture:</label>
+                    <div>
+                        <input
+                            type="file"
+                            id="ProfilePicture"
+                            name="ProfilePicture"
+                            accept="image/*"
+                        /><br /><br />
                     </div>
                     <input type="submit" value="Submit" />
                 </form>
