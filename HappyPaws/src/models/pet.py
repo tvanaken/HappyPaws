@@ -21,6 +21,7 @@ class Pet(Base):
     birthday = Column(Date)
     age = Column(Integer)
     bio = Column(String)
+    photo_url = Column(String)
 
     def age_calc(self):
         today = date.today()
@@ -44,4 +45,5 @@ class Pet(Base):
             "birthday": self.birthday.isoformat() if self.birthday else None,
             "age": self.age_calc() if self.birthday else None,
             "bio": self.bio,
+            "photo_url": self.photo_url,
         }
