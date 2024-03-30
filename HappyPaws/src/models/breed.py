@@ -20,6 +20,7 @@ class Breed(Base):
             "name": self.name,
             "weights": self.weights,
             "breed_description": self.breed_description,
+            "health_description": self.health_description,
             "groom_description": self.groom_description,
             "nutrition_description": self.nutrition_description,
         }
