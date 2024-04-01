@@ -1,5 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
+
 from app.models import Breed, Pet
 from app.models.login import get_current_user
 from app.routers.users import oauth2_scheme
@@ -7,6 +8,7 @@ from app.utils import get_session
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from routers.breeds import _get_breed_name
@@ -22,7 +24,7 @@ class PetCreate(BaseModel):
     birthday: datetime | None = None
     age: int | None = None
     bio: str | None = None
-    photo_url: str | None = None
+
 
 def _validate_pet(pet: dict):
     if pet.get("name") is None:
@@ -98,7 +100,6 @@ async def create_pet(
         birthday=pet_data.birthday,
         age=pet_data.age,
         bio=pet_data.bio,
-        photo_url=pet_data.photo_url,
     )
     session.add(pet)
     await session.commit()

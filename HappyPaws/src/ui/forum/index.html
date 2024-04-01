@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h2 class="logo">
+            <a href="#">
+                <img src="../Cap_images/Logo.png" width="75" alt="Logo" />
+            </a>
+        </h2>
+        <nav class="navigation">
+            <a href="#" class="nav-link">Forum</a>
+            <a href="#" class="nav-link">Services</a>
+            <a
+                href="http://localhost:8000/login_page/index.html#"
+                id="authButton"
+            >
+                <button class="Login-popup">Login</button>
+            </a>
+        </nav>
+    </header>
+    <div id="filter-section">
+        <select id="breed-filter">
+            <option value="">Select Breed</option>
+            <!-- Breed options will be populated here -->
+        </select>
+        <input type="text" id="search-input" placeholder="Search for discussions...">
+        <button onclick="searchDiscussions()">Search</button>
+        <button onclick="createDiscussion()">Create Discussion</button>
+    </div>
+
+    <div id="discussions">
+        <!-- Discussions will be populated here -->
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
