@@ -315,6 +315,7 @@ async function initializeCalendar() {
 }
 
 async function getPresignedUrl(fileName) {
+    const token = localStorage.getItem("token");
     const response = await fetch(
         `http://localhost:8000/api/s3PresignedUrl?fileName=${fileName}`,
         {
@@ -362,8 +363,8 @@ document
     .getElementById("addPetForm")
     .addEventListener("submit", async (event) => {
         event.preventDefault();
-        const token = localStorage.getItem("token");
 
+        const token = localStorage.getItem("token");
         const name = document.getElementById("Name").value;
         const breed1 = document.getElementById("Breed").value;
         const breed2 = document.getElementById("Breed2").value;
@@ -371,30 +372,48 @@ document
         const birthday = document.getElementById("Birthday").value;
         let age = null;
         const bio = document.getElementById("Bio").value;
+        const fileInput = document.getElementById("ProfilePicture");
 
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+        }
         if (birthday) {
             age = today.getFullYear() - new Date(birthday).getFullYear();
         }
 
-        const response = await fetch("http://localhost:8000/api/pets", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-                name,
-                breed1,
-                breed2,
-                weight,
-                birthday,
-                age,
-                bio,
-            }),
-        });
-        const result = await response.json();
+        try {
+            const fileName = `${name}-${Date.now()}.jpeg`;
+            const { url: presignedUrl } = await getPresignedUrl(fileName);
 
-        document.getElementById("addPetModal").style.display = "none";
+            await uploadImageToS3(file, presignedUrl);
+
+            const response = await fetch("http://localhost:8000/api/pets", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    name,
+                    breed1,
+                    breed2,
+                    weight,
+                    birthday,
+                    age,
+                    bio,
+                    imageUrl: presignedUrl.split("?")[0],
+                }),
+            });
+            const result = await response.json();
+            if (response.ok) {
+                await displayUserPet();
+            }
+
+            document.getElementById("addPetModal").style.display = "none";
+        } catch (error) {
+            console.error(error);
+            alert("Failed to add pet or image.");
+        }
     });
 
 document.getElementById("Mixed").addEventListener("change", function () {
