@@ -317,7 +317,7 @@ async function initializeCalendar() {
 async function getPresignedUrl(fileName) {
     const token = localStorage.getItem("token");
     const response = await fetch(
-        `http://localhost:8000/api/s3PresignedUrl?fileName=${fileName}`,
+        "http://localhost:8000/api/s3PresignedUrl?fileName=${fileName}",
         {
             headers: {
                 Authorization: `Bearer ${token}`,

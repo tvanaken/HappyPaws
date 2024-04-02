@@ -12,6 +12,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from routers.breeds import _get_breed_name
+import boto3
+from botocore.exceptions import ClientError
 
 router = APIRouter()
 
@@ -145,3 +147,20 @@ async def update_pet(pet_id: int, pet_updates: dict):
     await session.commit()
 
     return JSONResponse(content=pet.to_dict(), status_code=200)
+
+
+@router.get("/api/s3PresignedUrl?fileName={file_name}")
+async def get_presigned_url(file_name: str):
+    s3_client = boto3.client('s3')
+    bucket_name = "happypawsproject"
+
+    try:
+        presigned_url = s3_client.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': bucket_name,
+                    'Key': file_name},
+            ExpiresIn=3600)
+    except ClientError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"url": presigned_url}
