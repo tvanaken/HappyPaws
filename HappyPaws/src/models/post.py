@@ -30,6 +30,6 @@ class Post(Base):
     user_id = Column(Integer, ForeignKey('users.id'))
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
-    breed = relationship("Breed", back_populates="post")
-    user = relationship("User", back_populates="post")
+    breed = relationship("Breed", foreign_keys=[breed_id])
+    user = relationship("User", foreign_keys=[user_id])
     comments = relationship("Comment", back_populates="post")

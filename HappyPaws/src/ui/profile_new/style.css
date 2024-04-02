@@ -304,11 +304,6 @@ td {
     transform: translateY(0);
 }
 
-#addReminderBtn {
-    border-radius: 4px;
-    padding: 6px 16px;
-}
-
 /* Responsiveness */
 
 @media (min-width: 868px) {
@@ -327,11 +322,6 @@ td {
     .col_container .right_col nav ul {
         flex-direction: row;
         gap: 30px;
-    }
-    .col_container .right_col .breed {
-        height: 365px;
-        overflow: auto;
-        padding: 0 0 30px;
     }
 }
 

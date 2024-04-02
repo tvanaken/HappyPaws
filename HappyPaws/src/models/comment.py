@@ -25,7 +25,7 @@ class Comment(Base):
     content = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'))
     post_id = Column(Integer, ForeignKey('posts.id'))
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     user = relationship('User', back_populates='comments')
     post = relationship('Post', back_populates='comments')

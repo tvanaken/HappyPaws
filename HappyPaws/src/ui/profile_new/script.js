@@ -87,7 +87,6 @@ async function displayUserPet() {
             },
         );
         const breed1 = await breed1Response.json();
-        console.log(breed1);
 
         document
             .getElementById("breedDescription")
