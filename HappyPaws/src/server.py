@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from app.routers import breeds, foods, pets, reminders, supplements, users
+from app.routers import breeds, foods, pets, reminders, supplements, users, comments, posts
 from app.utils import get_session
 
 from fastapi import FastAPI
@@ -27,6 +27,8 @@ app.include_router(reminders.router)
 app.include_router(foods.router)
 app.include_router(pets.router)
 app.include_router(supplements.router)
+app.include_router(comments.router)
+app.include_router(posts.router)
 
 
 app.mount("/", StaticFiles(directory="ui", html=True), name="ui")

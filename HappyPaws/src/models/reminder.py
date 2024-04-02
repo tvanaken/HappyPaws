@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from sqlalchemy import (
     Column,
     Date,
@@ -12,7 +11,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import mapped_column, relationship
-
 from .base import Base
 
 

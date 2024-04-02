@@ -25,10 +25,21 @@
         </nav>
     </header>
     <div id="filter-section">
-        <select id="breed-filter">
-            <option value="">Select Breed</option>
-            <!-- Breed options will be populated here -->
-        </select>
+        <div id="breedContainer" style="display: block">
+            <div class="autocomplete">
+                <input
+                    type="text"
+                    id="Breed"
+                    name="Breed"
+                    placeholder="Search by breed..."
+                />
+                <div
+                    id="breedList"
+                    class="autocomplete-items"
+                    style="display: none"
+                ></div>
+            </div>
+        </div>
         <input type="text" id="search-input" placeholder="Search for discussions...">
         <button onclick="searchDiscussions()">Search</button>
         <button onclick="createDiscussion()">Create Discussion</button>

@@ -76,12 +76,17 @@ header {
 }
 
 #filter-section {
+    display: flex;
     margin-bottom: 20px;
 }
 
-#breed-filter, #search-input {
+#breedContainer, #search-input {
     margin-right: 10px;
     padding: 10px;
+}
+
+.autocomplete {
+    
 }
 
 #discussions {

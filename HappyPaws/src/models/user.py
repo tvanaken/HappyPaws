@@ -4,8 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-
 from .base import Base
+
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -45,3 +45,4 @@ class User(Base):
 
 
 pets = relationship("Pet", back_populates="user", cascade="all, delete")
+comments = relationship('Comment', back_populates='user')

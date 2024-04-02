@@ -1,6 +1,6 @@
 import random
 
-from app.models import Base, Breed, Food, Pet, Reminder, Supplement, User
+from app.models import Base, Breed, Food, Pet, Reminder, Supplement, User, Comment, Post
 from db_manager import DBManager
 from faker import Faker
 
