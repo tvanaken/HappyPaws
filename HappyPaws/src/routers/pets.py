@@ -26,6 +26,7 @@ class PetCreate(BaseModel):
     birthday: datetime | None = None
     age: int | None = None
     bio: str | None = None
+    image_url: str | None = None
 
 
 def _validate_pet(pet: dict):
@@ -102,6 +103,7 @@ async def create_pet(
         birthday=pet_data.birthday,
         age=pet_data.age,
         bio=pet_data.bio,
+        image_url=pet_data.image_url,
     )
     session.add(pet)
     await session.commit()
@@ -149,18 +151,19 @@ async def update_pet(pet_id: int, pet_updates: dict):
     return JSONResponse(content=pet.to_dict(), status_code=200)
 
 
-@router.get("/api/s3PresignedUrl?fileName={file_name}")
+@router.get("/api/s3PresignedUrl")
 async def get_presigned_url(file_name: str):
+    print("Received file name: " + file_name)
     s3_client = boto3.client('s3')
     bucket_name = "happypawsproject"
 
     try:
         presigned_url = s3_client.generate_presigned_url(
-            'get_object',
-            Params={'Bucket': bucket_name,
-                    'Key': file_name},
+            'put_object',
+            Params={'Bucket': bucket_name, 'Key': file_name, 'ContentType': 'image/jpeg'},
             ExpiresIn=3600)
     except ClientError as e:
+        print(f"Error generating presigned URL: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
     return {"url": presigned_url}

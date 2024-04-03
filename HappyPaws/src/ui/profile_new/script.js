@@ -314,11 +314,12 @@ async function initializeCalendar() {
     await calendar.render();
 }
 
-async function getPresignedUrl(fileName) {
+async function getPresignedUrl(file_name) {
     const token = localStorage.getItem("token");
     const response = await fetch(
-        "http://localhost:8000/api/s3PresignedUrl?fileName=${fileName}",
+        `http://localhost:8000/api/s3PresignedUrl?file_name=${file_name}`,
         {
+            method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -339,6 +340,8 @@ async function uploadImageToS3(file, presignedUrl) {
         body: file,
     });
     if (!response.ok) {
+        const errorBody = await response.text();
+        console.error("Failed to upload image to S3:", errorBody);
         throw new Error("Failed to upload image to S3");
     }
 }
@@ -372,20 +375,24 @@ document
         const birthday = document.getElementById("Birthday").value;
         let age = null;
         const bio = document.getElementById("Bio").value;
+        let file = null;
         const fileInput = document.getElementById("ProfilePicture");
 
         if (fileInput.files.length > 0) {
-            const file = fileInput.files[0];
+            file = fileInput.files[0];
         }
         if (birthday) {
             age = today.getFullYear() - new Date(birthday).getFullYear();
         }
 
         try {
-            const fileName = `${name}-${Date.now()}.jpeg`;
-            const { url: presignedUrl } = await getPresignedUrl(fileName);
+            const file_name = `${name}-${Date.now()}.jpeg`;
+            const { url: presignedUrl } = await getPresignedUrl(file_name);
+            const image_Url = `https://happypawsproject.s3.amazonaws.com/${file_name}`;
 
+            console.log("Uploading image to S3...");
             await uploadImageToS3(file, presignedUrl);
+            console.log("Image uploaded to S3.");
 
             const response = await fetch("http://localhost:8000/api/pets", {
                 method: "POST",
@@ -401,7 +408,7 @@ document
                     birthday,
                     age,
                     bio,
-                    imageUrl: presignedUrl.split("?")[0],
+                    image_Url,
                 }),
             });
             const result = await response.json();
@@ -463,19 +470,6 @@ document
         if (!token) {
             alert("You must be logged in to perform this action.");
             return;
-        }
-
-        const fileInput = document.getElementById("ProfilePicture");
-        if (fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-            try {
-                const { url, fileName } = await getPresignedUrl(file.name);
-                await uploadImageToS3(file, url);
-            } catch (error) {
-                console.error(error);
-                alert("Failed to upload profile picture.");
-                return;
-            }
         }
 
         const title = document.getElementById("title").value;
