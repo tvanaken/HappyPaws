@@ -197,6 +197,7 @@ async function displayUserPet() {
             document.getElementById("petBreed2").textContent = "";
         }
 
+        document.getElementById("prof_pic").querySelector("img").src = petDetails.image_url;
         document.getElementById("petName").textContent = petDetails.name;
         document.getElementById("petBreed1").textContent = breed1.name;
         document.getElementById("petBreed2").textContent = breed2.name;
@@ -307,7 +308,7 @@ async function initializeCalendar() {
             right: "dayGridMonth,timeGridWeek,timeGridDay",
         },
         initialView: "dayGridMonth",
-        height: 650,
+        height: "auto",
         schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
         events: eventData,
     });
@@ -350,11 +351,6 @@ document.getElementById("calendarSection").addEventListener("click", () => {
     initializeCalendar();
 });
 
-document.getElementById("addPetLink").addEventListener("click", (event) => {
-    event.preventDefault();
-    document.getElementById("addPetModal").style.display = "block";
-});
-
 document.querySelector("#addPetModal .close").addEventListener("click", () => {
     document.getElementById("addPetModal").style.display = "none";
 });
@@ -365,6 +361,12 @@ document.getElementById("Birthday").setAttribute("min", minDateStr);
 document
     .getElementById("addPetForm")
     .addEventListener("submit", async (event) => {
+
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.innerHTML = 'Loading... <div class="loader"></div>';
+        submitBtn.disabled = true;
+        document.body.style.cursor = 'progress';
+
         event.preventDefault();
 
         const token = localStorage.getItem("token");
@@ -373,10 +375,10 @@ document
         const breed2 = document.getElementById("Breed2").value;
         const weight = document.getElementById("Weight").value;
         const birthday = document.getElementById("Birthday").value;
-        let age = null;
         const bio = document.getElementById("Bio").value;
-        let file = null;
         const fileInput = document.getElementById("ProfilePicture");
+        let file = null;
+        let age = null;
 
         if (fileInput.files.length > 0) {
             file = fileInput.files[0];
@@ -388,7 +390,7 @@ document
         try {
             const file_name = `${name}-${Date.now()}.jpeg`;
             const { url: presignedUrl } = await getPresignedUrl(file_name);
-            const image_Url = `https://happypawsproject.s3.amazonaws.com/${file_name}`;
+            const image_url = `https://happypawsproject.s3.amazonaws.com/${file_name}`;
 
             console.log("Uploading image to S3...");
             await uploadImageToS3(file, presignedUrl);
@@ -408,7 +410,7 @@ document
                     birthday,
                     age,
                     bio,
-                    image_Url,
+                    image_url,
                 }),
             });
             const result = await response.json();
@@ -420,6 +422,10 @@ document
         } catch (error) {
             console.error(error);
             alert("Failed to add pet or image.");
+        } finally {
+            submitBtn.innerHTML = 'Submit';
+            submitBtn.disabled = false;
+            document.body.style.cursor = 'default';
         }
     });
 
@@ -520,6 +526,17 @@ document.getElementById("myPetsLink").addEventListener("click", async () => {
                 petElement.dataset.petId = pet.id;
                 dropdown.appendChild(petElement);
             });
+
+            const addButton = document.createElement("div");
+            addButton.innerHTML = "+";
+            addButton.classList.add("add-pet-button");
+            dropdown.appendChild(addButton);
+
+            addButton.addEventListener("click", (event) => {
+                event.stopPropagation();
+                document.getElementById("addPetModal").style.display = "block";
+            });
+
         } else {
             console.error("Failed to fetch pets");
         }
@@ -686,6 +703,7 @@ document
                     document.getElementById("petBreed2").textContent = "";
                 }
 
+                document.getElementById("prof_pic").querySelector("img").src = petDetails.image_url;
                 document.getElementById("petName").textContent =
                     petDetails.name;
                 document.getElementById("petBreed1").textContent = breed1.name;
