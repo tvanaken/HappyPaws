@@ -1,7 +1,7 @@
 import time
-
 import requests
-
+import boto3
+from botocore.exceptions import ClientError
 from selenium import webdriver
 from selenium.common.exceptions import (
     NoSuchElementException,
@@ -12,7 +12,44 @@ from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-PATH = r"C:\Users\khemo\Desktop\geckodriver.exe"
+
+def get_presigned_url(file_name):
+    endpoint = "http://localhost:8000/api/s3PresignedUrl"
+    try:
+        response = requests.get(f"{endpoint}?file_name={file_name}")
+        if response.status_code == 200:
+            presigned_url = response.json()['url']
+            return presigned_url
+        else:
+            print(f"Failed to get presigned URL, status code: {response.status_code}")
+            return None
+    except Exception as e:
+        print(f"Error getting presigned URL: {e}")
+        return None
+
+def upload_to_s3(image_url, file_name):
+    presigned_url = get_presigned_url(file_name)
+    if presigned_url:
+        response = requests.get(image_url, stream=True)
+        if response.status_code == 200:
+            headers = {'Content-Type': 'image/jpeg'}
+            upload_response = requests.put(presigned_url, data=response.content, headers=headers)
+            if upload_response.status_code == 200:
+                print(f"Successfully uploaded {file_name} to S3.")
+            else:
+                print(f"Failed to upload image to S3, status code: {upload_response.status_code}")
+        else:
+            print(f"Failed to download image from {image_url}, status code: {response.status_code}")
+    else:
+        print("Failed to obtain a presigned URL.")
+
+
+# Current path on desktop
+PATH = r"G:\Local_VsCode\CapstoneAssetts\geckodriver.exe"
+
+s3_client = boto3.client("s3")
+bucket_name = "happypawsproject"
+
 service = Service(executable_path=PATH)
 driver = webdriver.Firefox(service=service)
 driver.get("https://www.chewy.com/b/premium-food-132598")
@@ -20,6 +57,7 @@ driver.implicitly_wait(1)
 
 columns = [
     "name",
+    "image_url",
     "ingredients",
     "crude_protein",
     "crude_fat",
@@ -111,6 +149,25 @@ while True:
                     )
                 )
             )
+
+            try :
+                images = driver.find_elements(By.CLASS_NAME, "styles_mainCarouselImage__wj_bU")
+                if len(images) > 1:
+                    image_url = images[0].get_attribute('src')
+                    presigned_url = s3_client.generate_presigned_url(
+                        'put_object',
+                        Params={'Bucket': bucket_name, 'Key': name, 'ContentType': 'image/jpeg'},
+                    )
+                    upload_to_s3(image_url, presigned_url)
+                
+                
+                # Upload the image to S3
+                upload_to_s3(image_url, presigned_url)
+                
+                # Add the S3 URL to your product_info dictionary
+                product_info['image_s3_url'] = presigned_url  # Assuming you want to store the S3 UR
+            except Exception as e:
+                print(f"Error fetching or uploading image: {e}")
 
             for row in table_rows:
                 try:

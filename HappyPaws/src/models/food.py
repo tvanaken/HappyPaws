@@ -7,6 +7,7 @@ class Food(Base):
     __tablename__ = "foods"
 
     id = Column(Integer, primary_key=True)
+    image_url = Column(String)
     type = Column(String)
     name = Column(String)
     ingredients = Column(String)
@@ -42,6 +43,7 @@ class Food(Base):
     def to_dict(self):
         return {
             "id": self.id,
+            "image_url": self.image_url,
             "type": self.type,
             "name": self.name,
             "ingredients": self.ingredients,
