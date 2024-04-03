@@ -80,13 +80,18 @@ header {
     margin-bottom: 20px;
 }
 
-#breedContainer, #search-input {
-    margin-right: 10px;
+#filter-section input {
     padding: 10px;
+    margin-right: 10px;
 }
 
-.autocomplete {
-    
+#filter-section button {
+    padding: 10px;
+    margin-right: 10px;
+    background-color: #7a9b76;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
 #discussions {
