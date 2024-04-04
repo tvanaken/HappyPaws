@@ -1,6 +1,7 @@
 import time
 import requests
 import boto3
+import re
 from botocore.exceptions import ClientError
 from selenium import webdriver
 from selenium.common.exceptions import (
@@ -12,52 +13,22 @@ from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-
-def get_presigned_url(file_name):
-    endpoint = "http://localhost:8000/api/s3PresignedUrl"
-    try:
-        response = requests.get(f"{endpoint}?file_name={file_name}")
-        if response.status_code == 200:
-            presigned_url = response.json()['url']
-            return presigned_url
-        else:
-            print(f"Failed to get presigned URL, status code: {response.status_code}")
-            return None
-    except Exception as e:
-        print(f"Error getting presigned URL: {e}")
-        return None
-
-def upload_to_s3(image_url, file_name):
-    presigned_url = get_presigned_url(file_name)
-    if presigned_url:
-        response = requests.get(image_url, stream=True)
-        if response.status_code == 200:
-            headers = {'Content-Type': 'image/jpeg'}
-            upload_response = requests.put(presigned_url, data=response.content, headers=headers)
-            if upload_response.status_code == 200:
-                print(f"Successfully uploaded {file_name} to S3.")
-            else:
-                print(f"Failed to upload image to S3, status code: {upload_response.status_code}")
-        else:
-            print(f"Failed to download image from {image_url}, status code: {response.status_code}")
-    else:
-        print("Failed to obtain a presigned URL.")
-
-
-# Current path on desktop
-PATH = r"G:\Local_VsCode\CapstoneAssetts\geckodriver.exe"
-
-s3_client = boto3.client("s3")
-bucket_name = "happypawsproject"
+# Desktop
+#PATH = r"G:\Local_VsCode\CapstoneAssetts\geckodriver.exe"
+# Laptop
+PATH = r"C:\Users\khemo\Desktop\geckodriver.exe"
 
 service = Service(executable_path=PATH)
 driver = webdriver.Firefox(service=service)
 driver.get("https://www.chewy.com/b/premium-food-132598")
-driver.implicitly_wait(1)
+driver.implicitly_wait(5)
 
 columns = [
     "name",
     "image_url",
+    "site_url",
+    "rating",
+    "review_count",
     "ingredients",
     "crude_protein",
     "crude_fat",
@@ -102,6 +73,7 @@ columns = [
 ]
 
 while True:
+    
     WebDriverWait(driver, 20).until(
         EC.presence_of_all_elements_located((By.CLASS_NAME, "kib-product-title"))
     )
@@ -112,6 +84,21 @@ while True:
     for link in links:
         driver.get(link)
         try:
+
+            rating_element = driver.find_element(By.CLASS_NAME, "kib-product-rating__label")
+            review_count_element = driver.find_element(By.CLASS_NAME, "styles_reviews___c7yt")
+            rating_text = rating_element.text
+            review_count_text = review_count_element.text
+            match = re.search(r"Rated (\d+(\.\d+)?) out of 5 stars", rating_text)
+            rMatch = re.search(r"(\d+)", review_count_text)
+            if match and rMatch:
+                rating_number = match.group(1)
+                print(f"Rating: {rating_number}")
+                review_count = int(rMatch.group(1))
+                print(f"Review count: {review_count}")
+            else:
+                print("Rating not found.")
+
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
                     (By.CLASS_NAME, "styles_productName__vSdxx")
@@ -139,7 +126,7 @@ while True:
             except Exception as e:
                 print("No ingredients found")
 
-            product_info = {"type": "dry", "name": name, "ingredients": ingred}
+            product_info = {"type": "dry", "name": name, "ingredients": ingred, "rating": rating_number, "review_count": review_count, "site_url": link}
 
             table_rows = WebDriverWait(driver, 10).until(
                 EC.presence_of_all_elements_located(
@@ -154,18 +141,8 @@ while True:
                 images = driver.find_elements(By.CLASS_NAME, "styles_mainCarouselImage__wj_bU")
                 if len(images) > 1:
                     image_url = images[0].get_attribute('src')
-                    presigned_url = s3_client.generate_presigned_url(
-                        'put_object',
-                        Params={'Bucket': bucket_name, 'Key': name, 'ContentType': 'image/jpeg'},
-                    )
-                    upload_to_s3(image_url, presigned_url)
-                
-                
-                # Upload the image to S3
-                upload_to_s3(image_url, presigned_url)
-                
-                # Add the S3 URL to your product_info dictionary
-                product_info['image_s3_url'] = presigned_url  # Assuming you want to store the S3 UR
+                    print(image_url)
+                    product_info['image_url'] = image_url
             except Exception as e:
                 print(f"Error fetching or uploading image: {e}")
 

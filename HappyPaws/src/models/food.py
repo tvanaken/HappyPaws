@@ -8,6 +8,9 @@ class Food(Base):
 
     id = Column(Integer, primary_key=True)
     image_url = Column(String)
+    site_url = Column(String)
+    rating = Column(Numeric)
+    review_count = Column(Integer)
     type = Column(String)
     name = Column(String)
     ingredients = Column(String)
@@ -44,6 +47,9 @@ class Food(Base):
         return {
             "id": self.id,
             "image_url": self.image_url,
+            "site_url": self.site_url,
+            "rating": self.rating,
+            "review_count": self.review_count,
             "type": self.type,
             "name": self.name,
             "ingredients": self.ingredients,

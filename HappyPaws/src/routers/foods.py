@@ -23,6 +23,10 @@ async def create_food(food: dict):
     food = Food(
         type=food.get("type"),
         name=food.get("name"),
+        image_url=food.get("image_url"),
+        site_url=food.get("site_url"),
+        rating=food.get("rating"),
+        review_count=food.get("review_count"),
         ingredients=food.get("ingredients"),
         crude_protein=food.get("crude_protein"),
         crude_fat=food.get("crude_fat"),
