@@ -219,14 +219,59 @@ async function displayUserPet() {
 
         await updateDietRecommendations(
             petDetails.breed_id1,
-            petDetails.weight,
             petDetails.age,
             petDetails.activity_level,
         );
     }
 }
 
-async function updateDietRecommendations(breedId, weight, age, activityLevel) {}
+async function updateDietRecommendations(breedId, age, activityLevel) {
+    const foodGrid = document.getElementById("foodGrid");
+    try {
+        const response = await fetch(
+            `http://localhost:8000/api/recommended_foods?breedId=${breedId}&age=${age}&activityLevel=${activityLevel}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            },
+        );
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const foods = await response.json();
+        foodGrid.innerHTML = ""; // Clear existing food items
+
+        foods.forEach((food) => {
+            const foodItemDiv = document.createElement("div");
+            foodItemDiv.classList.add("foodItem");
+
+            const image = document.createElement("img");
+            image.src = food.image_url;
+            image.alt = food.name;
+            image.className = "foodImage";
+            image.dataset.foodId = food.id;
+
+            const nameParagraph = document.createElement("p");
+            nameParagraph.className = "foodName";
+            nameParagraph.textContent = food.name;
+
+            // Append the image and paragraph to the div
+            foodItemDiv.appendChild(image);
+            foodItemDiv.appendChild(nameParagraph);
+
+            // Add event listener for click to show more details
+            image.addEventListener("click", () => displayFoodDetails(food));
+
+            // Append the foodItem div to the foodGrid div
+            foodGrid.appendChild(foodItemDiv);
+        });
+    } catch (error) {
+        console.error("Failed to fetch recommended foods:", error);
+    }
+}
 
 async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
     const breedInput = document.getElementById(breedInputId);
@@ -501,7 +546,7 @@ document
         const startDateTime = `${startDate}T${startTime}`;
         const endDateTime = endDate && endTime ? `${endDate}T${endTime}` : null;
 
-        const payload = { title, start: startDateTime, end: endDateTime};
+        const payload = { title, start: startDateTime, end: endDateTime };
 
         const response = await fetch("http://localhost:8000/api/reminders", {
             method: "POST",
