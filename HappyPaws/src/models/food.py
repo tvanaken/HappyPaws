@@ -16,34 +16,34 @@ class Food(Base):
     size_constraint = Column(String)
     name = Column(String)
     ingredients = Column(String)
-    crude_protein = Column(String)
-    crude_fat = Column(String)
-    crude_fiber = Column(String)
-    moisture = Column(String)
-    dietary_starch = Column(String)
-    sugars = Column(String)
-    epa = Column(String)
-    dha = Column(String)
-    calcium = Column(String)
-    ash = Column(String)
-    l_carnitine = Column(String)
-    bacillus_coagulants = Column(String)
-    taurine = Column(String)
-    beta_carontene = Column(String)
-    phosphorous = Column(String)
-    niacin = Column(String)
-    chondroitin_sulfate = Column(String)
-    pyridoxine_vitamin_b6 = Column(String)
-    vitamin_a = Column(String)
-    vitamin_e = Column(String)
-    ascorbic_acid = Column(String)
-    omega_6 = Column(String)
-    omega_3 = Column(String)
-    glucosamine = Column(String)
-    zinc = Column(String)
-    selenium = Column(String)
-    microorganisms = Column(String)
-    total_microorganisms = Column(String)
+    nutrient_crude_protein = Column(String)
+    nutrient_crude_fat = Column(String)
+    nutrient_crude_fiber = Column(String)
+    nutrient_moisture = Column(String)
+    nutrient_dietary_starch = Column(String)
+    nutrient_sugars = Column(String)
+    nutrient_epa = Column(String)
+    nutrient_dha = Column(String)
+    nutrient_calcium = Column(String)
+    nutrient_ash = Column(String)
+    nutrient_l_carnitine = Column(String)
+    nutrient_bacillus_coagulants = Column(String)
+    nutrient_taurine = Column(String)
+    nutrient_beta_carontene = Column(String)
+    nutrient_phosphorous = Column(String)
+    nutrient_niacin = Column(String)
+    nutrient_chondroitin_sulfate = Column(String)
+    nutrient_pyridoxine_vitamin_b6 = Column(String)
+    nutrient_vitamin_a = Column(String)
+    nutrient_vitamin_e = Column(String)
+    nutrient_ascorbic_acid = Column(String)
+    nutrient_omega_6 = Column(String)
+    nutrient_omega_3 = Column(String)
+    nutrient_glucosamine = Column(String)
+    nutrient_zinc = Column(String)
+    nutrient_selenium = Column(String)
+    nutrient_microorganisms = Column(String)
+    nutrient_total_microorganisms = Column(String)
 
     def to_dict(self):
         return {
@@ -57,27 +57,32 @@ class Food(Base):
             "size_constraint": self.size_constraint,
             "name": self.name,
             "ingredients": self.ingredients,
-            "crude_protein": str(self.crude_protein),
-            "crude_fat": str(self.crude_fat),
-            "crude_fiber": str(self.crude_fiber),
-            "moisture": self.moisture,
-            "dietary_starch": str(self.dietary_starch),
-            "epa": str(self.epa),
-            "dha": str(self.dha),
-            "calcium": str(self.calcium),
-            "ash": str(self.ash),
-            "phosphorous": str(self.phosphorous),
-            "niacin": self.niacin,
-            "chondroitin_sulfate": self.chondroitin_sulfate,
-            "pyridoxine_vitamin_b6": self.pyridoxine_vitamin_b6,
-            "vitamin_a": self.vitamin_a,
-            "vitamin_e": self.vitamin_e,
-            "ascorbic_acid": self.ascorbic_acid,
-            "omega_6": str(self.omega_6),
-            "omega_3": str(self.omega_3),
-            "glucosamine": self.glucosamine,
-            "zinc": self.zinc,
-            "selenium": self.selenium,
-            "microorganisms": self.microorganisms,
-            "total_microorganisms": self.total_microorganisms,
+            "nutrient_crude_protein": self.nutrient_crude_protein,
+            "nutrient_crude_fat": self.nutrient_crude_fat,
+            "nutrient_crude_fiber": self.nutrient_crude_fiber,
+            "nutrient_moisture": self.nutrient_moisture,
+            "nutrient_dietary_starch": self.nutrient_dietary_starch,
+            "nutrient_sugars": self.nutrient_sugars,
+            "nutrient_epa": self.nutrient_epa,
+            "nutrient_dha": self.nutrient_dha,
+            "nutrient_calcium": self.nutrient_calcium,
+            "nutrient_ash": self.nutrient_ash,
+            "nutrient_l_carnitine": self.nutrient_l_carnitine,
+            "nutrient_bacillus_coagulants": self.nutrient_bacillus_coagulants,
+            "nutrient_taurine": self.nutrient_taurine,
+            "nutrient_beta_carontene": self.nutrient_beta_carontene,
+            "nutrient_phosphorous": self.nutrient_phosphorous,
+            "nutrient_niacin": self.nutrient_niacin,
+            "nutrient_chondroitin_sulfate": self.nutrient_chondroitin_sulfate,
+            "nutrient_pyridoxine_vitamin_b6": self.nutrient_pyridoxine_vitamin_b6,
+            "nutrient_vitamin_a": self.nutrient_vitamin_a,
+            "nutrient_vitamin_e": self.nutrient_vitamin_e,
+            "nutrient_ascorbic_acid": self.nutrient_ascorbic_acid,
+            "nutrient_omega_6": self.nutrient_omega_6,
+            "nutrient_omega_3": self.nutrient_omega_3,
+            "nutrient_glucosamine": self.nutrient_glucosamine,
+            "nutrient_zinc": self.nutrient_zinc,
+            "nutrient_selenium": self.nutrient_selenium,
+            "nutrient_microorganisms": self.nutrient_microorganisms,
+            "nutrient_total_microorganisms": self.nutrient_total_microorganisms,
         }

@@ -87,12 +87,11 @@ body {
     border-bottom: none;
     border-top: none;
     z-index: 10;
-    /*position the autocomplete items to be the same width as the container:*/
     top: 100%;
     left: 0;
     right: 0;
-    max-height: 150px; /* Adjust based on your needs */
-    overflow-y: auto; /* Enable scroll */
+    max-height: 150px;
+    overflow-y: auto;
 }
 
 .autocomplete-items div {
@@ -193,10 +192,12 @@ a {
     margin-top: 25px;
 }
 
-#foodGrid {
+.foodGrid {
     display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: no;
     margin-bottom: 20px;
 }
 
@@ -204,31 +205,39 @@ a {
     cursor: pointer;
     transition: transform 0.3s ease;
     width: 125px;
-    height: auto;
+    height: 150px;
+    object-fit: contain;
+}
+
+.foodItem {
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.foodItem .foodName {
+    position: absolute;
+    bottom: -25px; /* Adjust this value to position the food name below the image */
+    width: 200%; /* Make the label as wide as the .foodItem */
+    text-align: center; /* Center the text */
+    left: -55%; /* Adjust this value to center the text */
+    opacity: 0; /* Make the name fully transparent initially */
+    transition: opacity 0.5s; /* Smooth transition for opacity */
+    white-space: nowrap; /* Prevent the text from wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.foodItem:hover .foodName {
+    opacity: 1; /* Make the name fully visible */
 }
 
 .foodImage:hover {
     transform: scale(1.1);
 }
 
-.food-details {
-    display: none;
-    /* Add more styling for the food details display */
-    transition: transform 0.5s ease-out;
-    position: relative;
-    width: 100%; /* Adjust as necessary */
-}
-
-/* Existing CSS rules for table */
 table {
     width: 70%;
     border-collapse: collapse;
-    /* other styles */
-}
-
-/* Additional CSS for table inside the .food-details section if needed */
-.food-details table {
-    /* Adjust the width or other properties if necessary */
 }
 
 .tooltip {
@@ -378,12 +387,12 @@ input[type="file"] {
     margin: 8px 0;
     border: 1px solid #ccc;
     border-radius: 4px;
-    cursor: pointer; /* Indicates that the element is interactive */
+    cursor: pointer;
     transition: border-color 0.3s;
 }
 
 input[type="file"]:hover {
-    border-color: #888; /* Change border color on hover for visual feedback */
+    border-color: #888;
 }
 
 .modal-content span {
