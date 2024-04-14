@@ -305,7 +305,7 @@ async function initializeCalendar() {
         headerToolbar: {
             left: "prev,next today addReminder",
             center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay",
+            right: "dayGridMonth,timeGridWeek",
         },
         initialView: "dayGridMonth",
         height: "auto",
@@ -479,13 +479,15 @@ document
         }
 
         const title = document.getElementById("title").value;
-        const start = document.getElementById("start").value;
-        const end = document.getElementById("end").value;
+        const startDate = document.getElementById("startDate").value;
+        const startTime = document.getElementById("startTime").value;
+        const endDate = document.getElementById("endDate").value;
+        const endTime = document.getElementById("endTime").value;
 
-        const payload = { title, start };
-        if (end) {
-            payload.end = end;
-        }
+        const startDateTime = `${startDate}T${startTime}`;
+        const endDateTime = endDate && endTime ? `${endDate}T${endTime}` : null;
+
+        const payload = { title, start: startDateTime, end: endDateTime};
 
         const response = await fetch("http://localhost:8000/api/reminders", {
             method: "POST",
@@ -503,7 +505,6 @@ document
         }
 
         document.getElementById("reminderFormModal").style.display = "none";
-
         await initializeCalendar();
     });
 

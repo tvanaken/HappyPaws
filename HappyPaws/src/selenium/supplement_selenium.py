@@ -1,5 +1,5 @@
 import time
-
+import re
 import requests
 
 from selenium import webdriver
@@ -18,7 +18,6 @@ driver = webdriver.Firefox(service=service)
 
 # Currently crawling the chewy website for hip/joint supplements
 driver.get("https://www.chewy.com/b/hip-joint-1568")
-driver.implicitly_wait(1)
 
 columns = [
     "name",
@@ -47,12 +46,29 @@ while True:
     for link in links:
         driver.get(link)
         try:
+
+            rating_element = driver.find_element(By.CLASS_NAME, "kib-product-rating__label")
+            review_count_element = driver.find_element(By.CLASS_NAME, "styles_reviews___c7yt")
+            rating_text = rating_element.text
+            review_count_text = review_count_element.text
+            match = re.search(r"Rated (\d+(\.\d+)?) out of 5 stars", rating_text)
+            rMatch = re.search(r"(\d+)", review_count_text)
+            if match and rMatch:
+                rating_number = match.group(1)
+                print(f"Rating: {rating_number}")
+                review_count = int(rMatch.group(1))
+                print(f"Review count: {review_count}")
+            else:
+                print("Rating not found.")
+
             dropDown = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, "//button[@aria-label='See More']")
+                    (By.XPATH, "//button[@data-testid='see-more']")
                 )
+                
             )
             dropDown.click()
+            print("Clicked on see more")
             WebDriverWait(driver, 10).until(
                 EC.visibility_of_element_located(
                     (
@@ -61,6 +77,7 @@ while True:
                     )
                 )
             )
+            print("Table visible")
             name_element = driver.find_element(
                 By.CLASS_NAME, "styles_productName__vSdxx"
             )
@@ -79,8 +96,17 @@ while True:
             product_info = {
                 "name": name,
                 "health_condition": "Osteoarthritis, Hip Dysplasia, Joint Inflammation, Joint Pain, Joint Stiffness, Joint Support, Mobility",
-                "description": description,
+                "description": description, "rating": rating_number, "review_count": review_count, "site_url": link,
             }
+
+            try :
+                images = driver.find_elements(By.CLASS_NAME, "styles_mainCarouselImage__wj_bU")
+                if len(images) > 1:
+                    image_url = images[0].get_attribute('src')
+                    print("Image: " + image_url)
+                    product_info['image_url'] = image_url
+            except Exception as e:
+                print(f"Error fetching or uploading image: {e}")
 
             table_rows = WebDriverWait(driver, 10).until(
                 EC.presence_of_all_elements_located(

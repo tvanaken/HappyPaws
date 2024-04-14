@@ -24,6 +24,10 @@ async def create_supplement(supplement: dict):
 
     supplement = Supplement(
         name=supplement.get("name"),
+        image_url=supplement.get("image_url"),
+        site_url=supplement.get("site_url"),
+        rating=supplement.get("rating"),
+        review_count=supplement.get("review_count"),
         description=supplement.get("description"),
         lifestage=supplement.get("lifestage"),
         ailment=supplement.get("health_condition"),
