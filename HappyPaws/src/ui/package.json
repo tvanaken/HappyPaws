@@ -1,0 +1,41 @@
+{
+    "name": "ui",
+    "version": "1.0.0",
+    "description": "",
+    "proxy": "http://localhost:8000",
+    "scripts": {
+        "build": "npm ci && parcel build index.html",
+        "check": "prettier --check . && eslint --ignore-pattern dist . && echo 🆗",
+        "format": "prettier --write .",
+        "lint": "eslint --fix --ignore-pattern dist .",
+        "test": "mocha './js/test'",
+        "watch": "npm ci && parcel watch index.html"
+    },
+    "prettier": {
+        "tabWidth": 4
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "dependencies": {
+        "@fullcalendar/bootstrap5": "^6.1.10",
+        "@fullcalendar/core": "^6.1.10",
+        "bootstrap": "^5.3.2",
+        "bootstrap-icons": "^1.11.2"
+    },
+    "devDependencies": {
+        "eslint": "^8.57.0",
+        "eslint-config-airbnb": "^19.0.4",
+        "eslint-plugin-import": "^2.29.0",
+        "eslint-plugin-jsx-a11y": "^6.7.1",
+        "eslint-plugin-react": "^7.33.2",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "eslint-plugin-simple-import-sort": "^10.0.0",
+        "lodash": "^4.17.21",
+        "mocha": "^10.2.0",
+        "parcel": "^2.9.3",
+        "prettier": "3.0.3",
+        "process": "^0.11.10"
+    }
+}

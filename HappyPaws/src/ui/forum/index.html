@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h2 class="logo">
+            <a href="#">
+                <img src="../Cap_images/Logo.png" width="75" alt="Logo" />
+            </a>
+        </h2>
+        <nav class="navigation">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Services</a>
+            <a
+                href="http://localhost:8000/login_page/index.html#"
+                id="authButton"
+            >
+                <button class="Login-popup">Login</button>
+            </a>
+        </nav>
+    </header>
+    <div id="filter-section">
+        <div id="breedContainer" style="display: block">
+            <div class="autocomplete">
+                <input
+                    type="text"
+                    id="Breed"
+                    name="Breed"
+                    placeholder="Search by breed..."
+                />
+                <div
+                    id="breedList"
+                    class="autocomplete-items"
+                    style="display: none"
+                ></div>
+            </div>
+        </div>
+        <input type="text" id="search-input" placeholder="Search for discussions...">
+        <button onclick="searchDiscussions()">Search</button>
+        <button onclick="createDiscussion()">Create Discussion</button>
+    </div>
+
+    <div id="discussions">
+        <!-- Discussions will be populated here -->
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
