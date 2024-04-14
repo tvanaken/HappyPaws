@@ -27,6 +27,7 @@ class PetCreate(BaseModel):
     age: int | None = None
     bio: str | None = None
     image_url: str | None = None
+    activity_level: str
 
 
 def _validate_pet(pet: dict):
@@ -104,6 +105,7 @@ async def create_pet(
         age=pet_data.age,
         bio=pet_data.bio,
         image_url=pet_data.image_url,
+        activity_level=pet_data.activity_level,
     )
     session.add(pet)
     await session.commit()

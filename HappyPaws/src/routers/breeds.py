@@ -76,6 +76,8 @@ async def create_breed(breed: dict):
         health_description=breed.get("health_description"),
         groom_description=breed.get("groom_description"),
         nutrition_description=breed.get("nutrition_description"),
+        max_weight=breed.get("max_weight"),
+        size=breed.get("size"),
     )
     session.add(breed)
     await session.commit()

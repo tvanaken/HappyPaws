@@ -12,6 +12,8 @@ class Food(Base):
     rating = Column(Numeric)
     review_count = Column(Integer)
     type = Column(String)
+    life_stage = Column(String)
+    size_constraint = Column(String)
     name = Column(String)
     ingredients = Column(String)
     crude_protein = Column(String)
@@ -51,6 +53,8 @@ class Food(Base):
             "rating": self.rating,
             "review_count": self.review_count,
             "type": self.type,
+            "life_stage": self.life_stage,
+            "size_constraint": self.size_constraint,
             "name": self.name,
             "ingredients": self.ingredients,
             "crude_protein": str(self.crude_protein),

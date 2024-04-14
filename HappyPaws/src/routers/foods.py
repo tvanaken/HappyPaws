@@ -22,6 +22,8 @@ async def create_food(food: dict):
 
     food = Food(
         type=food.get("type"),
+        life_stage=food.get("life_stage"),
+        size_constraint=food.get("size_constraint"),
         name=food.get("name"),
         image_url=food.get("image_url"),
         site_url=food.get("site_url"),
@@ -68,3 +70,7 @@ async def create_food(food: dict):
     await session.commit()
 
     return JSONResponse(content=food.to_dict(), status_code=201)
+
+@router.get("/api/recommended_foods?breedId=${breedId}&weight=${weight}&age=${age}&activityLevel=${activityLevel}")
+async def get_recommended_foods(breedId: int, weight: int, age: int, activityLevel: str):
+    

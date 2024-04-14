@@ -22,6 +22,7 @@ class Pet(Base):
     age = Column(Integer)
     bio = Column(String)
     image_url = Column(String)
+    activity_level = Column(String)
 
     def age_calc(self):
         today = date.today()
@@ -46,4 +47,5 @@ class Pet(Base):
             "age": self.age_calc() if self.birthday else None,
             "bio": self.bio,
             "image_url": self.image_url,
+            "activity_level": self.activity_level,
         }

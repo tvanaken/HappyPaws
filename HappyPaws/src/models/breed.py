@@ -13,6 +13,8 @@ class Breed(Base):
     health_description = Column(String)
     groom_description = Column(String)
     nutrition_description = Column(String)
+    max_weight = Column(Integer)
+    size = Column(String)
 
     def to_dict(self):
         return {
@@ -23,4 +25,6 @@ class Breed(Base):
             "health_description": self.health_description,
             "groom_description": self.groom_description,
             "nutrition_description": self.nutrition_description,
+            "max_weight": self.max_weight,
+            "size": self.size,
         }

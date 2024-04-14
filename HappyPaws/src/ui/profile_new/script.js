@@ -95,6 +95,9 @@ async function displayUserPet() {
             .getElementById("breedDescription")
             .querySelector("p").textContent = breed1.breed_description;
         document
+            .getElementById("dietDescription")
+            .querySelector("p").textContent = breed1.nutrition_description;
+        document
             .getElementById("healthDescription")
             .querySelector("h2").textContent = "Health (" + breed1.name + ")";
         document
@@ -197,7 +200,8 @@ async function displayUserPet() {
             document.getElementById("petBreed2").textContent = "";
         }
 
-        document.getElementById("prof_pic").querySelector("img").src = petDetails.image_url;
+        document.getElementById("prof_pic").querySelector("img").src =
+            petDetails.image_url;
         document.getElementById("petName").textContent = petDetails.name;
         document.getElementById("petBreed1").textContent = breed1.name;
         document.getElementById("petBreed2").textContent = breed2.name;
@@ -212,8 +216,17 @@ async function displayUserPet() {
                 "li",
             )[1].innerHTML = `<span>${petDetails.age}</span> Years old`;
         document.querySelector(".left_col .bio p").textContent = petDetails.bio;
+
+        await updateDietRecommendations(
+            petDetails.breed_id1,
+            petDetails.weight,
+            petDetails.age,
+            petDetails.activity_level,
+        );
     }
 }
+
+async function updateDietRecommendations(breedId, weight, age, activityLevel) {}
 
 async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
     const breedInput = document.getElementById(breedInputId);
@@ -361,11 +374,10 @@ document.getElementById("Birthday").setAttribute("min", minDateStr);
 document
     .getElementById("addPetForm")
     .addEventListener("submit", async (event) => {
-
         const submitBtn = document.getElementById("submitBtn");
         submitBtn.innerHTML = 'Loading... <div class="loader"></div>';
         submitBtn.disabled = true;
-        document.body.style.cursor = 'progress';
+        document.body.style.cursor = "progress";
 
         event.preventDefault();
 
@@ -374,6 +386,7 @@ document
         const breed1 = document.getElementById("Breed").value;
         const breed2 = document.getElementById("Breed2").value;
         const weight = document.getElementById("Weight").value;
+        const activity_level = document.getElementById("ActivityLevel").value;
         const birthday = document.getElementById("Birthday").value;
         const bio = document.getElementById("Bio").value;
         const fileInput = document.getElementById("ProfilePicture");
@@ -407,6 +420,7 @@ document
                     breed1,
                     breed2,
                     weight,
+                    activity_level,
                     birthday,
                     age,
                     bio,
@@ -423,9 +437,9 @@ document
             console.error(error);
             alert("Failed to add pet or image.");
         } finally {
-            submitBtn.innerHTML = 'Submit';
+            submitBtn.innerHTML = "Submit";
             submitBtn.disabled = false;
-            document.body.style.cursor = 'default';
+            document.body.style.cursor = "default";
         }
     });
 
@@ -536,7 +550,6 @@ document.getElementById("myPetsLink").addEventListener("click", async () => {
                 event.stopPropagation();
                 document.getElementById("addPetModal").style.display = "block";
             });
-
         } else {
             console.error("Failed to fetch pets");
         }
@@ -575,7 +588,10 @@ document
                 document
                     .getElementById("breedDescription")
                     .querySelector("p").textContent = breed1.breed_description;
-
+                document
+                    .getElementById("dietDescription")
+                    .querySelector("p").textContent =
+                    breed1.nutrition_description;
                 document
                     .getElementById("healthDescription")
                     .querySelector("h2").textContent =
@@ -703,7 +719,8 @@ document
                     document.getElementById("petBreed2").textContent = "";
                 }
 
-                document.getElementById("prof_pic").querySelector("img").src = petDetails.image_url;
+                document.getElementById("prof_pic").querySelector("img").src =
+                    petDetails.image_url;
                 document.getElementById("petName").textContent =
                     petDetails.name;
                 document.getElementById("petBreed1").textContent = breed1.name;

@@ -119,7 +119,42 @@
                             style="display: none"
                         ></p>
                     </div>
-                    <div class="section diet">
+                    <div class="section diet" id="dietDescription">
+                        <h2>Diet recommendations</h2>
+                        <p>
+                            Proper nutrition is fundamental to your pet's health
+                            and longevity. The ideal diet varies widely
+                            depending on the species, breed, age, and health
+                            status of the pet. High-quality commercial pet foods
+                            are formulated to meet the nutritional requirements
+                            of your pet, but it's also important to understand
+                            the benefits and risks of alternative diets, such as
+                            raw or home-cooked meals. Consultation with a
+                            veterinarian can provide guidance tailored to your
+                            pet's specific needs, ensuring they receive the
+                            right balance of nutrients to thrive.
+                        </p>
+                        <br />
+                        <!-- Repeat this block for each food item, make sure to set the data-food-id attribute -->
+                        <div class="foodItem">
+                            <img
+                                src="https://image.chewy.com/is/image/catalog/101294_MAIN._AC_SL600_V1704811607_.jpg"
+                                alt="Food Name"
+                                class="foodImage"
+                                data-food-id="1"
+                            />
+                            <p class="foodName">
+                                ORIJEN Original Grain-Free Dry Dog Food
+                            </p>
+                        </div>
+                        <!-- Add more .foodItem divs here for each food -->
+                    </div>
+
+                    <div id="foodInfo" class="food-details">
+                        <!-- The food details will be populated here dynamically -->
+                    </div>
+
+                    <!-- <div class="section diet">
                         <h2>Diet recommendations</h2>
                         <br />
                         <h3>Orijen Original</h3>
@@ -223,7 +258,7 @@
                                 <td>1 Million CFU/lb</td>
                             </tr>
                         </table>
-                    </div>
+                    </div> -->
                     <div class="section health" id="healthDescription">
                         <h2>Health</h2>
                         <p>
@@ -302,7 +337,7 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <form id="addPetForm">
-                    <label for="Name">Name:</label>
+                    <label for="Name">Name: *</label>
                     <div>
                         <input
                             type="text"
@@ -312,7 +347,7 @@
                         /><br /><br />
                     </div>
                     <div id="breedContainer" style="display: block">
-                        <label for="Breed">Breed:</label>
+                        <label for="Breed">Breed: *</label>
                         <div class="autocomplete">
                             <input
                                 type="text"
@@ -345,7 +380,7 @@
                             ></div>
                         </div>
                     </div>
-                    <label for="Weight">Weight (lbs):</label>
+                    <label for="Weight">Weight (lbs): *</label>
                     <div>
                         <input
                             type="number"
@@ -354,6 +389,34 @@
                             min="0"
                             max="400"
                         /><br /><br />
+                    </div>
+                    <label for="ActivityLevel">Activity Level: *</label>
+                    <span class="tooltip"
+                        >?
+                        <span class="tooltiptext">
+                            <strong>Low Activity:</strong> Suitable for pets
+                            that require minimal exercise. (Couch potatoes)<br />
+                            <strong>Moderately Active:</strong> Ideal for pets
+                            that need regular exercise. (Frequent
+                            walker/player)<br />
+                            <strong>High Activity:</strong> Best for pets that
+                            require a lot of exercise and are very energetic.
+                            (Working dogs, hunting dogs)
+                        </span>
+                    </span>
+                    <div>
+                        <select id="ActivityLevel" name="activity_level">
+                            <option value="" disabled selected>
+                                Select an option
+                            </option>
+                            <option value="Low Activity">Low Activity</option>
+                            <option value="Moderately Active">
+                                Moderately Active
+                            </option>
+                            <option value="High Activity">
+                                High Activity
+                            </option></select
+                        ><br /><br />
                     </div>
                     <label for="Birthday">Birthday:</label>
                     <div>
@@ -382,7 +445,9 @@
                             accept="image/*"
                         /><br /><br />
                     </div>
-                    <input type="submit" id="submitBtn" value="Submit" />
+                    <button type="submit" id="submitBtn" value="Submit">
+                        Submit
+                    </button>
                 </form>
             </div>
         </div>

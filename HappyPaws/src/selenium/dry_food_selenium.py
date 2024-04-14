@@ -14,14 +14,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 # Desktop
-#PATH = r"G:\Local_VsCode\CapstoneAssetts\geckodriver.exe"
+PATH = r"G:\Local_VsCode\CapstoneAssetts\geckodriver.exe"
 # Laptop
-PATH = r"C:\Users\khemo\Desktop\geckodriver.exe"
+#PATH = r"C:\Users\khemo\Desktop\geckodriver.exe"
 
 service = Service(executable_path=PATH)
 driver = webdriver.Firefox(service=service)
 driver.get("https://www.chewy.com/b/premium-food-132598")
-driver.implicitly_wait(5)
 
 columns = [
     "name",

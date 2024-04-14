@@ -193,6 +193,72 @@ a {
     margin-top: 25px;
 }
 
+#foodGrid {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.foodImage {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    width: 125px;
+    height: auto;
+}
+
+.foodImage:hover {
+    transform: scale(1.1);
+}
+
+.food-details {
+    display: none;
+    /* Add more styling for the food details display */
+    transition: transform 0.5s ease-out;
+    position: relative;
+    width: 100%; /* Adjust as necessary */
+}
+
+/* Existing CSS rules for table */
+table {
+    width: 70%;
+    border-collapse: collapse;
+    /* other styles */
+}
+
+/* Additional CSS for table inside the .food-details section if needed */
+.food-details table {
+    /* Adjust the width or other properties if necessary */
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 220px;
+    background-color: black;
+    color: white;
+    text-align: left;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    transition:
+        opacity 0.3s,
+        visibility 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
 .col_container .right_col .section {
     display: none;
     position: absolute;
@@ -259,15 +325,65 @@ td {
     height: 100%;
     overflow: auto;
     padding-top: 60px;
+    backdrop-filter: blur(10px);
 }
 
 .modal-content {
-    background-color: white;
+    background-color: #fff;
     margin: 5% auto;
     padding: 20px;
-    border: 1px solid #888;
+    border: none;
     border-radius: 20px;
     width: 20%;
+    min-width: 300px;
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.1),
+        0 6px 20px rgba(0, 0, 0, 0.1);
+    transition:
+        transform 0.3s,
+        opacity 0.3s;
+}
+
+button[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 6px 10px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="file"] {
+    background-color: #ffffff;
+    color: #555;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer; /* Indicates that the element is interactive */
+    transition: border-color 0.3s;
+}
+
+input[type="file"]:hover {
+    border-color: #888; /* Change border color on hover for visual feedback */
 }
 
 .modal-content span {
@@ -315,8 +431,12 @@ td {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @media (min-width: 868px) {
