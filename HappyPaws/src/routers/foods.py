@@ -1,12 +1,17 @@
-from app.models import Food
+from app.models import Food, Breed
+from app.routers.breeds import _get_breed
 from app.utils import get_session
-from sqlalchemy import select
+from sqlalchemy import select, Float
+from sqlalchemy.sql.expression import cast, text
+import logging
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
+PROTEIN_THRESHOLDS = {"Puppy": 28, "adult": 25, "senior": 20}
+FAT_THRESHOLDS = {"Low Activity": 12, "Moderately Active": 15, "High Activity": 20}
 
 @router.get("/api/foods")
 async def get_foods():
@@ -72,7 +77,39 @@ async def create_food(food: dict):
 
     return JSONResponse(content=food.to_dict(), status_code=201)
 
-@router.get("/api/recommended_foods?breedId=${breedId}&weight=${weight}&age=${age}&activityLevel=${activityLevel}")
-async def get_recommended_foods(breedId: int, weight: int, age: int, activityLevel: str):
+@router.get("/api/recommended_foods")
+async def get_recommended_foods(breedId: int, age: int, activityLevel: str):
+    session = await get_session()
+    breed = await _get_breed(breedId)
+    if not breed:
+        raise HTTPException(status_code=404, detail="Breed not found")
+    
+    life_stage = determine_life_stage(breed.size, age)
 
-    return JSONResponse(content={"message": "Not implemented"}, status_code=501)
+    protein_min = PROTEIN_THRESHOLDS[life_stage]
+    fat_min = FAT_THRESHOLDS[activityLevel]
+
+    query = select(Food).where(
+        (Food.size_constraint == breed.size) | (Food.size_constraint == "any"),
+        Food.life_stage == life_stage,
+        cast(text("REPLACE(Food.nutrient_crude_protein, '%', '')"), Float) >= protein_min,
+        cast(text("REPLACE(Food.nutrient_crude_fat, '%', '')"), Float) >= fat_min,
+    ).order_by(Food.rating.desc(), Food.review_count.desc()).limit(5)
+
+    food_results = await session.execute(query)
+    foods = food_results.scalars().all()
+
+    if not foods:
+        raise HTTPException(status_code=404, detail="No suitable foods found")
+            
+    return JSONResponse(content=[food.to_dict() for food in foods], status_code=200)
+
+def determine_life_stage(size, age):
+    if age <= 1:
+        return "puppy"
+    elif size == "large" and age >= 7:
+        return "senior"
+    elif size != "large" and age >= 10:
+        return "senior"
+    else:
+        return "adult"
