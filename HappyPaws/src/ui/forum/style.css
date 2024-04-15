@@ -70,28 +70,168 @@ header {
     transition: 0.3s;
 }
 
-.navigation .Login-popup:hover {
-    background: white;
-    color: black;
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding-top: 60px;
+    backdrop-filter: blur(10px);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: none;
+    border-radius: 20px;
+    width: 50%;
+    min-width: 300px;
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.1),
+        0 6px 20px rgba(0, 0, 0, 0.1);
+    transition:
+        transform 0.3s,
+        opacity 0.3s;
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+}
+
+.modal-content .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="file"] {
+    background-color: #ffffff;
+    color: #555;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+input[type="file"]:hover {
+    border-color: #888;
 }
 
 #filter-section {
     display: flex;
-    margin-bottom: 20px;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 10px;
+    background-color: #f4f4f4; /* Light gray background */
+    border-radius: 8px; /* Rounded corners for the filter section */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin-bottom: 20px; /* Space below the filter section */
 }
 
-#filter-section input {
+#search-input {
+    width: 20%; /* Adjust width as needed */
     padding: 10px;
-    margin-right: 10px;
+    margin: 0 10px; /* Adds horizontal spacing between elements */
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-#filter-section button {
+.autocomplete input[type="text"] {
+    width: 100%;
     padding: 10px;
-    margin-right: 10px;
-    background-color: #7a9b76;
-    color: white;
-    border: none;
+    margin: 0 10px; /* Adds horizontal spacing between elements */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.autocomplete {
+    position: relative;
+    width: 100%;
+}
+
+.autocomplete-items {
+    position: absolute;
+    width: 100%;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 10;
+    top: 100%;
+    left: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.autocomplete-items div {
+    padding: 10px;
     cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.autocomplete-items div:hover {
+    background-color: #e9e9e9;
+}
+
+#discussionBreed {
+    display: flex;
+    width: 50%; /* Adjust width as needed */
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#filterBtn {
+    padding: 10px 20px;
+    color: white;
+    background-color: #007bff; /* Bootstrap blue */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.navigation .Login-popup:hover {
+    background: white;
+    color: black;
 }
 
 #discussions {

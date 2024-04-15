@@ -1,54 +1,93 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header>
-        <h2 class="logo">
-            <a href="#">
-                <img src="../Cap_images/Logo.png" width="75" alt="Logo" />
-            </a>
-        </h2>
-        <nav class="navigation">
-            <a href="#" class="nav-link">Home</a>
-            <a href="#" class="nav-link">Services</a>
-            <a
-                href="http://localhost:8000/login_page/index.html#"
-                id="authButton"
-            >
-                <button class="Login-popup">Login</button>
-            </a>
-        </nav>
-    </header>
-    <div id="filter-section">
-        <div id="breedContainer" style="display: block">
-            <div class="autocomplete">
-                <input
-                    type="text"
-                    id="Breed"
-                    name="Breed"
-                    placeholder="Search by breed..."
-                />
-                <div
-                    id="breedList"
-                    class="autocomplete-items"
-                    style="display: none"
-                ></div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Forum</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <header>
+            <h2 class="logo">
+                <a href="#">
+                    <img src="../Cap_images/Logo.png" width="75" alt="Logo" />
+                </a>
+            </h2>
+            <nav class="navigation">
+                <a href="#" class="nav-link">Home</a>
+                <a href="#" class="nav-link">Services</a>
+                <a
+                    href="http://localhost:8000/Login_page/index.html"
+                    id="loginButton"
+                >
+                    <button class="Login-popup">Login</button>
+                </a>
+                <a href="#" id="logoutButton" style="display: none">
+                    <button class="Login-popup">Log out</button>
+                </a>
+            </nav>
+        </header>
+        <div id="filter-section">
+            <div id="breedContainer" style="display: block">
+                <div class="autocomplete">
+                    <input
+                        type="text"
+                        id="Breed"
+                        name="Breed"
+                        placeholder="Search by breed..."
+                    />
+                    <div
+                        id="breedList"
+                        class="autocomplete-items"
+                    ></div>
+                </div>
+            </div>
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Search by topic..."
+            />
+            <button id="filterBtn" onclick="searchDiscussions()">Search</button>
+            <button id="filterBtn" onclick="openModal()">
+                Create Discussion
+            </button>
+        </div>
+
+        <div id="discussions">
+            <!-- Discussions will be populated here -->
+        </div>
+        <div id="addDiscussionModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Create Discussion</h2>
+                <form id="discussionForm" class="discussion-form">
+                    <input
+                        type="text"
+                        id="discussionTitle"
+                        placeholder="Discussion Title"
+                    />
+                    <textarea
+                        type="text"
+                        id="discussionContent"
+                        placeholder="Discussion Content"
+                        cols="30"
+                        rows="10"
+                    ></textarea>
+                    <div class="autocomplete">
+                        <input
+                            id="discussionBreed"
+                            placeholder="Breed"
+                        />
+                        <div
+                            id="discussionBreedList"
+                            class="autocomplete-items"
+                        ></div>
+                    <button type="submit" id="submitBtn" value="Submit">
+                        Submit
+                    </button>
+                </form>
             </div>
         </div>
-        <input type="text" id="search-input" placeholder="Search for discussions...">
-        <button onclick="searchDiscussions()">Search</button>
-        <button onclick="createDiscussion()">Create Discussion</button>
-    </div>
-
-    <div id="discussions">
-        <!-- Discussions will be populated here -->
-    </div>
-
-    <script src="script.js"></script>
-</body>
+        <script src="script.js"></script>
+    </body>
 </html>

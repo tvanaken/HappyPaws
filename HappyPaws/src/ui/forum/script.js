@@ -1,5 +1,3 @@
-
-
 async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
     const breedInput = document.getElementById(breedInputId);
     const suggestionsContainer = document.getElementById(
@@ -50,7 +48,69 @@ async function toggleLoginLogoutButtons() {
     }
 }
 
+document
+    .getElementById("addDiscussionModal")
+    .addEventListener("click", async (event) => {
+        if (event.target === this) {
+            closeModal();
+        }
+    });
+
+document
+    .getElementById("discussionForm")
+    .addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            alert("You must be logged in to create a discussion.");
+            return;
+        }
+
+        const title = document.getElementById("discussionTitle").value;
+        const content = document.getElementById("discussionContent").value;
+        const breed_id = document.getElementById("discussionBreed").value;
+        const created_at = new Date().toISOString().replace("Z", "");
+        console.log("discussion created at time", created_at);
+
+        const payload = { title, content, breed_id, created_at };
+
+        const response = await fetch("http://localhost:8000/forum/posts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (response.ok) {
+            closeModal();
+            alert("Discussion created successfully!");
+        } else {
+            alert("Failed to create discussion.");
+        }
+    });
+
+function openModal() {
+    const modal = document.getElementById("addDiscussionModal");
+    modal.style.display = "block";
+}
+
+function closeModal() {
+    const modal = document.getElementById("addDiscussionModal");
+    modal.style.display = "none";
+}
+
 document.addEventListener("DOMContentLoaded", async function () {
-    await initializeAutocomplete("breedInput", "suggestionsContainer");
+    await initializeAutocomplete("Breed", "breedList");
+    await initializeAutocomplete("discussionBreed", "discussionBreedList");
     await toggleLoginLogoutButtons();
+    document
+        .getElementById("createDiscussion")
+        .addEventListener("click", openModal);
+    document.querySelector(".close").addEventListener("click", closeModal);
+    document
+        .querySelector(".modal-content button")
+        .addEventListener("click", submitDiscussion);
 });

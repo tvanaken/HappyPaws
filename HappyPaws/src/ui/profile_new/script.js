@@ -227,6 +227,7 @@ async function displayUserPet() {
 
 async function updateDietRecommendations(breedId, age, activityLevel) {
     const foodGrid = document.getElementById("foodGrid");
+    const foodDetailsDiv = document.getElementById("foodDetails");
     try {
         const response = await fetch(
             `http://localhost:8000/api/recommended_foods?breedId=${breedId}&age=${age}&activityLevel=${activityLevel}`,
@@ -242,7 +243,8 @@ async function updateDietRecommendations(breedId, age, activityLevel) {
         }
 
         const foods = await response.json();
-        foodGrid.innerHTML = ""; // Clear existing food items
+        foodGrid.innerHTML = "";
+        foodDetailsDiv.innerHTML = "";
 
         foods.forEach((food) => {
             const foodItemDiv = document.createElement("div");
@@ -274,39 +276,72 @@ async function updateDietRecommendations(breedId, age, activityLevel) {
 }
 
 function displayFoodDetails(food) {
-    renderNutrients(food); 
-    console.log(food); // For now, just log the food object to the console.
+    const foodDetailsDiv = document.getElementById("foodDetails");
+    foodDetailsDiv.innerHTML = `
+        <h3>${food.name}</h3><br>
+        <p>${food.ingredients}</p><br>
+        <table id="nutrient">
+            ${renderNutrients(food)}
+        </table>
+        <a href="${food.site_url}" target="_blank" >
+            <button type="submit" style="margin-bottom: 20px">Buy Now</button>
+        </a>
+    `;
+    console.log(food);
 }
 
 function renderNutrients(food) {
     const nutrients = [
-        'nutrient_crude_protein', 'nutrient_crude_fat', 'nutrient_crude_fiber',
-        'nutrient_moisture', 'nutrient_dietary_starch', 'nutrient_sugars',
-        'nutrient_epa', 'nutrient_dha', 'nutrient_calcium', 'nutrient_ash',
-        'nutrient_l_carnitine', 'nutrient_bacillus_coagulants', 'nutrient_taurine',
-        'nutrient_beta_carontene', 'nutrient_phosphorous', 'nutrient_niacin',
-        'nutrient_chondroitin_sulfate', 'nutrient_pyridoxine_vitamin_b6',
-        'nutrient_vitamin_a', 'nutrient_vitamin_e', 'nutrient_ascorbic_acid',
-        'nutrient_omega_6', 'nutrient_omega_3', 'nutrient_glucosamine',
-        'nutrient_zinc', 'nutrient_selenium', 'nutrient_microorganisms',
-        'nutrient_total_microorganisms'
+        "nutrient_crude_protein",
+        "nutrient_crude_fat",
+        "nutrient_crude_fiber",
+        "nutrient_moisture",
+        "nutrient_dietary_starch",
+        "nutrient_sugars",
+        "nutrient_epa",
+        "nutrient_dha",
+        "nutrient_calcium",
+        "nutrient_ash",
+        "nutrient_l_carnitine",
+        "nutrient_bacillus_coagulants",
+        "nutrient_taurine",
+        "nutrient_beta_carontene",
+        "nutrient_phosphorous",
+        "nutrient_niacin",
+        "nutrient_chondroitin_sulfate",
+        "nutrient_pyridoxine_vitamin_b6",
+        "nutrient_vitamin_a",
+        "nutrient_vitamin_e",
+        "nutrient_ascorbic_acid",
+        "nutrient_omega_6",
+        "nutrient_omega_3",
+        "nutrient_glucosamine",
+        "nutrient_zinc",
+        "nutrient_selenium",
+        "nutrient_microorganisms",
+        "nutrient_total_microorganisms",
     ];
-    
 
-    return nutrients.map(nutrient => {
-        if (food[nutrient] && food[nutrient].trim() !== "") {
-            return `<tr>
+    return nutrients
+        .map((nutrient) => {
+            if (food[nutrient] && food[nutrient].trim() !== "") {
+                return `<tr>
                 <td>${formatNutrientName(nutrient)}</td>
                 <td>${food[nutrient]}</td>
             </tr>`;
-        }
-        return '';
-    }).join('');
+            }
+            return "";
+        })
+        .join("");
 }
 
 function formatNutrientName(nutrient) {
-    return nutrient.replace('nutrient_', '').replace(/_/g, ' ')
-        .split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    return nutrient
+        .replace("nutrient_", "")
+        .replace(/_/g, " ")
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
 }
 
 async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
@@ -663,6 +698,12 @@ document
                 );
                 const breed1 = await breed1Response.json();
                 console.log(breed1);
+
+                await updateDietRecommendations(
+                    petDetails.breed_id1,
+                    petDetails.age,
+                    petDetails.activity_level,
+                );
 
                 document
                     .getElementById("breedDescription")

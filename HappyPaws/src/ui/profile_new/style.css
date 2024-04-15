@@ -353,6 +353,13 @@ td {
         opacity 0.3s;
 }
 
+.modal-content .close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 button[type="submit"] {
     background-color: #4caf50;
     color: white;
