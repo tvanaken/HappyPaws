@@ -273,6 +273,42 @@ async function updateDietRecommendations(breedId, age, activityLevel) {
     }
 }
 
+function displayFoodDetails(food) {
+    renderNutrients(food); 
+    console.log(food); // For now, just log the food object to the console.
+}
+
+function renderNutrients(food) {
+    const nutrients = [
+        'nutrient_crude_protein', 'nutrient_crude_fat', 'nutrient_crude_fiber',
+        'nutrient_moisture', 'nutrient_dietary_starch', 'nutrient_sugars',
+        'nutrient_epa', 'nutrient_dha', 'nutrient_calcium', 'nutrient_ash',
+        'nutrient_l_carnitine', 'nutrient_bacillus_coagulants', 'nutrient_taurine',
+        'nutrient_beta_carontene', 'nutrient_phosphorous', 'nutrient_niacin',
+        'nutrient_chondroitin_sulfate', 'nutrient_pyridoxine_vitamin_b6',
+        'nutrient_vitamin_a', 'nutrient_vitamin_e', 'nutrient_ascorbic_acid',
+        'nutrient_omega_6', 'nutrient_omega_3', 'nutrient_glucosamine',
+        'nutrient_zinc', 'nutrient_selenium', 'nutrient_microorganisms',
+        'nutrient_total_microorganisms'
+    ];
+    
+
+    return nutrients.map(nutrient => {
+        if (food[nutrient] && food[nutrient].trim() !== "") {
+            return `<tr>
+                <td>${formatNutrientName(nutrient)}</td>
+                <td>${food[nutrient]}</td>
+            </tr>`;
+        }
+        return '';
+    }).join('');
+}
+
+function formatNutrientName(nutrient) {
+    return nutrient.replace('nutrient_', '').replace(/_/g, ' ')
+        .split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
+
 async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
     const breedInput = document.getElementById(breedInputId);
     const suggestionsContainer = document.getElementById(
