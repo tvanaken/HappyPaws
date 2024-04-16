@@ -5,8 +5,8 @@ from sqlalchemy.future import select
 from typing import List
 from datetime import datetime
 from app.routers.users import oauth2_scheme
+from app.routers.breeds import _get_breed_name
 from app.models import Post, Breed
-from app.models.post import PostCreate, PostList
 from app.utils import get_session
 from app.models.login import get_current_user
 from pydantic import BaseModel
@@ -18,7 +18,7 @@ router = APIRouter()
 class PostCreate(BaseModel):
     title: str
     content: str
-    breed_id: str
+    breed_name: str
     created_at: datetime
 
 
@@ -27,12 +27,12 @@ async def get_breed_id_by_name(session, breed_name):
     return breed_id.scalar_one_or_none()
 
 
-@router.get("/forum/posts", response_model=List[PostList])
+@router.get("/forum/posts")
 async def list_forum_posts(session: AsyncSession = Depends(get_session)):
-    async with session() as async_session:
-        result = await async_session.execute(select(Post))
-        posts = result.scalars().all()
-        return posts
+    session = await get_session()
+    query = select(Post)
+    posts = await session.execute(query)
+    return posts.scalars().all()
 
 @router.post("/forum/posts", response_model=PostCreate)
 async def create_post(
@@ -46,7 +46,8 @@ async def create_post(
         title=post_data.title,
         content=post_data.content,
         user_id=user.id,
-        breed_id=await get_breed_id_by_name(session, post_data.breed_id),
+        breed_name=post_data.breed_name,
+        breed_id=await get_breed_id_by_name(session, post_data.breed_name),
         created_at=post_data.created_at
     )
     session.add(post)

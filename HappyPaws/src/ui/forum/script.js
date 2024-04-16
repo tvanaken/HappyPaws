@@ -48,13 +48,37 @@ async function toggleLoginLogoutButtons() {
     }
 }
 
-document
-    .getElementById("addDiscussionModal")
-    .addEventListener("click", async (event) => {
-        if (event.target === this) {
-            closeModal();
+async function fetchAndDisplayPosts() {
+    try {
+        const response = await fetch('http://localhost:8000/forum/posts', {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("token")}`  // Include this if your endpoint requires authentication
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
-    });
+
+        const posts = await response.json();
+
+        const discussionsElement = document.getElementById('discussions');
+        discussionsElement.innerHTML = '';  // Clear existing posts
+
+        posts.forEach(post => {
+            const postElement = document.createElement('div');
+
+            postElement.className = 'post';
+            postElement.innerHTML = `
+                <h3>${post.title}</h3><br>
+                <p>${post.content}</p><br>
+                <small>Breed: ${post.breed_name || 'N/A'}</small>`;
+            discussionsElement.appendChild(postElement);
+        });
+    } catch (error) {
+        console.error('Failed to fetch posts:', error);
+    }
+}
 
 document
     .getElementById("discussionForm")
@@ -69,11 +93,11 @@ document
 
         const title = document.getElementById("discussionTitle").value;
         const content = document.getElementById("discussionContent").value;
-        const breed_id = document.getElementById("discussionBreed").value;
+        const breed_name = document.getElementById("discussionBreed").value;
         const created_at = new Date().toISOString().replace("Z", "");
         console.log("discussion created at time", created_at);
 
-        const payload = { title, content, breed_id, created_at };
+        const payload = { title, content, breed_name, created_at };
 
         const response = await fetch("http://localhost:8000/forum/posts", {
             method: "POST",
@@ -106,11 +130,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     await initializeAutocomplete("Breed", "breedList");
     await initializeAutocomplete("discussionBreed", "discussionBreedList");
     await toggleLoginLogoutButtons();
-    document
-        .getElementById("createDiscussion")
-        .addEventListener("click", openModal);
+    await fetchAndDisplayPosts();
     document.querySelector(".close").addEventListener("click", closeModal);
-    document
-        .querySelector(".modal-content button")
-        .addEventListener("click", submitDiscussion);
 });

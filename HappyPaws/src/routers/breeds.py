@@ -25,13 +25,13 @@ async def _get_breed(breed_id: int):
         return None
 
 
-async def _get_breed_name(name: str):
+async def _get_breed_name(breed_id: int):
     session = await get_session()
-    query = select(Breed).where(Breed.name == name)
+    query = select(Breed).where(Breed.id == breed_id)
     result = await session.execute(query)
     result = result.fetchone()
     if result:
-        return result[0]
+        return result[0].name
     else:
         return None
 
@@ -85,16 +85,16 @@ async def create_breed(breed: dict):
     return JSONResponse(content=breed.to_dict(), status_code=201)
 
 
-@router.delete("/api/breeds/{name}")
-async def delete_breed(name: str):
-    session = await get_session()
-    breed = await _get_breed_name(name)
-    if breed:
-        await session.delete(breed)
-        await session.commit()
-        return JSONResponse(content={"message": "breed deleted"}, status_code=200)
-    else:
-        return JSONResponse(content={"message": "Not found."}, status_code=404)
+# @router.delete("/api/breeds/{name}")
+# async def delete_breed(name: str):
+#     session = await get_session()
+#     breed = await _get_breed_name(name)
+#     if breed:
+#         await session.delete(breed)
+#         await session.commit()
+#         return JSONResponse(content={"message": "breed deleted"}, status_code=200)
+#     else:
+#         return JSONResponse(content={"message": "Not found."}, status_code=404)
 
 
 @router.patch("/api/breeds/{breed_id}")
