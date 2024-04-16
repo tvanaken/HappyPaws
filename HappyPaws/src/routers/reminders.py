@@ -19,6 +19,7 @@ class ReminderCreate(BaseModel):
     title: str
     start: datetime
     end: Optional[datetime] = None
+    recurrence: Optional[str] = None
 
 
 async def _validate_reminder(reminder: dict):

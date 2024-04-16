@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Post</title>
+        <link rel="stylesheet" href="post_style.css" />
+    </head>
+    <body>
+        <header>
+            <h2 class="logo">
+                <a href="#">
+                    <img src="../Cap_images/Logo.png" width="75" alt="Logo" />
+                </a>
+            </h2>
+            <nav class="navigation">
+                <a
+                    href="http://localhost:8000/profile_new/index.html"
+                    class="nav-link"
+                    >Home</a
+                >
+                <a
+                    href="http://localhost:8000/forum/index.html"
+                    class="nav-link"
+                    >Forum</a
+                >
+                <a
+                    href="http://localhost:8000/Login_page/index.html"
+                    id="loginButton"
+                >
+                    <button class="Login-popup">Login</button>
+                </a>
+                <a href="#" id="logoutButton" style="display: none">
+                    <button class="Login-popup">Log out</button>
+                </a>
+            </nav>
+        </header>
+        <main>
+            <div id="post-container">
+                <!-- Post details will go here -->
+            </div>
+
+            <div id="comments-container">
+                <h3>Comments</h3>
+                <!-- Comments will be appended here -->
+            </div>
+
+            <div id="add-comment-container">
+                <form id="comment-form">
+                    <h3>Add a Comment</h3>
+                    <textarea
+                        id="comment-text"
+                        placeholder="Write your comment here..."
+                    ></textarea>
+                    <button id="submit-comment">Submit Comment</button>
+                </form>
+            </div>
+        </main>
+        <script src="post_script.js"></script>
+    </body>
+</html>

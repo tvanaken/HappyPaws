@@ -72,6 +72,11 @@ header {
     transition: 0.3s;
 }
 
+.navigation .Login-popup:hover {
+    background: white;
+    color: black;
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -193,7 +198,7 @@ input[type="file"]:hover {
 
 .autocomplete-items {
     position: absolute;
-    width: 100%;
+    width: 50%;
     border: 1px solid #d4d4d4;
     border-bottom: none;
     border-top: none;
@@ -238,11 +243,6 @@ input[type="file"]:hover {
     background-color: #5f7f5f; /* Darken the color on hover */
 }
 
-.navigation .Login-popup:hover {
-    background: white;
-    color: black;
-}
-
 #discussions {
     display: flex;
     flex-direction: column;
@@ -256,6 +256,11 @@ input[type="file"]:hover {
     border: 1px solid #7a9b76;
     border-radius: 8px;
     background-color: #f9f9f9;
+}
+
+#discussions .post:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
 }
 
 #discussions h3 {

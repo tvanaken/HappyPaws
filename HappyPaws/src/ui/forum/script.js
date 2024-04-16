@@ -50,11 +50,11 @@ async function toggleLoginLogoutButtons() {
 
 async function fetchAndDisplayPosts() {
     try {
-        const response = await fetch('http://localhost:8000/forum/posts', {
+        const response = await fetch("http://localhost:8000/forum/posts", {
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem("token")}`  // Include this if your endpoint requires authentication
-            }
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`, // Include this if your endpoint requires authentication
+            },
         });
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -62,21 +62,26 @@ async function fetchAndDisplayPosts() {
 
         const posts = await response.json();
 
-        const discussionsElement = document.getElementById('discussions');
-        discussionsElement.innerHTML = '';  // Clear existing posts
+        const discussionsElement = document.getElementById("discussions");
+        discussionsElement.innerHTML = "";
 
-        posts.forEach(post => {
-            const postElement = document.createElement('div');
+        posts.forEach((post) => {
+            const postElement = document.createElement("div");
 
-            postElement.className = 'post';
+            postElement.className = "post";
             postElement.innerHTML = `
                 <h3>${post.title}</h3><br>
                 <p>${post.content}</p><br>
-                <small>Breed: ${post.breed_name || 'N/A'}</small>`;
+                <small>Breed: ${post.breed_name || "N/A"}</small>`;
+
+            postElement.addEventListener("click", () => {
+                window.location.href = `http://localhost:8000/forum/post.html?postId=${post.id}`;
+            });
+
             discussionsElement.appendChild(postElement);
         });
     } catch (error) {
-        console.error('Failed to fetch posts:', error);
+        console.error("Failed to fetch posts:", error);
     }
 }
 
@@ -110,6 +115,7 @@ document
 
         if (response.ok) {
             closeModal();
+            await fetchAndDisplayPosts();
             alert("Discussion created successfully!");
         } else {
             alert("Failed to create discussion.");

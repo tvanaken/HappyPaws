@@ -1,0 +1,164 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    font-family: "Arial", sans-serif;
+    background: #f7f7f7;
+    line-height: 1.6;
+    padding: 20px;
+    color: #333;
+}
+
+main {
+    margin: 40px auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    position: fixed;
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 50px;
+    background-color: #7a9b76;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: white;
+    text-decoration: none;
+    filter: invert(100%);
+    cursor: pointer;
+}
+
+.navigation .nav-link {
+    position: relative;
+    font-size: 1.1em;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 40px;
+}
+
+.navigation a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 3px;
+    background: white;
+    border-radius: 5px;
+    transform: scaleX(0);
+    transition: transform 0.3s;
+}
+
+.navigation a:hover::after {
+    transform: scaleX(1);
+}
+
+.navigation .Login-popup {
+    width: 130px;
+    height: 50px;
+    background: transparent;
+    border: 2px solid white;
+    outline: none;
+    font-weight: 500;
+    color: white;
+    margin-left: 40px;
+    transition: 0.3s;
+}
+
+.navigation .Login-popup:hover {
+    background: white;
+    color: black;
+}
+
+#post-container {
+    margin-top: 100px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    width: 100%;
+    border-bottom: 1px solid #eaeaea;
+}
+
+#post-container h3 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 24px;
+}
+
+#post-container p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+#post-container small {
+    display: block;
+    margin-top: 10px;
+    color: #666;
+    font-size: 14px;
+}
+
+#comments-container {
+    margin-bottom: 20px;
+    width: 80%;
+}
+
+#comments-container h3 {
+    margin-bottom: 15px;
+    color: #333;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 5px;
+}
+
+#comments-container .comment {
+    background: #f9f9f9;
+    border: 1px solid #eaeaea;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#add-comment-container {
+    background: #f2f2f2;
+    padding: 20px;
+    border: 1px solid #eaeaea;
+    border-radius: 4px;
+}
+
+#add-comment-container h3 {
+    margin-bottom: 10px;
+}
+
+#add-comment-container textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+#add-comment-container button {
+    background: #5cb85c;
+    color: #fff;
+    border: 0;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#add-comment-container button:hover {
+    background: #4cae4c;
+}

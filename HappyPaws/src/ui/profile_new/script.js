@@ -417,6 +417,9 @@ async function initializeCalendar() {
         title: reminder.title,
         start: reminder.start,
         end: reminder.end,
+        rrule: {
+            
+        }
     }));
     console.log(reminders);
     console.log(eventData);
