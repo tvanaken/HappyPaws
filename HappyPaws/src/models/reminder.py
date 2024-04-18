@@ -23,7 +23,6 @@ class Reminder(Base):
     title = Column(String)
     start = Column(DateTime)
     end = Column(DateTime)
-    recurrence = Column(String)
     
     user = relationship("User")
 
@@ -34,5 +33,4 @@ class Reminder(Base):
             "title": self.title,
             "start": self.start.isoformat() if self.start else None,
             "end": self.end.isoformat() if self.end else None,
-            "recurrence": self.recurrence if self.recurrence else None,
         }

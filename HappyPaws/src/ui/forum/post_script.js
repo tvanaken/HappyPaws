@@ -109,11 +109,11 @@ document
                 body: JSON.stringify(payload),
             },
         );
-        if (!response.ok) {
-            alert("Failed to add comment");
-            return;
-        } else {
+        if (response.ok) {
             const newComment = await response.json();
             await appendComment(newComment);
+        } else {
+            alert("Failed to add comment");
+            return;
         }
     });
