@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy.orm import joinedload
-from typing import List
+from sqlalchemy.orm import joinedload, contains_eager, selectinload, aliased
+from typing import List, Optional
 from datetime import datetime
 from app.routers.users import oauth2_scheme
 from app.routers.breeds import _get_breed_name
@@ -43,9 +43,28 @@ async def list_forum_posts(session: AsyncSession = Depends(get_session)):
     posts = await session.execute(query)
     return posts.scalars().all()
 
+@router.get("/forum/posts/filtered")
+async def get_posts_filtered(breed_name: Optional[str] = None, search: Optional[str] = None, session: AsyncSession = Depends(get_session)):
+    query = select(Post)
+    if breed_name:
+        query = query.where(Post.breed_name == breed_name)
+    if search:
+        query = query.where(Post.title.contains(search) | Post.content.contains(search))
+    posts = await session.execute(query)
+    return posts.scalars().all()
+
 @router.get("/forum/posts/{post_id}")
 async def get_post(post_id: int, session: AsyncSession = Depends(get_session)):
-    query = select(Post).options(joinedload(Post.comments)).where(Post.id == post_id)
+    comments_alias = aliased(Comment)
+
+    query = (
+        select(Post)
+        .join(comments_alias, Post.comments)
+        .options(contains_eager(Post.comments, alias=comments_alias))
+        .order_by(comments_alias.created_at.desc())
+        .where(Post.id == post_id)
+    )
+    
     post = await session.execute(query)
     return post.scalars().first()
 

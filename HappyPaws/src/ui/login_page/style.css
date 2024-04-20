@@ -167,6 +167,10 @@ header {
     font-weight: 600;
 }
 
+.input-box:autofill {
+    background: transparent;
+}
+
 .input-box .icon {
     position: absolute;
     right: 8px;

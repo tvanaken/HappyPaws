@@ -53,7 +53,7 @@ async function fetchAndDisplayPosts() {
         const response = await fetch("http://localhost:8000/forum/posts", {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`, // Include this if your endpoint requires authentication
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
         });
         if (!response.ok) {
@@ -65,14 +65,23 @@ async function fetchAndDisplayPosts() {
         const discussionsElement = document.getElementById("discussions");
         discussionsElement.innerHTML = "";
 
-        posts.forEach((post) => {
+        posts.forEach(async (post) => {
+            const userResponse = await fetch(`http://localhost:8000/api/users/${post.user_id}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            let username = await userResponse.json();
+            username = username.email.split("@")[0];
             const postElement = document.createElement("div");
 
             postElement.className = "post";
             postElement.innerHTML = `
                 <h3>${post.title}</h3><br>
                 <p>${post.content}</p><br>
-                <small>Breed: ${post.breed_name || "N/A"}</small>`;
+                <small>Breed: ${post.breed_name || "N/A"}</small><br>
+                <small style="text-align: right;", "align-self: right;">Posted by: ${username}</small>`;
 
             postElement.addEventListener("click", () => {
                 window.location.href = `http://localhost:8000/forum/post.html?postId=${post.id}`;
@@ -82,6 +91,60 @@ async function fetchAndDisplayPosts() {
         });
     } catch (error) {
         console.error("Failed to fetch posts:", error);
+    }
+}
+
+function displayPosts(posts) {
+
+    const discussionsElement = document.getElementById("discussions");
+    discussionsElement.innerHTML = "";
+
+    posts.forEach(async (post) => {
+        const userResponse = await fetch(`http://localhost:8000/api/users/${post.user_id}`, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let username = await userResponse.json();
+        username = username.email.split("@")[0];
+        const postElement = document.createElement("div");
+
+        postElement.className = "post";
+        postElement.innerHTML = `
+        <h3>${post.title}</h3><br>
+        <p>${post.content}</p><br>
+        <small>Breed: ${post.breed_name || "N/A"}</small><br>
+        <small style="text-align: right;", "align-self: right;">Posted by: ${username}</small>`;
+
+        postElement.addEventListener("click", () => {
+            window.location.href = `http://localhost:8000/forum/post.html?postId=${post.id}`;
+        });
+
+        discussionsElement.appendChild(postElement);    
+    });
+}
+
+async function searchPosts() {
+    const breedInput = document.getElementById("Breed").value;
+    const searchInput = document.getElementById("search-input").value;
+
+    const url = new URL("http://localhost:8000/forum/posts/filtered");
+    if (breedInput) url.searchParams.append("breed_name", breedInput);
+    if (searchInput) url.searchParams.append("search", searchInput);
+
+    try {
+
+        const response = await fetch(url);
+
+        if (!response.ok) 
+            throw new Error("Failed to fetch discussions");
+
+        const discussions = await response.json();
+        displayPosts(discussions);
+
+    } catch (error) {
+        console.error("Error fetching discussions:", error);
     }
 }
 

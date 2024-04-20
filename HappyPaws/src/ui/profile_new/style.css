@@ -133,7 +133,7 @@ a {
 
 .col_container .left_col .prof_pic {
     position: absolute;
-    top: -60px;
+    top: -70px;
     left: 50%;
     transform: translatex(-50%);
 }

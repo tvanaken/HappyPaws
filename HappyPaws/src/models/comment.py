@@ -3,18 +3,6 @@ from sqlalchemy.orm import relationship
 from .base import Base
 from pydantic import BaseModel
 from datetime import datetime, timezone
-
-
-class CommentCreate(BaseModel):
-    content: str
-    created_at: datetime
-
-class CommentRead(BaseModel):
-    id: int
-    content: str
-    user_id: int
-    post_id: int
-    created_at: datetime
         
 
 class Comment(Base):

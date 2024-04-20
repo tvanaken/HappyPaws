@@ -68,6 +68,7 @@ async function fetchPostDetails(postId) {
 }
 
 async function appendComment(comment) {
+    console.log(comment);
     const commentsDiv = document.getElementById("comments-container");
     const commentElement = document.createElement("div");
     commentElement.className = "comment";

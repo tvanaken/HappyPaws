@@ -6,12 +6,23 @@ from typing import List
 from datetime import datetime
 from app.models import Comment, User, comment
 from app.routers.users import oauth2_scheme
-from app.models.comment import CommentCreate, CommentRead
 from app.models.login import get_current_user
 from app.utils import get_session
 from pydantic import BaseModel
 
 router = APIRouter()
+
+class CommentCreate(BaseModel):
+    content: str
+    created_at: datetime
+
+class CommentRead(BaseModel):
+    id: int
+    content: str
+    user_id: int
+    post_id: int
+    created_at: datetime
+    
 
 @router.post("/forum/posts/{post_id}/comments", response_model=CommentCreate)
 async def create_comment(post_id: int, comment_data: CommentCreate, token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
@@ -29,4 +40,4 @@ async def create_comment(post_id: int, comment_data: CommentCreate, token: str =
     session.add(comment)
     await session.commit()
 
-    return JSONResponse(content={"message": "Comment created successfully"}, status_code=201)
+    return JSONResponse(content={comment}, status_code=201)

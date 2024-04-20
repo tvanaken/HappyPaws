@@ -1,7 +1,7 @@
 # order matters (models with dependencies must come first)
 # I put breed before pet because breed depends on pet
 from .base import Base
-from .comment import Comment, CommentCreate, CommentRead
+from .comment import Comment
 from .post import Post
 from .breed import Breed
 from .food import Food

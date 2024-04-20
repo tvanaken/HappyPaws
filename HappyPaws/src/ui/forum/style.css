@@ -198,14 +198,14 @@ input[type="file"]:hover {
 
 .autocomplete-items {
     position: absolute;
-    width: 50%;
+    width: 100%;
     border: 1px solid #d4d4d4;
     border-bottom: none;
     border-top: none;
     z-index: 10;
     top: 100%;
     left: 10px;
-    max-height: 150px;
+    max-height: 300px;
     overflow-y: auto;
 }
 
