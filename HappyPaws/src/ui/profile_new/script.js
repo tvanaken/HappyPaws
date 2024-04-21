@@ -662,6 +662,11 @@ document
             return;
         }
 
+        document.getElementById("title").value = "";
+        document.getElementById("startDate").value = "";
+        document.getElementById("startTime").value = "";
+        document.getElementById("endDate").value = "";
+        document.getElementById("endTime").value = "";
         document.getElementById("reminderFormModal").style.display = "none";
         await initializeCalendar();
     });
