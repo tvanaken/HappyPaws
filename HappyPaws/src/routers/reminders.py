@@ -1,25 +1,18 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from app.models import Reminder, User
 from app.models.login import get_current_user
 from app.routers.users import oauth2_scheme
 from app.utils import get_session
-from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
+from app.models.reminder import ReminderCreate
 
 router = APIRouter()
-
-
-class ReminderCreate(BaseModel):
-    title: str
-    start: datetime
-    end: Optional[datetime] = None
-    recurrence: Optional[str] = None
 
 
 async def _validate_reminder(reminder: dict):
@@ -80,11 +73,20 @@ async def create_reminder(
 ):
     user = await get_current_user(token, session)
 
+    days_of_week = ','.join(map(str, reminder_data.daysOfWeek)) if reminder_data.daysOfWeek else None
+
+    
     reminder = Reminder(
-        user_id=user.id,
-        title=reminder_data.title,
-        start=reminder_data.start,
-        end=reminder_data.end,
+    user_id=user.id,
+    title=reminder_data.title,
+    start=reminder_data.start,
+    end=reminder_data.end or reminder_data.start,
+    daysOfWeek=days_of_week,
+    startTime=reminder_data.startTime,
+    endTime=reminder_data.endTime,
+    startRecur=reminder_data.startRecur,
+    endRecur=reminder_data.endRecur,
+    color=reminder_data.color
     )
     session.add(reminder)
     await session.commit()

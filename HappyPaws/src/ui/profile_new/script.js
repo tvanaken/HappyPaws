@@ -5,6 +5,7 @@ const healthLink = document.querySelector(".health-link");
 const groomingLink = document.querySelector(".grooming-link");
 const scheduleLink = document.querySelector(".schedule-link");
 const sections = document.querySelectorAll(".right_col .section");
+let breeds = [];
 
 let calendar;
 const today = new Date();
@@ -361,36 +362,73 @@ function formatNutrientName(nutrient) {
         .join(" ");
 }
 
-async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
-    const breedInput = document.getElementById(breedInputId);
-    const suggestionsContainer = document.getElementById(
-        suggestionsContainerId,
-    );
-
-    breedInput.addEventListener("input", async function () {
-        const inputValue = this.value;
-        if (inputValue.length > 1) {
-            fetch(`/api/breeds?search=${inputValue}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log("data", data);
-                    suggestionsContainer.innerHTML = "";
-                    data.forEach((breed) => {
-                        const suggestionItem = document.createElement("div");
-                        suggestionItem.innerHTML = breed.name;
-                        suggestionItem.addEventListener("click", function () {
-                            breedInput.value = this.textContent;
-                            suggestionsContainer.innerHTML = "";
-                        });
-                        suggestionsContainer.appendChild(suggestionItem);
-                    });
-                })
-                .catch((error) => console.log("error", error));
-        } else {
-            suggestionsContainer.innerHTML = "";
+async function preloadBreeds() {
+    if (breeds.length === 0) {
+        try {
+            const response = await fetch("/api/breeds");
+            if (response.ok) {
+                breeds = await response.json();
+            } else {
+                throw new Error("Failed to fetch breeds");
+            }
+        } catch (error) {
+            console.error("Error fetching breeds:", error);
         }
+    }
+}
+
+function filterBreeds(inputValue) {
+    const filteredBreeds = breeds.filter((breed) =>
+        breed.name.toLowerCase().includes(inputValue.toLowerCase()),
+    );
+    displaySuggestions(filteredBreeds);
+}
+
+function displaySuggestions(breeds) {
+    const suggestionsContainer = document.getElementById("breedList");
+    suggestionsContainer.innerHTML = "";
+
+    breeds.forEach((breed) => {
+        const suggestionItem = document.createElement("div");
+        suggestionItem.textContent = breed.name;
+        suggestionItem.addEventListener("click", () => {
+            document.getElementById("Breed").value = breed.name;
+            suggestionsContainer.innerHTML = "";
+        });
+        suggestionsContainer.appendChild(suggestionItem);
     });
 }
+
+// async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
+//     const breedInput = document.getElementById(breedInputId);
+//     const suggestionsContainer = document.getElementById(
+//         suggestionsContainerId,
+//     );
+
+//     breedInput.addEventListener("input", async function () {
+//         const inputValue = this.value;
+//         if (inputValue.length > 1) {
+//             fetch(`/api/breeds?search=${inputValue}`)
+//                 .then((response) => response.json())
+//                 .then((data) => {
+//                     console.log("data", data);
+//                     suggestionsContainer.innerHTML = "";
+//                     data.forEach((breed) => {
+//                         const suggestionItem = document.createElement("div");
+//                         suggestionItem.innerHTML = breed.name;
+//                         suggestionItem.addEventListener("click", function () {
+//                             breedInput.value = this.textContent;
+//                             suggestionsContainer.innerHTML = "";
+//                         });
+//                         suggestionsContainer.appendChild(suggestionItem);
+//                     });
+//                 })
+//                 .catch((error) => console.log("error", error));
+//         } else {
+//             suggestionsContainer.innerHTML = "";
+//         }
+//     });
+// }
 
 async function toggleLoginLogoutButtons() {
     const token = localStorage.getItem("token");
@@ -435,11 +473,16 @@ async function initializeCalendar() {
         title: reminder.title,
         start: reminder.start,
         end: reminder.end,
-        rrule: {},
+        daysOfWeek: reminder.daysOfWeek,
+        startTime: reminder.startTime,
+        endTime: reminder.endTime,
+        startRecur: reminder.startRecur,
+        endRecur: reminder.endRecur,
     }));
-    console.log(reminders);
-    console.log(eventData);
     const calendarEl = document.getElementById("calendar");
+    const tooltip = document.createElement("div");
+    tooltip.className = "tooltip";
+    document.body.appendChild(tooltip);
     calendar = new FullCalendar.Calendar(calendarEl, {
         customButtons: {
             addReminder: {
@@ -459,6 +502,21 @@ async function initializeCalendar() {
         height: "auto",
         schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
         events: eventData,
+        eventMouseEnter: function (info) {
+            tooltip.innerHTML = `<strong>Title:</strong> ${info.event.title}<br>
+                                 <strong>Start:</strong> ${info.event.start.toISOString()}<br>
+                                 <strong>End:</strong> ${
+                                     info.event.end
+                                         ? info.event.end.toISOString()
+                                         : "N/A"
+                                 }<br>`;
+            tooltip.style.display = "block";
+            tooltip.style.left = info.jsEvent.pageX + 10 + "px";
+            tooltip.style.top = info.jsEvent.pageY + 10 + "px";
+        },
+        eventMouseLeave: function (info) {
+            tooltip.style.display = "none";
+        },
     });
     await calendar.render();
 }
@@ -494,6 +552,26 @@ async function uploadImageToS3(file, presignedUrl) {
         throw new Error("Failed to upload image to S3");
     }
 }
+
+document.getElementById("Breed").addEventListener("focus", () => {
+    preloadBreeds();
+    displaySuggestions(breeds);
+});
+
+document.getElementById("Breed").addEventListener("input", (event) => {
+    const inputValue = event.target.value;
+    if (inputValue.length > 0) {
+        filterBreeds(inputValue);
+    } else {
+        displaySuggestions(breeds);
+    }
+});
+
+document.getElementById("Breed").addEventListener("blur", () => {
+    setTimeout(() => {
+        document.getElementById("breedList").innerHTML = "";
+    }, 200);
+});
 
 document.getElementById("calendarSection").addEventListener("click", () => {
     initializeCalendar();
@@ -587,6 +665,16 @@ document
         }
     });
 
+document.getElementById("recurring").addEventListener("change", function () {
+    const displayStyle = this.checked ? "block" : "none";
+    document.getElementById("recurringOptions").style.display = displayStyle;
+});
+
+document.getElementById("frequency").addEventListener("change", function () {
+    const displayStyle = this.value === "weekly" ? "block" : "none";
+    document.getElementById("dowWrapper").style.display = displayStyle;
+});
+
 document.getElementById("Mixed").addEventListener("change", function () {
     const displayStyle = this.checked ? "block" : "none";
     const checkStyle = this.checked ? "none" : "initial";
@@ -597,7 +685,25 @@ document.getElementById("Mixed").addEventListener("change", function () {
     document.querySelector('label[for="Unknown"]').style.display = checkStyle;
 
     if (this.checked) {
-        initializeAutocomplete("Breed2", "breedList2");
+        document.getElementById("Breed2").addEventListener("input", (event) => {
+            const inputValue = event.target.value;
+            if (inputValue.length > 0) {
+                filterBreeds(inputValue);
+            } else {
+                displaySuggestions(breeds);
+            }
+        });
+
+        document.getElementById("Breed2").addEventListener("focus", () => {
+            preloadBreeds();
+            displaySuggestions(breeds);
+        });
+
+        document.getElementById("Breed2").addEventListener("blur", () => {
+            setTimeout(() => {
+                document.getElementById("breedList2").innerHTML = "";
+            }, 200);
+        });
     }
 });
 
@@ -639,13 +745,37 @@ document
         const title = document.getElementById("title").value;
         const startDate = document.getElementById("startDate").value;
         const startTime = document.getElementById("startTime").value;
+        const recurring = document.getElementById("recurring").checked;
         const endDate = document.getElementById("endDate").value;
         const endTime = document.getElementById("endTime").value;
+        const color = document.querySelector(".select-selected").dataset.value;
+
+        const daysOfWeek = [];
+        document.querySelectorAll("#daysOfWeek input").forEach((input) => {
+            if (input.checked) {
+                daysOfWeek.push(input.value);
+            }
+        });
 
         const startDateTime = `${startDate}T${startTime}`;
         const endDateTime = endDate && endTime ? `${endDate}T${endTime}` : null;
+        const startDateObj = new Date(startDate);
 
-        const payload = { title, start: startDateTime, end: endDateTime };
+        startDateObj.setDate(startDateObj.getDate() + 1);
+
+        const payload = {
+            title,
+            start: startDateTime,
+            end: endDateTime,
+            daysOfWeek: daysOfWeek.length > 0 ? daysOfWeek : null,
+            startRecur: startDate,
+            endRecur: recurring
+                ? endDate
+                : startDateObj.toISOString().split("T")[0],
+            startTime: startTime,
+            endTime: endTime,
+            color: color,
+        };
 
         const response = await fetch("http://localhost:8000/api/reminders", {
             method: "POST",
@@ -667,9 +797,44 @@ document
         document.getElementById("startTime").value = "";
         document.getElementById("endDate").value = "";
         document.getElementById("endTime").value = "";
+        document.getElementById("recurring").checked = false;
+        document.getElementById("frequency").value = "daily";
+        document.getElementById("dowWrapper").style.display = "none";
         document.getElementById("reminderFormModal").style.display = "none";
+        document.getElementById("daysOfWeek").style.display = "none";
+        document.querySelector(".select-selected").textContent = "Select Color";
         await initializeCalendar();
     });
+
+document
+    .querySelector(".select-selected")
+    .addEventListener("click", function () {
+        const itemsDiv = document.querySelector(".select-items");
+        itemsDiv.style.display =
+            itemsDiv.style.display === "block" ? "none" : "block";
+    });
+
+document.querySelectorAll(".select-items li").forEach((item) => {
+    item.addEventListener("click", function () {
+        const selectedDiv = document.querySelector(".select-selected");
+        selectedDiv.textContent = this.textContent;
+
+        const colorValue = this.getAttribute("data-value");
+
+        selectedDiv.setAttribute("data-value", colorValue);
+
+        selectedDiv.style.backgroundColor = colorValue;
+
+        document.querySelector(".select-items").style.display = "none";
+    });
+});
+
+document.addEventListener("click", function (e) {
+    const select = document.querySelector(".custom-select");
+    if (!select.contains(e.target)) {
+        document.querySelector(".select-items").style.display = "none";
+    }
+});
 
 document.getElementById("myPetsLink").addEventListener("click", async () => {
     const dropdown = document.getElementById("petDropdown");
@@ -898,7 +1063,8 @@ document
     });
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await initializeAutocomplete("Breed", "breedList");
+    //await initializeAutocomplete("Breed", "breedList");
+    await preloadBreeds();
     await toggleLoginLogoutButtons();
     await displayUserPet();
 });

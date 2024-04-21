@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "csci338app"
+name = "HappyPaws"
 version = "0.0.0"
-description = "App for CSCI338"
-authors = ["Semmy Purewal <semmypurewal@gmail.com>"]
+description = "App for Pet Care"
+authors = ["Taylor Van Aken"]
 readme = "README.md"
 
 [tool.poetry.dependencies]

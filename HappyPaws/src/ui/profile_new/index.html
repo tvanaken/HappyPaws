@@ -261,6 +261,8 @@
         <div id="reminderFormModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
+                <h2>Add a reminder</h2>
+                <br />
                 <form id="reminderForm">
                     <label for="title">Title:</label>
                     <input type="text" id="title" required /><br /><br />
@@ -268,18 +270,114 @@
                     <input type="date" id="startDate" required /><br /><br />
                     <label for="startTime">Start Time:</label>
                     <input type="time" id="startTime" required /><br /><br />
+                    <label for="recurring">Recurring:</label>
+                    <input type="checkbox" id="recurring" /><br /><br />
+                    <div id="recurringOptions" style="display: none">
+                        <label for="frequency">Frequency:</label>
+                        <select id="frequency">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option></select
+                        ><br />
+                        <div id="dowWrapper" style="display: none">
+                            <div id="daysOfWeek">
+                                <label for="sunday">Sun</label>
+                                <input type="checkbox" id="sunday" value="0" />
+                                <label for="monday">Mon</label>
+                                <input type="checkbox" id="monday" value="1" />
+                                <label for="tuesday">Tue</label>
+                                <input type="checkbox" id="tuesday" value="2" />
+                                <label for="wednesday">Wed</label>
+                                <input
+                                    type="checkbox"
+                                    id="wednesday"
+                                    value="3"
+                                />
+                            </div>
+                            <div id="daysOfWeek">
+                                <label for="thursday">Thur</label>
+                                <input
+                                    type="checkbox"
+                                    id="thursday"
+                                    value="4"
+                                />
+                                <label for="friday">Fri</label>
+                                <input type="checkbox" id="friday" value="5" />
+                                <label for="saturday">Sat</label>
+                                <input
+                                    type="checkbox"
+                                    id="saturday"
+                                    value="6"
+                                />
+                            </div>
+                        </div>
+                        <br />
+                    </div>
                     <label for="endDate">End Date:</label>
                     <input type="date" id="endDate" /><br /><br />
                     <label for="endTime">End Time:</label>
                     <input type="time" id="endTime" /><br /><br />
-                    <input type="submit" value="Submit" />
+                    <div class="custom-select">
+                        <div class="select-selected">Select color</div>
+                        <ul class="select-items">
+                            <li data-value="transparent">None</li>
+                            <li
+                                data-value="#ffadad"
+                                style="background-color: #ffadad"
+                            >
+                                Red
+                            </li>
+                            <li
+                                data-value="#ffd6a5"
+                                style="background-color: #ffd6a5"
+                            >
+                                Orange
+                            </li>
+                            <li
+                                data-value="#fdffb6"
+                                style="background-color: #fdffb6"
+                            >
+                                Yellow
+                            </li>
+                            <li
+                                data-value="#caffbf"
+                                style="background-color: #caffbf"
+                            >
+                                Green
+                            </li>
+                            <li
+                                data-value="#9bf6ff"
+                                style="background-color: #9bf6ff"
+                            >
+                                Blue
+                            </li>
+                            <li
+                                data-value="#a0c4ff"
+                                style="background-color: #a0c4ff"
+                            >
+                                Indigo
+                            </li>
+                            <li
+                                data-value="#bdb2ff"
+                                style="background-color: #bdb2ff"
+                            >
+                                Violet
+                            </li>
+                        </ul>
+                    </div>
+                    <br /><br />
+                    <div id="btnWrapper">
+                        <button type="submit" id="submitBtn" value="Submit">
+                            Submit
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
         <div id="addPetModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h2>Add a new pet</h2><br />
+                <h2>Add a new pet</h2>
+                <br />
                 <form id="addPetForm">
                     <label for="Name">Name: *</label>
                     <div>
@@ -339,10 +437,10 @@
                         >?
                         <span class="tooltiptext">
                             <strong>Low Activity:</strong> Suitable for pets
-                            that require minimal exercise. (Couch potatoes)<br />
+                            that require minimal exercise. (Couch potatoes)<br /><br />
                             <strong>Moderately Active:</strong> Ideal for pets
                             that need regular exercise. (Frequent
-                            walker/player)<br />
+                            walker/player)<br /><br />
                             <strong>High Activity:</strong> Best for pets that
                             require a lot of exercise and are very energetic.
                             (Working dogs, hunting dogs)
@@ -389,9 +487,11 @@
                             accept="image/*"
                         /><br /><br />
                     </div>
-                    <button type="submit" id="submitBtn" value="Submit">
-                        Submit
-                    </button>
+                    <div id="btnWrapper">
+                        <button type="submit" id="submitBtn" value="Submit">
+                            Submit
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

@@ -51,6 +51,12 @@ document.getElementById("Breed").addEventListener("input", (event) => {
     }
 });
 
+document.getElementById("Breed").addEventListener("blur", () => {
+    setTimeout(() => {
+        document.getElementById("breedList").innerHTML = "";
+    }, 200);
+});
+
 document.getElementById("discussionBreed").addEventListener("focus", () => {
     preloadBreeds();
     displaySuggestions(breeds);
@@ -66,12 +72,6 @@ document
             displaySuggestions(breeds);
         }
     });
-
-document.getElementById("Breed").addEventListener("blur", () => {
-    setTimeout(() => {
-        document.getElementById("breedList").innerHTML = "";
-    }, 200);
-});
 
 document.getElementById("discussionBreed").addEventListener("blur", () => {
     setTimeout(() => {
