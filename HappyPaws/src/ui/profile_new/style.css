@@ -263,8 +263,8 @@ table {
     border: 1px solid #ccc;
     display: none;
     list-style: none;
-    padding: 0;
-    margin: 0;
+    margin-bottom: 20px;
+    padding-bottom: 60px;
 }
 
 .select-items li {
@@ -495,6 +495,7 @@ input[type="file"]:hover {
 
 #daysOfWeek {
     display: flex;
+    position: relative;
     justify-content: center;
     gap: 10px;
     margin-top: 20px;

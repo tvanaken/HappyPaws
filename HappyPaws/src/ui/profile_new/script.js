@@ -478,6 +478,7 @@ async function initializeCalendar() {
         endTime: reminder.endTime,
         startRecur: reminder.startRecur,
         endRecur: reminder.endRecur,
+        color: reminder.color,
     }));
     const calendarEl = document.getElementById("calendar");
     const tooltip = document.createElement("div");
@@ -517,6 +518,7 @@ async function initializeCalendar() {
         eventMouseLeave: function (info) {
             tooltip.style.display = "none";
         },
+        eventTextColor: "black",
     });
     await calendar.render();
 }
@@ -836,7 +838,7 @@ document.addEventListener("click", function (e) {
     }
 });
 
-document.getElementById("myPetsLink").addEventListener("click", async () => {
+document.getElementById("myPetsLink").addEventListener("mouseenter", async () => {
     const dropdown = document.getElementById("petDropdown");
 
     const token = localStorage.getItem("token");
