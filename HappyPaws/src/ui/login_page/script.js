@@ -10,12 +10,27 @@ loginLink.addEventListener("click", () => {
     wrapper.classList.remove("active");
 });
 
+function showNotification(message, isError) {
+    const notification = document.getElementById("notification");
+    notification.textContent = message;
+    notification.classList.add("active");
+    if (isError) {
+        notification.classList.add("error");
+    } else {
+        notification.classList.remove("error");
+    }
+
+    setTimeout(() => {
+        notification.classList.remove("active");
+    }, 5000);
+}
+
 document
     .getElementById("loginForm")
     .addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const email = document.getElementById("email").value;
+        const email = document.getElementById("email").value.toLowerCase();
         const password = document.getElementById("password").value;
 
         try {
@@ -38,15 +53,13 @@ document
             }
 
             const data = await response.json();
-            console.log("Login successful", data);
-
             localStorage.setItem("token", data.access_token);
 
             window.location.href =
                 "http://localhost:8000/Profile_new/index.html#";
         } catch (error) {
             console.error("Login failed:", error);
-            alert("Login failed. Please check your credentials and try again.");
+            showNotification("Login failed. Please try again.", true);
         }
     });
 
@@ -55,12 +68,12 @@ document
     .addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const email = document.getElementById("email2").value;
+        const email = document.getElementById("email2").value.toLowerCase();
         const password = document.getElementById("password2").value;
         const retypePassword = document.getElementById("retypePassword").value;
 
         if (retypePassword !== password) {
-            alert("Passwords do not match. Please retype your password.");
+            showNotification("Passwords do not match. Please try again.", true);
             return;
         }
         try {
@@ -76,12 +89,10 @@ document
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const result = await response.json();
-
-            alert("Registration successful! Please log in.");
+            showNotification("Registration successful! Please log in.", false);
             wrapper.classList.remove("active");
         } catch (error) {
             console.error("Registration failed:", error);
-            alert("Registration failed. User already exists.");
+            showNotification("Registration failed. User already exists.", true);
         }
     });

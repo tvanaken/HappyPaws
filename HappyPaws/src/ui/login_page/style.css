@@ -36,6 +36,29 @@ header {
     cursor: pointer;
 }
 
+.notification {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    width: 80%;
+    transform: translateX(-50%);
+    background-color: #4caf50;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border-radius: 4px;
+    z-index: 1000;
+    transition: top 0.4s ease-in-out;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+.notification.active {
+    top: 20px;
+}
+
 .navigation .nav-link {
     position: relative;
     font-size: 1.1em;
@@ -149,6 +172,10 @@ header {
     font-weight: 500;
     pointer-events: none;
     transition: 0.5s;
+}
+
+input[type="checkbox"] {
+    opacity: 0.75;
 }
 
 .input-box input:focus ~ label,

@@ -1,32 +1,97 @@
-async function initializeAutocomplete(breedInputId, suggestionsContainerId) {
-    const breedInput = document.getElementById(breedInputId);
-    const suggestionsContainer = document.getElementById(
-        suggestionsContainerId,
-    );
+let breeds = [];
 
-    breedInput.addEventListener("input", async function () {
-        const inputValue = this.value;
-        if (inputValue.length > 1) {
-            fetch(`/api/breeds?search=${inputValue}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log("data", data);
-                    suggestionsContainer.innerHTML = "";
-                    data.forEach((breed) => {
-                        const suggestionItem = document.createElement("div");
-                        suggestionItem.innerHTML = breed.name;
-                        suggestionItem.addEventListener("click", function () {
-                            breedInput.value = this.textContent;
-                            suggestionsContainer.innerHTML = "";
-                        });
-                        suggestionsContainer.appendChild(suggestionItem);
-                    });
-                })
-                .catch((error) => console.log("error", error));
-        } else {
+async function preloadBreeds() {
+    if (breeds.length === 0) {
+        try {
+            const response = await fetch("/api/breeds");
+            if (response.ok) {
+                breeds = await response.json();
+            } else {
+                throw new Error("Failed to fetch breeds");
+            }
+        } catch (error) {
+            console.error("Error fetching breeds:", error);
+        }
+    }
+}
+
+function filterBreeds(inputValue) {
+    const filteredBreeds = breeds.filter((breed) =>
+        breed.name.toLowerCase().includes(inputValue.toLowerCase()),
+    );
+    displaySuggestions(filteredBreeds);
+}
+
+function displaySuggestions(breeds) {
+    const suggestionsContainer = document.getElementById("breedList");
+    suggestionsContainer.innerHTML = "";
+
+    breeds.forEach((breed) => {
+        const suggestionItem = document.createElement("div");
+        suggestionItem.textContent = breed.name;
+        suggestionItem.addEventListener("click", () => {
+            document.getElementById("Breed").value = breed.name;
             suggestionsContainer.innerHTML = "";
+        });
+        suggestionsContainer.appendChild(suggestionItem);
+    });
+}
+
+document.getElementById("Breed").addEventListener("focus", () => {
+    preloadBreeds();
+    displaySuggestions(breeds);
+});
+
+document.getElementById("Breed").addEventListener("input", (event) => {
+    const inputValue = event.target.value;
+    if (inputValue.length > 0) {
+        filterBreeds(inputValue);
+    } else {
+        displaySuggestions(breeds);
+    }
+});
+
+document.getElementById("discussionBreed").addEventListener("focus", () => {
+    preloadBreeds();
+    displaySuggestions(breeds);
+});
+
+document
+    .getElementById("discussionBreed")
+    .addEventListener("input", (event) => {
+        const inputValue = event.target.value;
+        if (inputValue.length > 0) {
+            filterBreeds(inputValue);
+        } else {
+            displaySuggestions(breeds);
         }
     });
+
+document.getElementById("Breed").addEventListener("blur", () => {
+    setTimeout(() => {
+        document.getElementById("breedList").innerHTML = "";
+    }, 200);
+});
+
+document.getElementById("discussionBreed").addEventListener("blur", () => {
+    setTimeout(() => {
+        document.getElementById("breedList").innerHTML = "";
+    }, 200);
+});
+
+function showNotification(message, isError) {
+    const notification = document.getElementById("notification");
+    notification.textContent = message;
+    notification.classList.add("active");
+    if (isError) {
+        notification.classList.add("error");
+    } else {
+        notification.classList.remove("error");
+    }
+
+    setTimeout(() => {
+        notification.classList.remove("active");
+    }, 5000);
 }
 
 async function toggleLoginLogoutButtons() {
@@ -66,11 +131,14 @@ async function fetchAndDisplayPosts() {
         discussionsElement.innerHTML = "";
 
         posts.forEach(async (post) => {
-            const userResponse = await fetch(`http://localhost:8000/api/users/${post.user_id}`, {
-                headers: {
-                    "Content-Type": "application/json",
+            const userResponse = await fetch(
+                `http://localhost:8000/api/users/${post.user_id}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 },
-            });
+            );
 
             let username = await userResponse.json();
             username = username.email.split("@")[0];
@@ -95,16 +163,18 @@ async function fetchAndDisplayPosts() {
 }
 
 function displayPosts(posts) {
-
     const discussionsElement = document.getElementById("discussions");
     discussionsElement.innerHTML = "";
 
     posts.forEach(async (post) => {
-        const userResponse = await fetch(`http://localhost:8000/api/users/${post.user_id}`, {
-            headers: {
-                "Content-Type": "application/json",
+        const userResponse = await fetch(
+            `http://localhost:8000/api/users/${post.user_id}`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
             },
-        });
+        );
 
         let username = await userResponse.json();
         username = username.email.split("@")[0];
@@ -121,7 +191,7 @@ function displayPosts(posts) {
             window.location.href = `http://localhost:8000/forum/post.html?postId=${post.id}`;
         });
 
-        discussionsElement.appendChild(postElement);    
+        discussionsElement.appendChild(postElement);
     });
 }
 
@@ -134,15 +204,12 @@ async function searchPosts() {
     if (searchInput) url.searchParams.append("search", searchInput);
 
     try {
-
         const response = await fetch(url);
 
-        if (!response.ok) 
-            throw new Error("Failed to fetch discussions");
+        if (!response.ok) throw new Error("Failed to fetch discussions");
 
         const discussions = await response.json();
         displayPosts(discussions);
-
     } catch (error) {
         console.error("Error fetching discussions:", error);
     }
@@ -177,11 +244,15 @@ document
         });
 
         if (response.ok) {
+            console.log("Discussion created successfully");
+            title.value = "";
+            content.value = "";
+            breed_name.value = "";
+            showNotification("Discussion created successfully", false);
             closeModal();
             await fetchAndDisplayPosts();
-            alert("Discussion created successfully!");
         } else {
-            alert("Failed to create discussion.");
+            showNotification("Failed to create discussion", true);
         }
     });
 
@@ -196,8 +267,9 @@ function closeModal() {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
-    await initializeAutocomplete("Breed", "breedList");
-    await initializeAutocomplete("discussionBreed", "discussionBreedList");
+    // await initializeAutocomplete("Breed", "breedList");
+    // await initializeAutocomplete("discussionBreed", "discussionBreedList");
+    await preloadBreeds();
     await toggleLoginLogoutButtons();
     await fetchAndDisplayPosts();
     document.querySelector(".close").addEventListener("click", closeModal);

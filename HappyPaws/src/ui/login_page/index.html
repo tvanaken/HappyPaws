@@ -17,7 +17,11 @@
                 </a>
             </h2>
             <nav class="navigation">
-                <a href="http://localhost:8000/forum/index.html" class="nav-link">Forum</a>
+                <a
+                    href="http://localhost:8000/forum/index.html"
+                    class="nav-link"
+                    >Forum</a
+                >
                 <a href="#" class="nav-link">Services</a>
                 <a
                     href="http://localhost:8000/login_page/index.html#"
@@ -29,6 +33,7 @@
         </header>
 
         <div class="wrapper">
+            <div id="notification" class="notification"></div>
             <div class="login-box login">
                 <h2>Login</h2>
                 <form id="loginForm" action="/token" method="post">
@@ -94,6 +99,7 @@
                 </form>
             </div>
         </div>
+
         <script src="script.js"></script>
     </body>
 </html>

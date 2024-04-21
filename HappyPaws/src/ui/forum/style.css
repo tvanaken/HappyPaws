@@ -168,19 +168,42 @@ input[type="file"]:hover {
     align-self: center;
     justify-content: space-evenly;
     padding: 10px;
-    background-color: #f4f4f4; /* Light gray background */
-    border-radius: 8px; /* Rounded corners for the filter section */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    margin-bottom: 80px; /* Space below the filter section */
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 80px;
     min-width: 750px;
 }
 
 #search-input {
-    width: 20%; /* Adjust width as needed */
+    width: 20%;
     padding: 10px;
-    margin: 0 10px; /* Adds horizontal spacing between elements */
+    margin: 0 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+.notification {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    width: 80%;
+    transform: translateX(-50%);
+    background-color: #4caf50;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border-radius: 4px;
+    z-index: 100000;
+    transition: top 0.4s ease-in-out;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+.notification.active {
+    top: 210px;
 }
 
 .autocomplete input[type="text"] {
@@ -222,7 +245,7 @@ input[type="file"]:hover {
 
 #discussionBreed {
     display: flex;
-    width: 50%; /* Adjust width as needed */
+    width: 50%;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;

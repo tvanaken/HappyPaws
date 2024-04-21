@@ -40,6 +40,28 @@ header {
     cursor: pointer;
 }
 
+.notification {
+    position: fixed;
+    top: -10px;
+    left: 50%;
+    width: 50%;
+    transform: translateX(-50%);
+    background-color: #4caf50;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border-radius: 4px;
+    transition: top 0.4s ease-in-out;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+.notification.active {
+    top: 150px;
+}
+
 .navigation .nav-link {
     position: relative;
     font-size: 1.1em;

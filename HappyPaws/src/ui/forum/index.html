@@ -52,8 +52,8 @@
                 Create Discussion
             </button>
         </div>
-        <div id="discussions">
-        </div>
+        <div id="discussions"></div>
+        <div id="notification" class="notification"></div>
         <div id="addDiscussionModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeModal()">&times;</span>
@@ -75,7 +75,9 @@
                     ></textarea>
                     <div class="autocomplete">
                         <input
+                            type="text"
                             id="discussionBreed"
+                            name="discussionBreed"
                             placeholder="Breed"
                         />
                         <div

@@ -82,7 +82,7 @@ body {
 
 .autocomplete-items {
     position: absolute;
-    width: 50%;
+    width: 75%;
     border: 1px solid #d4d4d4;
     border-bottom: none;
     border-top: none;
@@ -404,6 +404,29 @@ input[type="file"]:hover {
 
 .modal-content span {
     cursor: pointer;
+}
+
+.notification {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    width: 80%;
+    transform: translateX(-50%);
+    background-color: #4caf50;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border-radius: 4px;
+    z-index: 1000;
+    transition: top 0.4s ease-in-out;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+.notification.active {
+    top: 20px;
 }
 
 .dropdown-content {

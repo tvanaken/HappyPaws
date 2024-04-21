@@ -7,6 +7,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     await fetchPostDetails(postId);
 });
 
+function showNotification(message, isError) {
+    const notification = document.getElementById("notification");
+    notification.textContent = message;
+    notification.classList.add("active");
+    if (isError) {
+        notification.classList.add("error");
+    } else {
+        notification.classList.remove("error");
+    }
+
+    setTimeout(() => {
+        notification.classList.remove("active");
+    }, 3000);
+}
+
 async function toggleLoginLogoutButtons() {
     const token = localStorage.getItem("token");
     const loginButton = document.getElementById("loginButton");
@@ -28,7 +43,8 @@ async function toggleLoginLogoutButtons() {
 
 async function fetchPostDetails(postId) {
     try {
-        const response = await fetch(
+        console.log(postId);
+        const postResponse = await fetch(
             `http://localhost:8000/forum/posts/${postId}`,
             {
                 headers: {
@@ -36,11 +52,22 @@ async function fetchPostDetails(postId) {
                 },
             },
         );
-        if (!response.ok) {
+        const commentResponse = await fetch(
+            `http://localhost:8000/forum/posts/${postId}/comments`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!postResponse.ok || !commentResponse.ok) {
             throw new Error("Failed to fetch post details");
         }
 
-        const post = await response.json();
+        const post = await postResponse.json();
+        const comments = await commentResponse.json();
+        console.log(post);
 
         const postDiv = document.getElementById("post-container");
 
@@ -52,7 +79,7 @@ async function fetchPostDetails(postId) {
 
         const commentsDiv = document.getElementById("comments-container");
         commentsDiv.innerHTML = "";
-        post.comments.forEach((comment) => {
+        comments.forEach((comment) => {
             const commentElement = document.createElement("div");
             commentElement.className = "comment";
             commentElement.innerHTML = `
@@ -95,6 +122,10 @@ document
         const postId = urlParams.get("postId");
 
         const content = document.getElementById("comment-text").value;
+        if (!content) {
+            showNotification("Comment cannot be empty", true);
+            return;
+        }
         const created_at = new Date().toISOString().replace("Z", "");
 
         const payload = { content, created_at };
@@ -112,9 +143,11 @@ document
         );
         if (response.ok) {
             const newComment = await response.json();
+            document.getElementById("comment-text").value = "";
+            showNotification("Comment added successfully", false);
             await appendComment(newComment);
         } else {
-            alert("Failed to add comment");
+            showNotification("Failed to add comment", true);
             return;
         }
     });

@@ -55,13 +55,9 @@ async def get_posts_filtered(breed_name: Optional[str] = None, search: Optional[
 
 @router.get("/forum/posts/{post_id}")
 async def get_post(post_id: int, session: AsyncSession = Depends(get_session)):
-    comments_alias = aliased(Comment)
 
     query = (
         select(Post)
-        .join(comments_alias, Post.comments)
-        .options(contains_eager(Post.comments, alias=comments_alias))
-        .order_by(comments_alias.created_at.desc())
         .where(Post.id == post_id)
     )
     

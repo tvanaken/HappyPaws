@@ -16,3 +16,12 @@ class Comment(Base):
 
     user = relationship('User', back_populates='comments')
     post = relationship('Post', back_populates='comments')
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "content": self.content,
+            "user_id": self.user_id,
+            "post_id": self.post_id,
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }

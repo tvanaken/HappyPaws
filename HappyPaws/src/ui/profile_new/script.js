@@ -56,6 +56,21 @@ scheduleLink.addEventListener("click", (ev) => {
     document.querySelector(".schedule").classList.add("active");
 });
 
+function showNotification(message, isError) {
+    const notification = document.getElementById("notification");
+    notification.textContent = message;
+    notification.classList.add("active");
+    if (isError) {
+        notification.classList.add("error");
+    } else {
+        notification.classList.remove("error");
+    }
+
+    setTimeout(() => {
+        notification.classList.remove("active");
+    }, 5000);
+}
+
 async function displayUserPet() {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -222,6 +237,11 @@ async function displayUserPet() {
             petDetails.age,
             petDetails.activity_level,
         );
+    } else {
+        if (!sessionStorage.getItem("addPetModalShown")) {
+            document.getElementById("addPetModal").style.display = "block";
+            sessionStorage.setItem("addPetModalShown", "true");
+        }
     }
 }
 
@@ -260,14 +280,11 @@ async function updateDietRecommendations(breedId, age, activityLevel) {
             nameParagraph.className = "foodName";
             nameParagraph.textContent = food.name;
 
-            // Append the image and paragraph to the div
             foodItemDiv.appendChild(image);
             foodItemDiv.appendChild(nameParagraph);
 
-            // Add event listener for click to show more details
             image.addEventListener("click", () => displayFoodDetails(food));
 
-            // Append the foodItem div to the foodGrid div
             foodGrid.appendChild(foodItemDiv);
         });
     } catch (error) {
@@ -385,6 +402,7 @@ async function toggleLoginLogoutButtons() {
         logoutButton.style.display = "inline-block";
         logoutButton.addEventListener("click", () => {
             localStorage.removeItem("token");
+            sessionStorage.removeItem("addPetModalShown");
             window.location.href =
                 "http://localhost:8000/Login_page/index.html";
         });
@@ -417,9 +435,7 @@ async function initializeCalendar() {
         title: reminder.title,
         start: reminder.start,
         end: reminder.end,
-        rrule: {
-            
-        }
+        rrule: {},
     }));
     console.log(reminders);
     console.log(eventData);
@@ -546,15 +562,24 @@ document
                     image_url,
                 }),
             });
-            const result = await response.json();
             if (response.ok) {
                 await displayUserPet();
+                showNotification(name + " added successfully!", false);
+
+                name.value = "";
+                breed1.value = "";
+                breed2.value = "";
+                weight.value = "";
+                activity_level.value = "";
+                birthday.value = "";
+                bio.value = "";
+                fileInput.value = "";
             }
 
             document.getElementById("addPetModal").style.display = "none";
         } catch (error) {
             console.error(error);
-            alert("Failed to add pet or image.");
+            showNotification("Failed to add pet. Please try again.", true);
         } finally {
             submitBtn.innerHTML = "Submit";
             submitBtn.disabled = false;

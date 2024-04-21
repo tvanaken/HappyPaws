@@ -22,6 +22,12 @@ class CommentRead(BaseModel):
     user_id: int
     post_id: int
     created_at: datetime
+
+@router.get("/forum/posts/{post_id}/comments")
+async def list_post_comments(post_id: int, session: AsyncSession = Depends(get_session)):
+    query = select(Comment).where(Comment.post_id == post_id)
+    comments = await session.execute(query)
+    return comments.scalars().all()
     
 
 @router.post("/forum/posts/{post_id}/comments", response_model=CommentCreate)
@@ -40,4 +46,4 @@ async def create_comment(post_id: int, comment_data: CommentCreate, token: str =
     session.add(comment)
     await session.commit()
 
-    return JSONResponse(content={comment}, status_code=201)
+    return JSONResponse(content=comment.to_dict(), status_code=201)
