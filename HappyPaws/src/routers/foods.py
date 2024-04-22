@@ -13,9 +13,6 @@ from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
-PROTEIN_THRESHOLDS = {"puppy": 28, "adult": 25, "senior": 20}
-FAT_THRESHOLDS = {"Low Activity": 12, "Moderately Active": 15, "High Activity": 20}
-
 class FoodModel(BaseModel):
     id: int
     image_url: str
@@ -123,6 +120,12 @@ async def create_food(food: dict):
 
     return JSONResponse(content=food.to_dict(), status_code=201)
 
+NUTRIENT_THRESHOLDS = {
+    "puppy": {"Low Activity": (30, 10), "Moderately Active": (32, 14), "High Activity": (35, 18)},
+    "adult": {"Low Activity": (25, 12), "Moderately Active": (28, 15), "High Activity": (30, 20)},
+    "senior": {"Low Activity": (20, 10), "Moderately Active": (22, 12), "High Activity": (25, 15)}
+}
+
 @router.get("/api/recommended_foods", response_model=list[FoodModel])
 async def get_recommended_foods(breedId: int, age: int, activityLevel: str, session: AsyncSession = Depends(get_session)):
     breed_result = await session.execute(select(Breed).where(Breed.id == breedId))
@@ -131,8 +134,7 @@ async def get_recommended_foods(breedId: int, age: int, activityLevel: str, sess
         raise HTTPException(status_code=404, detail="Breed not found")
     
     life_stage = determine_life_stage(breed.size, age)
-    protein_min = PROTEIN_THRESHOLDS[life_stage]
-    fat_min = FAT_THRESHOLDS[activityLevel]
+    protein_min, fat_min = NUTRIENT_THRESHOLDS[life_stage][activityLevel]
 
     query = select(Food).where(
         (Food.size_constraint == breed.size) | (Food.size_constraint == "any"),

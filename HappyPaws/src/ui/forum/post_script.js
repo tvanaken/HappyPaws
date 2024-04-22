@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await fetchPostDetails(postId);
 });
 
+
 function showNotification(message, isError) {
     const notification = document.getElementById("notification");
     notification.textContent = message;
@@ -20,6 +21,20 @@ function showNotification(message, isError) {
     setTimeout(() => {
         notification.classList.remove("active");
     }, 3000);
+}
+
+function linkify(inputText) {
+    var replacedText, replacePattern1, replacePattern2, replacePattern3;
+
+    //URLs starting with http://, https://, or ftp://
+    replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+    replacedText = inputText.replace(replacePattern1, '<a href="$1" target="_blank">$1</a>');
+
+    //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
+    replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+    replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
+
+    return replacedText;
 }
 
 async function toggleLoginLogoutButtons() {
@@ -121,7 +136,7 @@ document
         const urlParams = new URLSearchParams(queryString);
         const postId = urlParams.get("postId");
 
-        const content = document.getElementById("comment-text").value;
+        const content = linkify(document.getElementById("comment-text").value);
         if (!content) {
             showNotification("Comment cannot be empty", true);
             return;
