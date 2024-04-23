@@ -307,7 +307,7 @@ function displayFoodDetails(food) {
             ${renderNutrients(food)}
         </table>
         <a href="${food.site_url}" target="_blank" >
-            <button type="submit" style="margin-bottom: 20px">Buy Now</button>
+            <button type="submit" style="margin-bottom: 50px">Buy Now</button>
         </a>
     `;
     console.log(food);
@@ -657,6 +657,10 @@ document
             console.error(error);
             showNotification("Failed to add pet. Please try again.", true);
         } finally {
+            
+            submitBtn.innerHTML = "Submit";
+            submitBtn.disabled = false;
+            document.body.style.cursor = "default";
             nameInput.value = "";
             breed1Input.value = "";
             breed2Input.value = "";
@@ -665,9 +669,6 @@ document
             birthdayInput.value = "";
             bioInput.value = "";
             fileInput.value = "";
-            submitBtn.innerHTML = "Submit";
-            submitBtn.disabled = false;
-            document.body.style.cursor = "default";
         }
     });
 

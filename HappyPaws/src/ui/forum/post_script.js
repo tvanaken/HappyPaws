@@ -23,16 +23,16 @@ function showNotification(message, isError) {
     }, 3000);
 }
 
-function linkify(inputText) {
-    var replacedText, replacePattern1, replacePattern2, replacePattern3;
+async function linkify(inputText) {
+    var replacedText, replacePattern1, replacePattern2;
 
     //URLs starting with http://, https://, or ftp://
     replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
-    replacedText = inputText.replace(replacePattern1, '<a href="$1" target="_blank">$1</a>');
+    replacedText = inputText.replace(replacePattern1, '<a href="$1" style="color: blue" target="_blank">Link</a>');
 
     //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
     replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
-    replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
+    replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" style="color: blue" target="_blank">Link</a>');
 
     return replacedText;
 }
@@ -136,7 +136,9 @@ document
         const urlParams = new URLSearchParams(queryString);
         const postId = urlParams.get("postId");
 
-        const content = linkify(document.getElementById("comment-text").value);
+        const contentInput = document.getElementById("comment-text").value;
+        const content = await linkify(contentInput);
+
         if (!content) {
             showNotification("Comment cannot be empty", true);
             return;

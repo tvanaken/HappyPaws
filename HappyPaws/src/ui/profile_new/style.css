@@ -381,6 +381,8 @@ td {
 }
 
 button[type="submit"] {
+    position: relative;
+    overflow: hidden;
     background-color: #4caf50;
     color: white;
     padding: 12px 20px;
@@ -485,6 +487,8 @@ input[type="file"]:hover {
 }
 
 .loader {
+    display: inline-block;
+    vertical-align: middle;
     border: 4px solid #f3f3f3;
     border-top: 4px solid #3498db;
     border-radius: 50%;
