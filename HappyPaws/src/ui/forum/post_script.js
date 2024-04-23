@@ -25,12 +25,8 @@ function showNotification(message, isError) {
 
 async function linkify(inputText) {
     var replacedText, replacePattern1, replacePattern2;
-
-    //URLs starting with http://, https://, or ftp://
     replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
     replacedText = inputText.replace(replacePattern1, '<a href="$1" style="color: blue" target="_blank">Link</a>');
-
-    //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
     replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
     replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" style="color: blue" target="_blank">Link</a>');
 

@@ -216,19 +216,19 @@ a {
 
 .foodItem .foodName {
     position: absolute;
-    bottom: -25px; /* Adjust this value to position the food name below the image */
-    width: 200%; /* Make the label as wide as the .foodItem */
-    text-align: center; /* Center the text */
-    left: -55%; /* Adjust this value to center the text */
-    opacity: 0; /* Make the name fully transparent initially */
-    transition: opacity 0.5s; /* Smooth transition for opacity */
-    white-space: nowrap; /* Prevent the text from wrapping */
+    bottom: -25px;
+    width: 200%;
+    text-align: center; 
+    left: -55%;
+    opacity: 0;
+    transition: opacity 0.5s; 
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .foodItem:hover .foodName {
-    opacity: 1; /* Make the name fully visible */
+    opacity: 1;
 }
 
 .foodImage:hover {
