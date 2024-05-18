@@ -24,7 +24,19 @@ https://www.docker.com/products/docker-desktop/
 # Clone the repository
 git clone https://github.com/tvanaken/HappyPaws.git
 cd happypaws
-Docker compose up
+
+# Create .env files
+Create identical .env files both in the root folder and the src folder with the following:
+PGPASSWORD=YOUR_PASSWORD
+DB_USERNAME=YOUR_USERNAME
+DB_PASSWORD=YOUR_PASSWORD
+DB_HOST=db
+DB_PORT=5432
+DB_NAME=pet_parent
+SECRET_KEY=YOUR_SECRET_KEY
+ALGORITHM=HS256
+AWS_ACCESS_KEY_ID=YOUR_ACCESS_ID
+AWS_SECRET_ACCESS_KEY=YOUR_ACCESS_KEY
 
 # Open the application
 http://localhost:8000/Login_page/
@@ -47,6 +59,6 @@ http://localhost:8000/Login_page/
 ### Forum. Able to be filtered by breed and/or keywords
 <img width="959" alt="Forum" src="https://github.com/tvanaken/HappyPaws/assets/89529903/265d7528-9957-488c-8de9-cc477b026e7c">
 
-Users are able to comment on forum posts
+### Users are able to comment on forum posts
 <img width="959" alt="post" src="https://github.com/tvanaken/HappyPaws/assets/89529903/e1e636c4-5964-46a0-bf39-0e9b88c18b3e">
 
