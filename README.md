@@ -37,6 +37,9 @@ ALGORITHM=HS256
 AWS_ACCESS_KEY_ID=YOUR_ACCESS_ID
 AWS_SECRET_ACCESS_KEY=YOUR_ACCESS_KEY
 
+# Build the application
+Docker compose up
+
 # Open the application
 http://localhost:8000/Login_page/
 ```
