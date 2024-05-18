@@ -44,7 +44,7 @@ cd happypaws
 # Build the application
 Docker compose up
 ```
-# Open the application
+## Open the application
 http://localhost:8000/Login_page/
 
 ### Login/Sign-up
