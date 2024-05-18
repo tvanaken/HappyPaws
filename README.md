@@ -34,8 +34,6 @@ Here's the content you should place in each `.env` file:
 
 Replace `YOUR_PASSWORD`, `YOUR_USERNAME`, `YOUR_SECRET_KEY`, `YOUR_ACCESS_ID`, and `YOUR_ACCESS_KEY` with your actual database credentials and AWS configuration.
 
-
-
 Be sure to have Docker installed.
 https://www.docker.com/products/docker-desktop/
 ```bash
@@ -45,10 +43,10 @@ cd happypaws
 
 # Build the application
 Docker compose up
-
+```
 # Open the application
 http://localhost:8000/Login_page/
-```
+
 ### Login/Sign-up
 ![Screenshot 2024-04-20 152726](https://github.com/tvanaken/HappyPaws/assets/89529903/c2375a09-9679-4e46-bdb2-c8cef8171c71)
 
