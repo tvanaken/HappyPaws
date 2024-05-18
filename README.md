@@ -25,8 +25,7 @@ https://www.docker.com/products/docker-desktop/
 git clone https://github.com/tvanaken/HappyPaws.git
 cd happypaws
 
-# Create .env files
-Create identical .env files both in the root folder and the src folder with the following:
+# Create identical .env files both in the root folder and the src folder with the following:
 PGPASSWORD=YOUR_PASSWORD
 DB_USERNAME=YOUR_USERNAME
 DB_PASSWORD=YOUR_PASSWORD
