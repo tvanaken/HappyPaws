@@ -18,14 +18,7 @@ HappyPaws is a comprehensive web application designed to enhance the overall wel
 - **Containerization**: Docker
 
 ## Setup and Installation
-Be sure to have Docker installed.
-https://www.docker.com/products/docker-desktop/
-```bash
-# Clone the repository
-git clone https://github.com/tvanaken/HappyPaws.git
-cd happypaws
-
-# Create identical .env files both in the root folder and the src folder with the following:
+### Create identical .env files both in the root folder and the src folder with the following:
 PGPASSWORD=YOUR_PASSWORD
 DB_USERNAME=YOUR_USERNAME
 DB_PASSWORD=YOUR_PASSWORD
@@ -36,6 +29,13 @@ SECRET_KEY=YOUR_SECRET_KEY
 ALGORITHM=HS256
 AWS_ACCESS_KEY_ID=YOUR_ACCESS_ID
 AWS_SECRET_ACCESS_KEY=YOUR_ACCESS_KEY
+
+Be sure to have Docker installed.
+https://www.docker.com/products/docker-desktop/
+```bash
+# Clone the repository
+git clone https://github.com/tvanaken/HappyPaws.git
+cd happypaws
 
 # Build the application
 Docker compose up
