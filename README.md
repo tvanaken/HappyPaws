@@ -29,16 +29,16 @@ Docker compose up
 # Open the application
 http://localhost:8000/Login_page/
 ```
-Login/Sign-up
+#Login/Sign-up
 ![Screenshot 2024-04-20 152726](https://github.com/tvanaken/HappyPaws/assets/89529903/c2375a09-9679-4e46-bdb2-c8cef8171c71)
 
-Profile
+#Profile
 <img width="959" alt="profile" src="https://github.com/tvanaken/HappyPaws/assets/89529903/a2c9b81c-9e65-4077-a308-d5491539c1f8">
 
-Add Pet Form
+#Add Pet Form
 ![Screenshot 2024-05-06 070628](https://github.com/tvanaken/HappyPaws/assets/89529903/653e4d14-8028-4f5a-9370-73b9d3933aa2)
 
-Diet Recommendations based on pet's breed. age, and activity level
+#Diet Recommendations based on pet's breed. age, and activity level
 ![food](https://github.com/tvanaken/HappyPaws/assets/89529903/b2e84247-48e0-44be-94ef-aad03e824548)
 
 JavaScript FullCalendar
