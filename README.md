@@ -21,16 +21,19 @@ HappyPaws is a comprehensive web application designed to enhance the overall wel
 To configure your environment variables, you will need to create `.env` files in both the root directory and the `src` folder. These files should contain the necessary credentials and configuration settings for your application to run correctly.
 
 Here's the content you should place in each `.env` file:
-PGPASSWORD=YOUR_PASSWORD
-DB_USERNAME=YOUR_USERNAME
-DB_PASSWORD=YOUR_PASSWORD
-DB_HOST=db
-DB_PORT=5432
-DB_NAME=pet_parent
-SECRET_KEY=YOUR_SECRET_KEY
-ALGORITHM=HS256
-AWS_ACCESS_KEY_ID=YOUR_ACCESS_ID
-AWS_SECRET_ACCESS_KEY=YOUR_ACCESS_KEY
+- `PGPASSWORD=YOUR_PASSWORD`
+- `DB_USERNAME=YOUR_USERNAME`
+- `DB_PASSWORD=YOUR_PASSWORD`
+- `DB_HOST=db`
+- `DB_PORT=5432`
+- `DB_NAME=pet_parent`
+- `SECRET_KEY=YOUR_SECRET_KEY`
+- `ALGORITHM=HS256`
+- `AWS_ACCESS_KEY_ID=YOUR_ACCESS_ID`
+- `AWS_SECRET_ACCESS_KEY=YOUR_ACCESS_KEY`
+
+Replace `YOUR_PASSWORD`, `YOUR_USERNAME`, `YOUR_SECRET_KEY`, `YOUR_ACCESS_ID`, and `YOUR_ACCESS_KEY` with your actual database credentials and AWS configuration.
+
 
 
 Be sure to have Docker installed.
