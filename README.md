@@ -18,10 +18,13 @@ HappyPaws is a comprehensive web application designed to enhance the overall wel
 - **Containerization**: Docker
 
 ## Setup and Installation
+Be sure to have Docker installed.
+https://www.docker.com/products/docker-desktop/
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/happypaws.git
+git clone https://github.com/tvanaken/HappyPaws.git
 cd happypaws
+Docker compose up
 
 # Install dependencies
 pip install -r requirements.txt
