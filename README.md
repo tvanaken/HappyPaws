@@ -28,3 +28,5 @@ Docker compose up
 
 # Open the application
 http://localhost:8000/Login_page/
+```
+![Screenshot 2024-04-20 152726](https://github.com/tvanaken/HappyPaws/assets/89529903/c2375a09-9679-4e46-bdb2-c8cef8171c71)
