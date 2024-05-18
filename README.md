@@ -26,8 +26,5 @@ git clone https://github.com/tvanaken/HappyPaws.git
 cd happypaws
 Docker compose up
 
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the application
-uvicorn app.main:app --reload
+# Open the application
+http://localhost:8000/Login_page/
