@@ -59,6 +59,7 @@
 
                     <ul class="about">
                         <li><span>Weight</span>Pounds</li>
+                        <li><span></span></li>
                         <li><span>Age</span>Years old</li>
                     </ul>
 
@@ -278,35 +279,33 @@
                             <option value="daily">Daily</option>
                             <option value="weekly">Weekly</option></select
                         ><br />
-                        <div id="dowWrapper" style="display: none">
-                            <div id="daysOfWeek">
+                        <div id="dowWrapper">
+                            <div id="daysOfWeek" style="display: none">
                                 <label for="sunday">Sun</label>
                                 <input type="checkbox" id="sunday" value="0" />
-                                <label for="monday">Mon</label>
-                                <input type="checkbox" id="monday" value="1" />
-                                <label for="tuesday">Tue</label>
-                                <input type="checkbox" id="tuesday" value="2" />
-                                <label for="wednesday">Wed</label>
-                                <input
-                                    type="checkbox"
-                                    id="wednesday"
-                                    value="3"
-                                />
-                            </div>
-                            <div id="daysOfWeek">
                                 <label for="thursday">Thur</label>
                                 <input
                                     type="checkbox"
                                     id="thursday"
                                     value="4"
                                 />
+                                <label for="monday">Mon</label>
+                                <input type="checkbox" id="monday" value="1" />
                                 <label for="friday">Fri</label>
                                 <input type="checkbox" id="friday" value="5" />
+                                <label for="tuesday">Tue</label>
+                                <input type="checkbox" id="tuesday" value="2" />
                                 <label for="saturday">Sat</label>
                                 <input
                                     type="checkbox"
                                     id="saturday"
                                     value="6"
+                                />
+                                <label for="wednesday">Wed</label>
+                                <input
+                                    type="checkbox"
+                                    id="wednesday"
+                                    value="3"
                                 />
                             </div>
                         </div>
@@ -366,7 +365,7 @@
                     </div>
                     <br /><br />
                     <div id="btnWrapper">
-                        <button type="submit" id="submitBtn" value="Submit">
+                        <button type="submit" id="submitBtn2" value="Submit">
                             Submit
                         </button>
                     </div>

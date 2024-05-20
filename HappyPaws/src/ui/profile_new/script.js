@@ -230,7 +230,12 @@ async function displayUserPet() {
             .querySelector(".left_col .about")
             .querySelectorAll(
                 "li",
-            )[1].innerHTML = `<span>${petDetails.age}</span> Years old`;
+            )[1].innerHTML = `<span>&nbsp;</span> ${petDetails.activity_level}`;
+        document
+            .querySelector(".left_col .about")
+            .querySelectorAll(
+                "li",
+            )[2].innerHTML = `<span>${petDetails.age}</span> Years old`;
         document.querySelector(".left_col .bio p").textContent = petDetails.bio;
 
         await updateDietRecommendations(
@@ -302,7 +307,7 @@ function displayFoodDetails(food) {
             ${renderNutrients(food)}
         </table>
         <a href="${food.site_url}" target="_blank" >
-            <button type="submit" style="margin-bottom: 20px">Buy Now</button>
+            <button type="submit" style="margin-bottom: 50px">Buy Now</button>
         </a>
     `;
     console.log(food);
@@ -478,6 +483,7 @@ async function initializeCalendar() {
         endTime: reminder.endTime,
         startRecur: reminder.startRecur,
         endRecur: reminder.endRecur,
+        color: reminder.color,
     }));
     const calendarEl = document.getElementById("calendar");
     const tooltip = document.createElement("div");
@@ -517,6 +523,7 @@ async function initializeCalendar() {
         eventMouseLeave: function (info) {
             tooltip.style.display = "none";
         },
+        eventTextColor: "black",
     });
     await calendar.render();
 }
@@ -595,13 +602,13 @@ document
         event.preventDefault();
 
         const token = localStorage.getItem("token");
-        const name = document.getElementById("Name").value;
-        const breed1 = document.getElementById("Breed").value;
-        const breed2 = document.getElementById("Breed2").value;
-        const weight = document.getElementById("Weight").value;
-        const activity_level = document.getElementById("ActivityLevel").value;
-        const birthday = document.getElementById("Birthday").value;
-        const bio = document.getElementById("Bio").value;
+        const nameInput = document.getElementById("Name");
+        const breed1Input = document.getElementById("Breed");
+        const breed2Input = document.getElementById("Breed2");
+        const weightInput = document.getElementById("Weight");
+        const activityLevelInput = document.getElementById("ActivityLevel");
+        const birthdayInput = document.getElementById("Birthday");
+        const bioInput = document.getElementById("Bio");
         const fileInput = document.getElementById("ProfilePicture");
         let file = null;
         let age = null;
@@ -609,12 +616,12 @@ document
         if (fileInput.files.length > 0) {
             file = fileInput.files[0];
         }
-        if (birthday) {
-            age = today.getFullYear() - new Date(birthday).getFullYear();
+        if (birthdayInput.value) {
+            age = new Date().getFullYear() - new Date(birthdayInput.value).getFullYear();
         }
 
         try {
-            const file_name = `${name}-${Date.now()}.jpeg`;
+            const file_name = `${nameInput.value}-${Date.now()}.jpeg`;
             const { url: presignedUrl } = await getPresignedUrl(file_name);
             const image_url = `https://happypawsproject.s3.amazonaws.com/${file_name}`;
 
@@ -629,29 +636,20 @@ document
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    name,
-                    breed1,
-                    breed2,
-                    weight,
-                    activity_level,
-                    birthday,
-                    age,
-                    bio,
-                    image_url,
+                    name: nameInput.value,
+                    breed1: breed1Input.value,
+                    breed2: breed2Input.value,
+                    weight: weightInput.value,
+                    activity_level: activityLevelInput.value,
+                    birthday: birthdayInput.value,
+                    age: age,
+                    bio: bioInput.value,
+                    image_url: image_url,
                 }),
             });
             if (response.ok) {
                 await displayUserPet();
-                showNotification(name + " added successfully!", false);
-
-                name.value = "";
-                breed1.value = "";
-                breed2.value = "";
-                weight.value = "";
-                activity_level.value = "";
-                birthday.value = "";
-                bio.value = "";
-                fileInput.value = "";
+                showNotification(nameInput.value + " added successfully!", false);
             }
 
             document.getElementById("addPetModal").style.display = "none";
@@ -659,11 +657,21 @@ document
             console.error(error);
             showNotification("Failed to add pet. Please try again.", true);
         } finally {
+            
             submitBtn.innerHTML = "Submit";
             submitBtn.disabled = false;
             document.body.style.cursor = "default";
+            nameInput.value = "";
+            breed1Input.value = "";
+            breed2Input.value = "";
+            weightInput.value = "";
+            activityLevelInput.value = "";
+            birthdayInput.value = "";
+            bioInput.value = "";
+            fileInput.value = "";
         }
     });
+
 
 document.getElementById("recurring").addEventListener("change", function () {
     const displayStyle = this.checked ? "block" : "none";
@@ -671,8 +679,8 @@ document.getElementById("recurring").addEventListener("change", function () {
 });
 
 document.getElementById("frequency").addEventListener("change", function () {
-    const displayStyle = this.value === "weekly" ? "block" : "none";
-    document.getElementById("dowWrapper").style.display = displayStyle;
+    const displayStyle = this.value === "weekly" ? "grid" : "none";
+    document.getElementById("daysOfWeek").style.display = displayStyle;
 });
 
 document.getElementById("Mixed").addEventListener("change", function () {
@@ -799,10 +807,11 @@ document
         document.getElementById("endTime").value = "";
         document.getElementById("recurring").checked = false;
         document.getElementById("frequency").value = "daily";
-        document.getElementById("dowWrapper").style.display = "none";
         document.getElementById("reminderFormModal").style.display = "none";
         document.getElementById("daysOfWeek").style.display = "none";
         document.querySelector(".select-selected").textContent = "Select Color";
+        document.querySelector(".select-selected").style.backgroundColor = "";
+        document.querySelector(".select-selected").dataset.value = "";
         await initializeCalendar();
     });
 
@@ -836,7 +845,7 @@ document.addEventListener("click", function (e) {
     }
 });
 
-document.getElementById("myPetsLink").addEventListener("click", async () => {
+document.getElementById("myPetsLink").addEventListener("mouseenter", async () => {
     const dropdown = document.getElementById("petDropdown");
 
     const token = localStorage.getItem("token");
@@ -1055,7 +1064,13 @@ document
                     .querySelector(".left_col .about")
                     .querySelectorAll(
                         "li",
-                    )[1].innerHTML = `<span>${petDetails.age}</span> Years old`;
+                    )[1].innerHTML = `<span>&nbsp;</span> ${petDetails.activity_level}`;
+                document
+                    .querySelector(".left_col .about")
+                    .querySelectorAll(
+                        "li",
+                    )[2].innerHTML = `<span>${petDetails.age}</span> Years old`;
+                document.querySelector(".left_col .bio p").textContent = petDetails.bio;
                 document.querySelector(".left_col .bio p").textContent =
                     petDetails.bio;
             }

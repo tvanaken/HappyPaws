@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await fetchPostDetails(postId);
 });
 
+
 function showNotification(message, isError) {
     const notification = document.getElementById("notification");
     notification.textContent = message;
@@ -20,6 +21,16 @@ function showNotification(message, isError) {
     setTimeout(() => {
         notification.classList.remove("active");
     }, 3000);
+}
+
+async function linkify(inputText) {
+    var replacedText, replacePattern1, replacePattern2;
+    replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+    replacedText = inputText.replace(replacePattern1, '<a href="$1" style="color: blue" target="_blank">Link</a>');
+    replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+    replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" style="color: blue" target="_blank">Link</a>');
+
+    return replacedText;
 }
 
 async function toggleLoginLogoutButtons() {
@@ -121,7 +132,9 @@ document
         const urlParams = new URLSearchParams(queryString);
         const postId = urlParams.get("postId");
 
-        const content = document.getElementById("comment-text").value;
+        const contentInput = document.getElementById("comment-text").value;
+        const content = await linkify(contentInput);
+
         if (!content) {
             showNotification("Comment cannot be empty", true);
             return;
