@@ -1,4 +1,4 @@
 .env
 node_modules
-docker_fix
+docker_fix.txt
 __pycache__
