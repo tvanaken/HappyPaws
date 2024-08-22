@@ -1,3 +1,7 @@
+/**
+ * Switches the view between the login/sign-up forms
+ * @param {Event} event - The click event
+ */
 const wrapper = document.querySelector(".wrapper");
 const loginLink = document.querySelector(".login-link");
 const registerLink = document.querySelector(".register-link");
@@ -5,11 +9,18 @@ const registerLink = document.querySelector(".register-link");
 registerLink.addEventListener("click", () => {
     wrapper.classList.add("active");
 });
-
 loginLink.addEventListener("click", () => {
     wrapper.classList.remove("active");
 });
 
+
+/**
+ * Displays a notification message on the page.
+ * 
+ * @param {string} message - The message to be displayed in the notification.
+ * @param {boolean} isError - Indicates whether the notification is an error message or not.
+ * @returns {void}
+ */
 function showNotification(message, isError) {
     const notification = document.getElementById("notification");
     notification.textContent = message;
@@ -25,6 +36,13 @@ function showNotification(message, isError) {
     }, 5000);
 }
 
+/**
+ * Sends a POST request to the server to obtain a token for the given user credentials.
+ * 
+ * @param {string} email - The email address of the user.
+ * @param {string} password - The password of the user.
+ * @returns {Promise<Response>} - A promise that resolves to the response from the server.
+ */
 document
     .getElementById("loginForm")
     .addEventListener("submit", async (event) => {
@@ -34,7 +52,7 @@ document
         const password = document.getElementById("password").value;
 
         try {
-            const response = await fetch(
+                const response = await fetch(
                 "http://localhost:8000/api/users/token",
                 {
                     method: "POST",
@@ -52,6 +70,7 @@ document
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
+
             const data = await response.json();
             localStorage.setItem("token", data.access_token);
 
@@ -63,6 +82,13 @@ document
         }
     });
 
+/**
+ * Sends a POST request to the specified API endpoint with the provided email and password.
+ * 
+ * @param {string} email - The email of the user.
+ * @param {string} password - The password of the user.
+ * @returns {Promise<Response>} - A promise that resolves to the response of the request.
+ */
 document
     .getElementById("signupForm")
     .addEventListener("submit", async (event) => {
@@ -77,6 +103,7 @@ document
             return;
         }
         try {
+            
             const response = await fetch("http://localhost:8000/api/users", {
                 method: "POST",
                 headers: {

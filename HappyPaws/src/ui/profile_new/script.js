@@ -57,6 +57,13 @@ scheduleLink.addEventListener("click", (ev) => {
     document.querySelector(".schedule").classList.add("active");
 });
 
+/**
+ * Displays a notification message.
+ * 
+ * @param {string} message - The message to be displayed in the notification.
+ * @param {boolean} isError - Indicates whether the notification is an error or not.
+ * @returns {void}
+ */
 function showNotification(message, isError) {
     const notification = document.getElementById("notification");
     notification.textContent = message;
@@ -72,6 +79,15 @@ function showNotification(message, isError) {
     }, 5000);
 }
 
+/**
+ * Displays the user's pet information on the UI.
+ * Retrieves the user's token from local storage and makes a request to fetch the user's pets.
+ * If the token is not available, an error message is logged and the function returns.
+ * If the request to fetch pets fails, an error message is logged and the function returns.
+ * If pets are found, the pet details are displayed on the UI.
+ * If there is a second breed for the pet, the second breed details are also displayed.
+ * The function also updates the diet recommendations for the pet based on its breed, age, and activity level.
+ */
 async function displayUserPet() {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -251,6 +267,15 @@ async function displayUserPet() {
     }
 }
 
+/**
+ * Updates the diet recommendations based on the breed ID, age, and activity level.
+ * 
+ * @param {string} breedId - The ID of the breed.
+ * @param {number} age - The age of the pet.
+ * @param {string} activityLevel - The activity level of the pet.
+ * @returns {Promise<void>} - A promise that resolves when the diet recommendations are updated.
+ * @throws {Error} - If there is an HTTP error while fetching the recommended foods.
+ */
 async function updateDietRecommendations(breedId, age, activityLevel) {
     const foodGrid = document.getElementById("foodGrid");
     const foodDetailsDiv = document.getElementById("foodDetails");

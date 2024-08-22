@@ -1,5 +1,8 @@
 let breeds = [];
-
+/**
+ * Preloads the breeds data if it is not already loaded.
+ * @returns {Promise<void>} A promise that resolves when the breeds data is loaded.
+ */
 async function preloadBreeds() {
     if (breeds.length === 0) {
         try {
@@ -15,6 +18,12 @@ async function preloadBreeds() {
     }
 }
 
+/**
+ * Filters the breeds based on the given input value.
+ * 
+ * @param {string} inputValue - The input value to filter the breeds.
+ * @returns {void}
+ */
 function filterBreeds(inputValue) {
     const filteredBreeds = breeds.filter((breed) =>
         breed.name.toLowerCase().includes(inputValue.toLowerCase()),
@@ -22,6 +31,13 @@ function filterBreeds(inputValue) {
     displaySuggestions(filteredBreeds);
 }
 
+
+/**
+ * Displays suggestions for breeds.
+ * 
+ * @param {Array<Object>} breeds - An array of breed objects.
+ * @returns {void}
+ */
 function displaySuggestions(breeds) {
     const suggestionsContainer = document.getElementById("breedList");
     suggestionsContainer.innerHTML = "";
@@ -36,6 +52,7 @@ function displaySuggestions(breeds) {
         suggestionsContainer.appendChild(suggestionItem);
     });
 }
+
 
 document.getElementById("Breed").addEventListener("focus", () => {
     preloadBreeds();
@@ -79,6 +96,13 @@ document.getElementById("discussionBreed").addEventListener("blur", () => {
     }, 200);
 });
 
+/**
+ * Displays a notification message.
+ * 
+ * @param {string} message - The message to be displayed in the notification.
+ * @param {boolean} isError - Indicates whether the notification is an error or not.
+ * @returns {void}
+ */
 function showNotification(message, isError) {
     const notification = document.getElementById("notification");
     notification.textContent = message;
@@ -94,6 +118,13 @@ function showNotification(message, isError) {
     }, 5000);
 }
 
+
+/**
+ * Toggles the display of login and logout buttons based on the presence of a token in the local storage.
+ * @async
+ * @function toggleLoginLogoutButtons
+ * @returns {void}
+ */
 async function toggleLoginLogoutButtons() {
     const token = localStorage.getItem("token");
     const loginButton = document.getElementById("loginButton");
@@ -113,6 +144,14 @@ async function toggleLoginLogoutButtons() {
     }
 }
 
+
+/**
+ * Fetches user posts from the server and displays them on the UI.
+ * @async
+ * @function fetchAndDisplayPosts
+ * @throws {Error} If there is an HTTP error during the fetch request.
+ * @returns {Promise<void>} A promise that resolves when the posts are fetched and displayed.
+ */
 async function fetchAndDisplayPosts() {
     try {
         const response = await fetch("http://localhost:8000/forum/posts", {
@@ -162,6 +201,12 @@ async function fetchAndDisplayPosts() {
     }
 }
 
+/**
+ * Displays posts on the UI.
+ * 
+ * @param {Array} posts - An array of post objects.
+ * @returns {void}
+ */
 function displayPosts(posts) {
     const discussionsElement = document.getElementById("discussions");
     discussionsElement.innerHTML = "";
@@ -195,6 +240,13 @@ function displayPosts(posts) {
     });
 }
 
+/**
+ * Searches for posts based on breed and search input.
+ * @async
+ * @function searchPosts
+ * @returns {Promise<void>} - A promise that resolves when the posts are displayed.
+ * @throws {Error} - If there is an error fetching discussions.
+ */
 async function searchPosts() {
     const breedInput = document.getElementById("Breed").value;
     const searchInput = document.getElementById("search-input").value;
@@ -214,6 +266,7 @@ async function searchPosts() {
         console.error("Error fetching discussions:", error);
     }
 }
+
 
 document
     .getElementById("discussionForm")
@@ -256,11 +309,17 @@ document
         }
     });
 
+/**
+ * Opens the modal for adding a discussion.
+ */
 function openModal() {
     const modal = document.getElementById("addDiscussionModal");
     modal.style.display = "block";
 }
 
+/**
+ * Closes the modal by setting its display property to "none".
+ */
 function closeModal() {
     const modal = document.getElementById("addDiscussionModal");
     modal.style.display = "none";
