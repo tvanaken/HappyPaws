@@ -13,6 +13,20 @@ from sqlalchemy.dialects.postgresql import JSON
 from .base import Base
 
 class ReminderCreate(BaseModel):
+    """
+    Represents a reminder object with various properties.
+
+    Attributes:
+        title (str): The title of the reminder.
+        start (datetime): The start date and time of the reminder.
+        end (Optional[datetime], optional): The end date and time of the reminder. Defaults to None.
+        daysOfWeek (Optional[List[int]], optional): The list of days of the week when the reminder occurs. Defaults to None.
+        startTime (Optional[str], optional): The start time of the reminder. Defaults to None.
+        endTime (Optional[str], optional): The end time of the reminder. Defaults to None.
+        startRecur (Optional[datetime], optional): The start date and time of the recurring reminder. Defaults to None.
+        endRecur (Optional[datetime], optional): The end date and time of the recurring reminder. Defaults to None.
+        color (Optional[str], optional): The color of the reminder. Defaults to None.
+    """
     title: str
     start: datetime
     end: Optional[datetime] = None
@@ -23,7 +37,25 @@ class ReminderCreate(BaseModel):
     endRecur: Optional[datetime] = None
     color: Optional[str] = None
 
+
 class Reminder(Base):
+    """
+    Represents a reminder.
+    Attributes:
+        id (int): The unique identifier of the reminder.
+        user_id (int): The ID of the user associated with the reminder.
+        title (str): The title of the reminder.
+        start (datetime): The start date and time of the reminder.
+        end (datetime): The end date and time of the reminder.
+        daysOfWeek (list): The list of days of the week for recurring reminders.
+        startTime (str): The start time of the reminder.
+        endTime (str): The end time of the reminder.
+        startRecur (datetime): The start date and time for recurring reminders.
+        endRecur (datetime): The end date and time for recurring reminders.
+        color (str): The color of the reminder.
+    Methods:
+        to_dict(): Converts the reminder object to a dictionary.
+    """
     __tablename__ = "reminders"
 
     id = Column(Integer, primary_key=True)

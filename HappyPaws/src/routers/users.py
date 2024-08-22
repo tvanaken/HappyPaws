@@ -32,6 +32,18 @@ class LoginRequest(BaseModel):
 
 
 async def _validate_user(user: dict):
+    """
+    Validates the user dictionary.
+
+    Args:
+        user (dict): The user dictionary to be validated.
+
+    Raises:
+        HTTPException: If the email or password is missing.
+
+    Returns:
+        dict: The validated user dictionary.
+    """
     if user.get("email") is None:
         raise HTTPException(status_code=400, detail="Email cannot be empty")
     if user.get("password") is None:
@@ -42,6 +54,15 @@ async def _validate_user(user: dict):
 async def authenticate_user(
     email: str, password: str, session: AsyncSession
 ) -> Optional[User]:
+    """
+    Authenticates a user by checking if the provided email and password match a user in the database.
+    Args:
+        email (str): The email of the user.
+        password (str): The password of the user.
+        session (AsyncSession): The database session.
+    Returns:
+        Optional[User]: The authenticated user if the email and password match, otherwise None.
+    """
     user = await get_user_by_email(email=email, session=session)
     if not user:
         return None
@@ -51,6 +72,17 @@ async def authenticate_user(
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+    """
+    Generates an access token based on the provided data and expiration delta.
+
+    Args:
+        data (dict): The data to be encoded into the access token.
+        expires_delta (timedelta | None, optional): The expiration delta for the access token. Defaults to None.
+
+    Returns:
+        str: The generated access token.
+
+    """
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -62,6 +94,16 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 
 
 async def get_user_by_email(email: str, session: AsyncSession) -> Optional[User]:
+    """
+    Retrieves a user by their email address.
+
+    Args:
+        email (str): The email address of the user.
+        session (AsyncSession): The database session.
+
+    Returns:
+        Optional[User]: The user object if found, otherwise None.
+    """
     query = select(User).where(User.email == email)
     result = await session.execute(query)
     record = result.fetchone()
@@ -73,14 +115,42 @@ async def get_user_by_email(email: str, session: AsyncSession) -> Optional[User]
 
 
 def get_password_hash(password: str) -> str:
+    """
+    Generates a password hash using the provided password.
+
+    Args:
+        password (str): The password to be hashed.
+
+    Returns:
+        str: The hashed password.
+    """
     return pwd_context.hash(password)
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
+    """
+    Verify if the given password matches the hashed password.
+
+    Parameters:
+    - password (str): The password to be verified.
+    - hashed_password (str): The hashed password to compare against.
+
+    Returns:
+    - bool: True if the password matches the hashed password, False otherwise.
+    """
     return pwd_context.verify(password, hashed_password)
 
 
 async def _get_user(user_id: int):
+    """
+    Retrieves a user from the database based on the given user ID.
+
+    Parameters:
+    - user_id (int): The ID of the user to retrieve.
+
+    Returns:
+    - User or None: The retrieved user object if found, otherwise None.
+    """
     session = await get_session()
     query = select(User).where(User.id == user_id)
     result = await session.execute(query)
@@ -93,6 +163,18 @@ async def _get_user(user_id: int):
 
 @router.get("/api/users/me")
 async def get_user_me(current_user: User = Depends(get_current_user)):
+    """
+    Retrieves the current user's information.
+
+    Parameters:
+    - current_user (User): The current user object.
+
+    Returns:
+    - JSONResponse: The user's information in JSON format.
+
+    Raises:
+    - HTTPException: If the user is not found.
+    """
     user = await get_current_user()
     if user:
         return JSONResponse(content=user.to_dict(), status_code=200)
@@ -102,6 +184,13 @@ async def get_user_me(current_user: User = Depends(get_current_user)):
 
 @router.get("/api/users")
 async def get_users():
+    """
+    Retrieves a list of users.
+
+    Returns:
+        JSONResponse: A JSON response containing the list of users if the user's ID is 2,
+        otherwise returns a JSON response with a "Not authorized" message and a status code of 401.
+    """
     user = await get_current_user()
 
     if user.id == 2:
@@ -115,6 +204,15 @@ async def get_users():
 
 @router.get("/api/users/{user_id}")
 async def get_user(user_id: int):
+    """
+    Retrieves a user by their ID.
+
+    Args:
+        user_id (int): The ID of the user.
+
+    Returns:
+        dict: A dictionary representing the user if found, otherwise a JSONResponse with a "User not found" message and a status code of 404.
+    """
     user = await _get_user(user_id)
     if user:
         return user.to_dict()
@@ -126,6 +224,20 @@ async def get_user(user_id: int):
 async def create_user(
     user_details: UserCreate, session: AsyncSession = Depends(get_session)
 ):
+    """
+    Create a new user with the given user details.
+
+    Parameters:
+    - user_details (UserCreate): The details of the user to be created.
+    - session (AsyncSession, optional): The database session. Defaults to Depends(get_session).
+
+    Returns:
+    - JSONResponse: A JSON response indicating the status of the user creation.
+
+    Raises:
+    - None
+
+    """
     user = await get_user_by_email(email=user_details.email, session=session)
     if user:
         return JSONResponse(content={"message": "User already exists"}, status_code=400)
@@ -162,6 +274,20 @@ async def create_user(
 async def login(
     login_request: LoginRequest, session: AsyncSession = Depends(get_session)
 ):
+    """
+    Login function for user authentication.
+
+    Parameters:
+    - login_request (LoginRequest): The login request object containing the username and password.
+    - session (AsyncSession, optional): The async session object for database operations. Defaults to Depends(get_session).
+
+    Returns:
+    - dict: A dictionary containing the access token and token type.
+
+    Raises:
+    - HTTPException: If the user authentication fails, an HTTPException with status code 401 will be raised.
+
+    """
     user = await authenticate_user(
         login_request.username, login_request.password, session
     )

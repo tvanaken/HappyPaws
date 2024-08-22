@@ -22,23 +22,55 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
+
 class Token(BaseModel):
+    """
+    Represents a token used for authentication.
+
+    Attributes:
+        access_token (str): The access token.
+        token_type (str): The type of the token.
+    """
     access_token: str
     token_type: str
 
 
 class TokenData(BaseModel):
+    """
+    Represents the data contained in a token.
+
+    Attributes:
+        email (str, optional): The email associated with the token. Defaults to None.
+    """
     email: str | None = None
 
 
 class AccessToken(BaseModel):
+    """
+    Represents an access token.
+
+    Attributes:
+        access_token (str): The access token string.
+        token_type (str): The type of the token.
+    """
     access_token: str
     token_type: str
+
 
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)
 ) -> User:
+    """
+    Retrieves the current user based on the provided token.
+    Parameters:
+        token (str): The authentication token.
+        session (AsyncSession): The database session.
+    Returns:
+        User: The current user.
+    Raises:
+        HTTPException: If the credentials cannot be validated.
+    """
     from app.routers.users import get_user_by_email
 
     credentials_exception = HTTPException(

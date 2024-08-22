@@ -16,6 +16,15 @@ router = APIRouter()
 
 
 async def _validate_reminder(reminder: dict):
+    """
+    Validates a reminder dictionary.
+    Args:
+        reminder (dict): The reminder dictionary to be validated.
+    Raises:
+        HTTPException: If the reminder dictionary is missing the 'title', 'start', or 'end' keys.
+    Returns:
+        dict: The validated reminder dictionary.
+    """    
     if reminder.get("title") is None:
         raise HTTPException(status_code=400, detail="Must define a title")
     if reminder.get("start") is None:
@@ -26,6 +35,15 @@ async def _validate_reminder(reminder: dict):
 
 
 async def _get_reminder(reminder_id: int):
+    """
+    Retrieves a reminder with the specified ID for the current user.
+
+    Args:
+        reminder_id (int): The ID of the reminder to retrieve.
+
+    Returns:
+        Reminder or None: The retrieved reminder if found, otherwise None.
+    """
     session = await get_session()
     user = await get_current_user()
     query = (
@@ -43,6 +61,16 @@ async def _get_reminder(reminder_id: int):
 
 @router.get("/api/reminders")
 async def get_reminders(user: User = Depends(get_current_user)):
+    """
+    Retrieves reminders for a given user.
+
+    Parameters:
+        user (User): The user for whom to retrieve reminders.
+
+    Returns:
+        JSONResponse: A JSON response containing the reminders as a list of dictionaries.
+
+    """
     session = await get_session()
     query = select(Reminder).where(Reminder.user_id == user.id)
     reminders = await session.scalars(query)
@@ -53,6 +81,19 @@ async def get_reminders(user: User = Depends(get_current_user)):
 
 @router.get("/api/reminders/{user_id}")
 async def get_user_reminders(user_id: int):
+    """
+    Retrieves reminders for a specific user.
+
+    Parameters:
+        user_id (int): The ID of the user.
+
+    Returns:
+        JSONResponse: The reminders for the user in JSON format.
+
+    Raises:
+        None
+
+    """
     session = await get_session()
     user = await get_current_user()
     if user.id == user_id or user.id == 1:
@@ -71,6 +112,15 @@ async def create_reminder(
     token: str = Depends(oauth2_scheme),
     session: AsyncSession = Depends(get_session),
 ):
+    """
+    Create a reminder for a user.
+    Args:
+        reminder_data (ReminderCreate): The data for the reminder to be created.
+        token (str, optional): The authentication token. Defaults to Depends(oauth2_scheme).
+        session (AsyncSession, optional): The database session. Defaults to Depends(get_session).
+    Returns:
+        JSONResponse: The response containing the message "Reminder created" and status code 201.
+    """
     user = await get_current_user(token, session)
 
     days_of_week = ','.join(map(str, reminder_data.daysOfWeek)) if reminder_data.daysOfWeek else None
@@ -97,6 +147,17 @@ async def create_reminder(
 
 @router.delete("/api/reminders/{reminder_id}")
 async def delete_reminder(reminder_id: int):
+    """
+    Deletes a reminder with the given reminder_id.
+
+    Parameters:
+    - reminder_id (int): The ID of the reminder to be deleted.
+
+    Returns:
+    - JSONResponse: A JSON response indicating the status of the deletion operation.
+        - If the reminder is found and deleted, the response will have a status code of 200 and a message of "Reminder deleted".
+        - If the reminder is not found, the response will have a status code of 404 and a message of "Reminder not found".
+    """
     user = await get_current_user()
     session = await get_session()
     reminder = await _get_reminder(reminder_id)
@@ -110,6 +171,19 @@ async def delete_reminder(reminder_id: int):
 
 @router.patch("/api/reminders/{reminder_id}")
 async def update_reminder(reminder_id: int, reminder_updates: dict):
+    """
+    Update a reminder with the given ID using the provided updates.
+
+    Args:
+        reminder_id (int): The ID of the reminder to update.
+        reminder_updates (dict): A dictionary containing the updates for the reminder.
+
+    Returns:
+        JSONResponse: The updated reminder as a JSON response.
+
+    Raises:
+        None
+    """
     session = await get_session()
     reminder = await _get_reminder(reminder_id)
 

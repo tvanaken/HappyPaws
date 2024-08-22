@@ -7,6 +7,28 @@ from .base import Base
 
 
 class Pet(Base):
+    """
+    Represents a pet.
+
+    Attributes:
+        id (int): The unique identifier of the pet.
+        user_id (int): The ID of the user who owns the pet.
+        breed_id1 (int): The ID of the primary breed of the pet.
+        breed_id2 (int): The ID of the secondary breed of the pet.
+        name (str): The name of the pet.
+        weight (Decimal): The weight of the pet.
+        birthday (datetime.date): The birthday of the pet.
+        age (int): The age of the pet in years.
+        bio (str): The biography or description of the pet.
+        image_url (str): The URL of the pet's image.
+        activity_level (str): The activity level of the pet.
+
+    Methods:
+        age_calc(): Calculates the age of the pet based on its birthday.
+        to_dict(): Converts the pet object to a dictionary.
+
+    """
+    ...
     __tablename__ = "pets"
 
     id = Column(Integer, primary_key=True)

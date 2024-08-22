@@ -9,12 +9,33 @@ router = APIRouter()
 
 
 async def _validate_breed(breed: dict):
+    """
+    Validates a breed dictionary.
+
+    Args:
+        breed (dict): The breed dictionary to be validated.
+
+    Raises:
+        HTTPException: If the breed name is empty.
+
+    Returns:
+        dict: The validated breed dictionary.
+    """
     if breed.get("name") is None:
         raise HTTPException(status_code=400, detail="Name cannot be empty")
     return breed
 
 
 async def _get_breed(breed_id: int):
+    """
+    Retrieves a breed by its ID.
+
+    Parameters:
+    - breed_id (int): The ID of the breed to retrieve.
+
+    Returns:
+    - Breed or None: The retrieved breed if found, otherwise None.
+    """
     session = await get_session()
     query = select(Breed).where(Breed.id == breed_id)
     result = await session.execute(query)
@@ -26,6 +47,15 @@ async def _get_breed(breed_id: int):
 
 
 async def _get_breed_name(breed_id: int):
+    """
+    Retrieves the name of a breed based on the given breed ID.
+
+    Parameters:
+    - breed_id (int): The ID of the breed.
+
+    Returns:
+    - str or None: The name of the breed if found, None otherwise.
+    """
     session = await get_session()
     query = select(Breed).where(Breed.id == breed_id)
     result = await session.execute(query)
@@ -38,6 +68,15 @@ async def _get_breed_name(breed_id: int):
 
 @router.get("/api/breeds")
 async def get_breeds(search: str = Query(None, min_length=2)):
+    """
+    Get breeds based on search criteria.
+
+    Parameters:
+    - search (str): The search criteria to filter breeds by name.
+
+    Returns:
+    - JSONResponse: A JSON response containing a list of breeds matching the search criteria.
+    """
     session = await get_session()
     query = select(Breed)
     if search:
@@ -46,17 +85,18 @@ async def get_breeds(search: str = Query(None, min_length=2)):
     return JSONResponse(content=[breed.to_dict() for breed in breeds], status_code=200)
 
 
-# @router.get("/api/breeds/{name}")
-# async def get_breed(name: str):
-#     breed = await _get_breed_name(name)
-#     if breed:
-#         return breed.to_dict()
-#     else:
-#         return JSONResponse(content={"message": "Not found."}, status_code=404)
-
-
 @router.get("/api/breeds/{breed_id}")
 async def get_breed(breed_id: int):
+    """
+    Retrieves the breed information for the given breed ID.
+
+    Parameters:
+    - breed_id (int): The ID of the breed to retrieve.
+
+    Returns:
+    - dict: A dictionary containing the breed information if found, otherwise a dictionary with a "message" key indicating "Not found.".
+
+    """
     breed = await _get_breed(breed_id)
     if breed:
         return breed.to_dict()
@@ -66,6 +106,18 @@ async def get_breed(breed_id: int):
 
 @router.post("/api/breeds")
 async def create_breed(breed: dict):
+    """
+    Creates a new breed.
+
+    Args:
+        breed (dict): A dictionary containing the breed information.
+
+    Returns:
+        JSONResponse: The created breed as a JSON response.
+
+    Raises:
+        None
+    """
     session = await get_session()
     breed = await _validate_breed(breed)
 
@@ -99,6 +151,19 @@ async def create_breed(breed: dict):
 
 @router.patch("/api/breeds/{breed_id}")
 async def update_breed(breed_id: int, breed_updates: dict):
+    """
+    Update a breed with the given breed_id using the provided breed_updates.
+
+    Args:
+        breed_id (int): The ID of the breed to update.
+        breed_updates (dict): A dictionary containing the updates to be applied to the breed.
+
+    Returns:
+        JSONResponse: The updated breed as a JSON response.
+
+    Raises:
+        JSONResponse: If the breed with the given breed_id is not found (status_code=404).
+    """
     session = await get_session()
     breed = await _get_breed(breed_id)
     if not breed:

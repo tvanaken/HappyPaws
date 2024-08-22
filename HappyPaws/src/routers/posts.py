@@ -32,19 +32,48 @@ class PostCreate(BaseModel):
 
 
 async def get_breed_id_by_name(session, breed_name):
+    """
+    Retrieves the breed ID based on the given breed name.
+
+    Parameters:
+    - session: The database session to use for the query.
+    - breed_name: The name of the breed to search for.
+
+    Returns:
+    - The breed ID if found, otherwise None.
+    """
     breed_id = await session.execute(select(Breed.id).where(Breed.name == breed_name))
     return breed_id.scalar_one_or_none()
 
 
 @router.get("/forum/posts")
 async def list_forum_posts(session: AsyncSession = Depends(get_session)):
+    """
+    Retrieve a list of forum posts.
+
+    Parameters:
+    - session: The database session to use (default: Depends(get_session))
+
+    Returns:
+    - A list of forum posts.
+    """
     session = await get_session()
     query = select(Post).order_by(Post.created_at.desc())
     posts = await session.execute(query)
     return posts.scalars().all()
 
+
 @router.get("/forum/posts/filtered")
 async def get_posts_filtered(breed_name: Optional[str] = None, search: Optional[str] = None, session: AsyncSession = Depends(get_session)):
+    """
+    Retrieves filtered posts based on the provided breed name and search keyword.
+    Parameters:
+    - breed_name (Optional[str]): The breed name to filter the posts by.
+    - search (Optional[str]): The keyword to search for in the post titles and content.
+    - session (AsyncSession): The async session to use for executing the query.
+    Returns:
+    - List[Post]: A list of posts that match the filter criteria.
+    """
     query = select(Post)
     if breed_name:
         query = query.where(Post.breed_name == breed_name)
@@ -53,9 +82,17 @@ async def get_posts_filtered(breed_name: Optional[str] = None, search: Optional[
     posts = await session.execute(query)
     return posts.scalars().all()
 
+
 @router.get("/forum/posts/{post_id}")
 async def get_post(post_id: int, session: AsyncSession = Depends(get_session)):
-
+    """
+    Retrieve a post by its ID.
+    Parameters:
+    - post_id (int): The ID of the post to retrieve.
+    - session (AsyncSession, optional): The database session to use. Defaults to the session obtained from `get_session` dependency.
+    Returns:
+    - Post: The retrieved post.
+    """
     query = (
         select(Post)
         .where(Post.id == post_id)
@@ -64,12 +101,22 @@ async def get_post(post_id: int, session: AsyncSession = Depends(get_session)):
     post = await session.execute(query)
     return post.scalars().first()
 
+
 @router.post("/forum/posts", response_model=PostCreate)
 async def create_post(
     post_data: PostCreate,
     token: str = Depends(oauth2_scheme),
     session: AsyncSession = Depends(get_session),
 ):
+    """
+    Create a new post in the forum.
+    Parameters:
+    - post_data (PostCreate): The data for the new post.
+    - token (str): The authentication token.
+    - session (AsyncSession): The database session.
+    Returns:
+    - JSONResponse: The response indicating the success of the post creation.
+    """
     user = await get_current_user(token, session)
 
     post = Post(

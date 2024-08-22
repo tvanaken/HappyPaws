@@ -1,5 +1,18 @@
-import time
+"""
+This script scrapes data from the AKC (American Kennel Club) website and posts it to a local API endpoint.
 
+The script performs the following steps:
+1. Imports necessary libraries and modules.
+2. Sets up the Selenium webdriver for Firefox.
+3. Navigates to the AKC dog breeds page.
+4. Iterates through a list of letters to filter dog breeds.
+5. Clicks on the "Load More" button to load additional dog breeds.
+6. Extracts breed information such as name, weight, and descriptions.
+7. Sends a POST request to a local API endpoint with the extracted data.
+
+Note: Make sure to have the geckodriver executable in the specified path before running the script.
+"""
+import time
 import requests
 
 from selenium import webdriver
