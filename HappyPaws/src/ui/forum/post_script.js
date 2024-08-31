@@ -1,3 +1,7 @@
+/* eslint-disable camelcase */
+/* eslint-disable prefer-const */
+/* eslint-disable no-undef */
+/* eslint-disable no-use-before-define */
 document.addEventListener("DOMContentLoaded", async () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -6,7 +10,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     await toggleLoginLogoutButtons();
     await fetchPostDetails(postId);
 });
-
 
 function showNotification(message, isError) {
     const notification = document.getElementById("notification");
@@ -24,11 +27,18 @@ function showNotification(message, isError) {
 }
 
 async function linkify(inputText) {
-    var replacedText, replacePattern1, replacePattern2;
+    let replacedText; let replacePattern1; let
+        replacePattern2;
     replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
-    replacedText = inputText.replace(replacePattern1, '<a href="$1" style="color: blue" target="_blank">Link</a>');
+    replacedText = inputText.replace(
+        replacePattern1,
+        '<a href="$1" style="color: blue" target="_blank">Link</a>',
+    );
     replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
-    replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" style="color: blue" target="_blank">Link</a>');
+    replacedText = replacedText.replace(
+        replacePattern2,
+        '$1<a href="http://$2" style="color: blue" target="_blank">Link</a>',
+    );
 
     return replacedText;
 }
@@ -43,8 +53,7 @@ async function toggleLoginLogoutButtons() {
         logoutButton.style.display = "inline-block";
         logoutButton.addEventListener("click", () => {
             localStorage.removeItem("token");
-            window.location.href =
-                "http://localhost:8000/Login_page/index.html";
+            window.location.href = "http://localhost:8000/Login_page/index.html";
         });
     } else {
         loginButton.style.display = "inline-block";
@@ -161,6 +170,5 @@ document
             await appendComment(newComment);
         } else {
             showNotification("Failed to add comment", true);
-            return;
         }
     });

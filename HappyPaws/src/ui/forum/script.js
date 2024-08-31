@@ -1,3 +1,10 @@
+/* eslint-disable camelcase */
+/* eslint-disable prefer-arrow-callback */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable no-undef */
+/* eslint-disable no-shadow */
+/* eslint-disable no-use-before-define */
+/* eslint-disable implicit-arrow-linebreak */
 let breeds = [];
 
 async function preloadBreeds() {
@@ -17,8 +24,7 @@ async function preloadBreeds() {
 
 function filterBreeds(inputValue) {
     const filteredBreeds = breeds.filter((breed) =>
-        breed.name.toLowerCase().includes(inputValue.toLowerCase()),
-    );
+        breed.name.toLowerCase().includes(inputValue.toLowerCase()));
     displaySuggestions(filteredBreeds);
 }
 
@@ -104,8 +110,7 @@ async function toggleLoginLogoutButtons() {
         logoutButton.style.display = "inline-block";
         logoutButton.addEventListener("click", () => {
             localStorage.removeItem("token");
-            window.location.href =
-                "http://localhost:8000/Login_page/index.html";
+            window.location.href = "http://localhost:8000/Login_page/index.html";
         });
     } else {
         loginButton.style.display = "inline-block";
@@ -232,7 +237,9 @@ document
         const created_at = new Date().toISOString().replace("Z", "");
         console.log("discussion created at time", created_at);
 
-        const payload = { title, content, breed_name, created_at };
+        const payload = {
+            title, content, breed_name, created_at,
+        };
 
         const response = await fetch("http://localhost:8000/forum/posts", {
             method: "POST",

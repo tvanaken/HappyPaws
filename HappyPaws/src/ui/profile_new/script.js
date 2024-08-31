@@ -1,3 +1,10 @@
+/* eslint-disable operator-linebreak */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable camelcase */
+/* eslint-disable no-shadow */
+/* eslint-disable no-undef */
+/* eslint-disable max-len */
+/* eslint-disable no-use-before-define */
 const wrapper = document.querySelector(".right_col");
 const breedLink = document.querySelector(".breed-link");
 const dietLink = document.querySelector(".diet-link");
@@ -115,13 +122,13 @@ async function displayUserPet() {
             .querySelector("p").textContent = breed1.nutrition_description;
         document
             .getElementById("healthDescription")
-            .querySelector("h2").textContent = "Health (" + breed1.name + ")";
+            .querySelector("h2").textContent = `Health (${breed1.name})`;
         document
             .getElementById("healthDescription")
             .querySelector("p").textContent = breed1.health_description;
         document
             .getElementById("groomingDescription")
-            .querySelector("h2").textContent = "Grooming (" + breed1.name + ")";
+            .querySelector("h2").textContent = `Grooming (${breed1.name})`;
         document
             .getElementById("groomingDescription")
             .querySelector("p").textContent = breed1.groom_description;
@@ -192,10 +199,8 @@ async function displayUserPet() {
                 secondHealthDescription.style.display = "";
                 secondGroomDescription.style.display = "";
                 secondBreedName.textContent = breed2.name;
-                secondBreedNameHealth.textContent =
-                    "Health (" + breed2.name + ")";
-                secondBreedNameGroom.textContent =
-                    "Grooming (" + breed2.name + ")";
+                secondBreedNameHealth.textContent = `Health (${breed2.name})`;
+                secondBreedNameGroom.textContent = `Grooming (${breed2.name})`;
                 secondBreedDescription.textContent = breed2.breed_description;
                 secondHealthDescription.textContent = breed2.health_description;
                 secondGroomDescription.textContent = breed2.groom_description;
@@ -243,11 +248,9 @@ async function displayUserPet() {
             petDetails.age,
             petDetails.activity_level,
         );
-    } else {
-        if (!sessionStorage.getItem("addPetModalShown")) {
-            document.getElementById("addPetModal").style.display = "block";
-            sessionStorage.setItem("addPetModalShown", "true");
-        }
+    } else if (!sessionStorage.getItem("addPetModalShown")) {
+        document.getElementById("addPetModal").style.display = "block";
+        sessionStorage.setItem("addPetModalShown", "true");
     }
 }
 
@@ -493,7 +496,7 @@ async function initializeCalendar() {
         customButtons: {
             addReminder: {
                 text: "Add Reminder",
-                click: function () {
+                click() {
                     document.getElementById("reminderFormModal").style.display =
                         "block";
                 },
@@ -508,7 +511,7 @@ async function initializeCalendar() {
         height: "auto",
         schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
         events: eventData,
-        eventMouseEnter: function (info) {
+        eventMouseEnter(info) {
             tooltip.innerHTML = `<strong>Title:</strong> ${info.event.title}<br>
                                  <strong>Start:</strong> ${info.event.start.toISOString()}<br>
                                  <strong>End:</strong> ${
@@ -517,10 +520,10 @@ async function initializeCalendar() {
                                          : "N/A"
                                  }<br>`;
             tooltip.style.display = "block";
-            tooltip.style.left = info.jsEvent.pageX + 10 + "px";
-            tooltip.style.top = info.jsEvent.pageY + 10 + "px";
+            tooltip.style.left = `${info.jsEvent.pageX + 10}px`;
+            tooltip.style.top = `${info.jsEvent.pageY + 10}px`;
         },
-        eventMouseLeave: function (info) {
+        eventMouseLeave(info) {
             tooltip.style.display = "none";
         },
         eventTextColor: "black",
@@ -617,7 +620,9 @@ document
             file = fileInput.files[0];
         }
         if (birthdayInput.value) {
-            age = new Date().getFullYear() - new Date(birthdayInput.value).getFullYear();
+            age =
+                new Date().getFullYear() -
+                new Date(birthdayInput.value).getFullYear();
         }
 
         try {
@@ -642,14 +647,17 @@ document
                     weight: weightInput.value,
                     activity_level: activityLevelInput.value,
                     birthday: birthdayInput.value,
-                    age: age,
+                    age,
                     bio: bioInput.value,
-                    image_url: image_url,
+                    image_url,
                 }),
             });
             if (response.ok) {
                 await displayUserPet();
-                showNotification(nameInput.value + " added successfully!", false);
+                showNotification(
+                    `${nameInput.value} added successfully!`,
+                    false,
+                );
             }
 
             document.getElementById("addPetModal").style.display = "none";
@@ -657,7 +665,6 @@ document
             console.error(error);
             showNotification("Failed to add pet. Please try again.", true);
         } finally {
-            
             submitBtn.innerHTML = "Submit";
             submitBtn.disabled = false;
             document.body.style.cursor = "default";
@@ -671,7 +678,6 @@ document
             fileInput.value = "";
         }
     });
-
 
 document.getElementById("recurring").addEventListener("change", function () {
     const displayStyle = this.checked ? "block" : "none";
@@ -780,9 +786,9 @@ document
             endRecur: recurring
                 ? endDate
                 : startDateObj.toISOString().split("T")[0],
-            startTime: startTime,
-            endTime: endTime,
-            color: color,
+            startTime,
+            endTime,
+            color,
         };
 
         const response = await fetch("http://localhost:8000/api/reminders", {
@@ -815,13 +821,11 @@ document
         await initializeCalendar();
     });
 
-document
-    .querySelector(".select-selected")
-    .addEventListener("click", function () {
-        const itemsDiv = document.querySelector(".select-items");
-        itemsDiv.style.display =
-            itemsDiv.style.display === "block" ? "none" : "block";
-    });
+document.querySelector(".select-selected").addEventListener("click", () => {
+    const itemsDiv = document.querySelector(".select-items");
+    itemsDiv.style.display =
+        itemsDiv.style.display === "block" ? "none" : "block";
+});
 
 document.querySelectorAll(".select-items li").forEach((item) => {
     item.addEventListener("click", function () {
@@ -838,47 +842,50 @@ document.querySelectorAll(".select-items li").forEach((item) => {
     });
 });
 
-document.addEventListener("click", function (e) {
+document.addEventListener("click", (e) => {
     const select = document.querySelector(".custom-select");
     if (!select.contains(e.target)) {
         document.querySelector(".select-items").style.display = "none";
     }
 });
 
-document.getElementById("myPetsLink").addEventListener("mouseenter", async () => {
-    const dropdown = document.getElementById("petDropdown");
+document
+    .getElementById("myPetsLink")
+    .addEventListener("mouseenter", async () => {
+        const dropdown = document.getElementById("petDropdown");
 
-    const token = localStorage.getItem("token");
-    if (token) {
-        const response = await fetch("/api/pets", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        if (response.ok) {
-            const pets = await response.json();
-            dropdown.innerHTML = "";
-            pets.forEach((pet) => {
-                const petElement = document.createElement("div");
-                petElement.textContent = pet.name;
-                petElement.dataset.petId = pet.id;
-                dropdown.appendChild(petElement);
+        const token = localStorage.getItem("token");
+        if (token) {
+            const response = await fetch("/api/pets", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
+            if (response.ok) {
+                const pets = await response.json();
+                dropdown.innerHTML = "";
+                pets.forEach((pet) => {
+                    const petElement = document.createElement("div");
+                    petElement.textContent = pet.name;
+                    petElement.dataset.petId = pet.id;
+                    dropdown.appendChild(petElement);
+                });
 
-            const addButton = document.createElement("div");
-            addButton.innerHTML = "+";
-            addButton.classList.add("add-pet-button");
-            dropdown.appendChild(addButton);
+                const addButton = document.createElement("div");
+                addButton.innerHTML = "+";
+                addButton.classList.add("add-pet-button");
+                dropdown.appendChild(addButton);
 
-            addButton.addEventListener("click", (event) => {
-                event.stopPropagation();
-                document.getElementById("addPetModal").style.display = "block";
-            });
-        } else {
-            console.error("Failed to fetch pets");
+                addButton.addEventListener("click", (event) => {
+                    event.stopPropagation();
+                    document.getElementById("addPetModal").style.display =
+                        "block";
+                });
+            } else {
+                console.error("Failed to fetch pets");
+            }
         }
-    }
-});
+    });
 
 document
     .getElementById("petDropdown")
@@ -924,16 +931,18 @@ document
                     breed1.nutrition_description;
                 document
                     .getElementById("healthDescription")
-                    .querySelector("h2").textContent =
-                    "Health (" + breed1.name + ")";
+                    .querySelector(
+                        "h2",
+                    ).textContent = `Health (${breed1.name})`;
                 document
                     .getElementById("healthDescription")
                     .querySelector("p").textContent = breed1.health_description;
 
                 document
                     .getElementById("groomingDescription")
-                    .querySelector("h2").textContent =
-                    "Grooming (" + breed1.name + ")";
+                    .querySelector(
+                        "h2",
+                    ).textContent = `Grooming (${breed1.name})`;
                 document
                     .getElementById("groomingDescription")
                     .querySelector("p").textContent = breed1.groom_description;
@@ -1022,10 +1031,8 @@ document
                         secondHealthDescription.style.display = "";
                         secondGroomDescription.style.display = "";
                         secondBreedName.textContent = breed2.name;
-                        secondBreedNameHealth.textContent =
-                            "Health (" + breed2.name + ")";
-                        secondBreedNameGroom.textContent =
-                            "Grooming (" + breed2.name + ")";
+                        secondBreedNameHealth.textContent = `Health (${breed2.name})`;
+                        secondBreedNameGroom.textContent = `Grooming (${breed2.name})`;
                         secondBreedDescription.textContent =
                             breed2.breed_description;
                         secondHealthDescription.textContent =
@@ -1070,7 +1077,8 @@ document
                     .querySelectorAll(
                         "li",
                     )[2].innerHTML = `<span>${petDetails.age}</span> Years old`;
-                document.querySelector(".left_col .bio p").textContent = petDetails.bio;
+                document.querySelector(".left_col .bio p").textContent =
+                    petDetails.bio;
                 document.querySelector(".left_col .bio p").textContent =
                     petDetails.bio;
             }
@@ -1078,7 +1086,7 @@ document
     });
 
 document.addEventListener("DOMContentLoaded", async () => {
-    //await initializeAutocomplete("Breed", "breedList");
+    // await initializeAutocomplete("Breed", "breedList");
     await preloadBreeds();
     await toggleLoginLogoutButtons();
     await displayUserPet();

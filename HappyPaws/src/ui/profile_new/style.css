@@ -218,10 +218,10 @@ a {
     position: absolute;
     bottom: -25px;
     width: 200%;
-    text-align: center; 
+    text-align: center;
     left: -55%;
     opacity: 0;
-    transition: opacity 0.5s; 
+    transition: opacity 0.5s;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -498,7 +498,7 @@ input[type="file"]:hover {
 }
 
 #daysOfWeek {
-    display:grid;
+    display: grid;
     grid-template-columns: repeat(4, 1fr);
     position: relative;
     justify-content: center;
