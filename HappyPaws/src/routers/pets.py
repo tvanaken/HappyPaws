@@ -31,6 +31,18 @@ class PetCreate(BaseModel):
 
 
 def _validate_pet(pet: dict):
+    """
+    Validates a pet dictionary.
+
+    Args:
+        pet (dict): The pet dictionary to be validated.
+
+    Raises:
+        HTTPException: If the name or breed is missing in the pet dictionary.
+
+    Returns:
+        dict: The validated pet dictionary.
+    """
     if pet.get("name") is None:
         raise HTTPException(status_code=400, detail="Name cannot be empty")
     if pet.get("breed") is None:
@@ -39,6 +51,16 @@ def _validate_pet(pet: dict):
 
 
 async def get_breed_id_by_name(session, breed_name):
+    """
+    Retrieves the breed ID based on the given breed name.
+
+    Parameters:
+    - session: The database session to use for the query.
+    - breed_name: The name of the breed to search for.
+
+    Returns:
+    - The breed ID if found, otherwise None.
+    """
     breed_id = await session.execute(select(Breed.id).where(Breed.name == breed_name))
     return breed_id.scalar_one_or_none()
 
@@ -48,6 +70,17 @@ async def _get_pet(
     token: str = Depends(oauth2_scheme),
     session: AsyncSession = Depends(get_session),
 ):
+    """
+    Retrieves a pet with the specified pet_id that belongs to the authenticated user.
+
+    Parameters:
+        pet_id (int): The ID of the pet to retrieve.
+        token (str, optional): The authentication token. Defaults to Depends(oauth2_scheme).
+        session (AsyncSession, optional): The database session. Defaults to Depends(get_session).
+
+    Returns:
+        Pet: The pet object if found, None otherwise.
+    """
     user = await get_current_user(token, session)
     query = (
         select(Pet)
@@ -67,6 +100,16 @@ async def _get_pet(
 async def get_pets_for_user(
     token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)
 ):
+    """
+    Retrieves the pets associated with the authenticated user.
+
+    Parameters:
+        token (str): The authentication token.
+        session (AsyncSession): The asynchronous database session.
+
+    Returns:
+        JSONResponse: The JSON response containing the pets for the user.
+    """
     user = await get_current_user(token, session)
     query = select(Pet).where(Pet.user_id == user.id).order_by(Pet.id)
     session = await get_session()
@@ -80,6 +123,17 @@ async def get_pet(
     token: str = Depends(oauth2_scheme),
     session: AsyncSession = Depends(get_session),
 ):
+    """
+    Retrieves information about a pet.
+
+    Args:
+        pet_id (int): The ID of the pet to retrieve.
+        token (str, optional): The authentication token. Defaults to Depends(oauth2_scheme).
+        session (AsyncSession, optional): The database session. Defaults to Depends(get_session).
+
+    Returns:
+        dict: A dictionary containing the pet information if found, otherwise a JSONResponse with a "Not found" message and a 404 status code.
+    """
     pet = await _get_pet(pet_id, token, session)
     if pet:
         return pet.to_dict()
@@ -93,6 +147,17 @@ async def create_pet(
     token: str = Depends(oauth2_scheme),
     session: AsyncSession = Depends(get_session),
 ):
+    """
+    Create a new pet.
+
+    Args:
+        pet_data (PetCreate): The data for the new pet.
+        token (str, optional): The authentication token. Defaults to Depends(oauth2_scheme).
+        session (AsyncSession, optional): The database session. Defaults to Depends(get_session).
+
+    Returns:
+        JSONResponse: The response containing the created pet data.
+    """
     user = await get_current_user(token, session)
 
     pet = Pet(
@@ -115,6 +180,15 @@ async def create_pet(
 
 @router.delete("/api/pets/{pet_id}")
 async def delete_pet(pet_id: int):
+    """
+    Delete a pet with the given pet_id.
+
+    Parameters:
+    - pet_id (int): The ID of the pet to be deleted.
+
+    Returns:
+    - JSONResponse: A JSON response indicating the status of the deletion.
+    """
     user = await get_current_user()
     pet = await _get_pet(pet_id)
     session = await get_session()
@@ -128,6 +202,17 @@ async def delete_pet(pet_id: int):
 
 @router.patch("/api/pets/{pet_id}")
 async def update_pet(pet_id: int, pet_updates: dict):
+    """
+    Update the information of a pet.
+    Args:
+        pet_id (int): The ID of the pet to be updated.
+        pet_updates (dict): A dictionary containing the updated information of the pet.
+    Returns:
+        JSONResponse: The updated pet information in JSON format.
+    Raises:
+        JSONResponse: If the pet is not found, returns a JSON response with a "Not found" message and a status code of 404.
+    """
+
     session = await get_session()
     pet = await _get_pet(pet_id)
     breed = await _get_breed_name(pet_updates.get("breed"))
@@ -155,6 +240,15 @@ async def update_pet(pet_id: int, pet_updates: dict):
 
 @router.get("/api/s3PresignedUrl")
 async def get_presigned_url(file_name: str):
+    """
+    Generates a presigned URL for uploading an image file to an S3 bucket.
+    Args:
+        file_name (str): The name of the file to be uploaded.
+    Returns:
+        dict: A dictionary containing the presigned URL.
+    Raises:
+        HTTPException: If there is an error generating the presigned URL.
+    """
     print("Received file name: " + file_name)
     s3_client = boto3.client('s3')
     bucket_name = "happypawsproject"

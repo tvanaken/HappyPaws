@@ -58,6 +58,12 @@ class FoodModel(BaseModel):
 
 @router.get("/api/foods", response_model=list[FoodModel])
 async def get_foods():
+    """
+    Retrieves a list of foods from the database.
+
+    Returns:
+        List[Food]: A list of Food objects.
+    """
     query = select(Food)
     session = await get_session()
     foods = await session.scalars(query)
@@ -66,6 +72,15 @@ async def get_foods():
 
 @router.post("/api/food")
 async def create_food(food: dict):
+    """
+    Create a new food item.
+
+    Args:
+        food (dict): A dictionary containing the details of the food item.
+
+    Returns:
+        JSONResponse: The created food item as a JSON response with status code 201.
+    """
     session = await get_session()
 
     food = Food(
@@ -120,14 +135,28 @@ async def create_food(food: dict):
 
     return JSONResponse(content=food.to_dict(), status_code=201)
 
+
 NUTRIENT_THRESHOLDS = {
     "puppy": {"Low Activity": (30, 10), "Moderately Active": (32, 14), "High Activity": (35, 18)},
     "adult": {"Low Activity": (25, 12), "Moderately Active": (28, 15), "High Activity": (30, 20)},
     "senior": {"Low Activity": (20, 10), "Moderately Active": (22, 12), "High Activity": (25, 15)}
 }
 
+
 @router.get("/api/recommended_foods", response_model=list[FoodModel])
 async def get_recommended_foods(breedId: int, age: int, activityLevel: str, session: AsyncSession = Depends(get_session)):
+    """
+    Get recommended foods based on breed, age, and activity level.
+    Parameters:
+    - breedId (int): The ID of the breed.
+    - age (int): The age of the pet.
+    - activityLevel (str): The activity level of the pet.
+    - session (AsyncSession, optional): The database session. Defaults to Depends(get_session).
+    Returns:
+    - List[Food]: A list of recommended foods.
+    Raises:
+    - HTTPException: If the breed is not found or no suitable foods are found.
+    """
     breed_result = await session.execute(select(Breed).where(Breed.id == breedId))
     breed = breed_result.scalars().first()
     if not breed:
@@ -151,7 +180,18 @@ async def get_recommended_foods(breedId: int, age: int, activityLevel: str, sess
     
     return foods
 
+
 def determine_life_stage(size, age):
+    """
+    Determines the life stage of a pet based on its size and age.
+
+    Parameters:
+    size (str): The size of the pet. Possible values are "large" or any other value.
+    age (int): The age of the pet in years.
+
+    Returns:
+    str: The life stage of the pet. Possible values are "puppy", "senior", or "adult".
+    """
     if age <= 1:
         return "puppy"
     elif size == "large" and age >= 7:

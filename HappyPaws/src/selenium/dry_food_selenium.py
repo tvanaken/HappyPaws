@@ -1,3 +1,21 @@
+"""
+This script is used to scrape data from the Chewy website for premium pet food products. It uses Selenium to automate the web scraping process.
+The script performs the following steps:
+1. Imports necessary libraries and modules.
+2. Sets the path for the geckodriver executable.
+3. Initializes the Selenium Firefox webdriver.
+4. Navigates to the Chewy website.
+5. Defines a list of columns for the scraped data.
+6. Iterates through the pages of the website.
+7. Scrapes data for each product on the page.
+8. Extracts information such as name, image URL, site URL, rating, review count, ingredients, and various nutritional values.
+9. Posts the scraped data to a local API endpoint.
+10. Prints status messages and error messages during the scraping process.
+Note: The script assumes that the geckodriver executable is located at the specified path and that the local API endpoint is running at http://localhost:8000/api/food.
+Usage:
+- Make sure geckodriver is installed and the path is correctly set.
+- Run the script to start the web scraping process.
+"""
 import time
 import requests
 import boto3

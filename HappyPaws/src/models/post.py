@@ -7,6 +7,20 @@ from datetime import datetime, timezone
 
 
 class Post(Base):
+    """
+    Represents a post in the application.
+    Attributes:
+        id (int): The unique identifier of the post.
+        title (str): The title of the post.
+        content (str): The content of the post.
+        breed_name (str): The name of the breed associated with the post.
+        breed_id (int): The foreign key referencing the breed associated with the post.
+        user_id (int): The foreign key referencing the user who created the post.
+        created_at (datetime): The date and time when the post was created.
+        breed (Breed): The breed associated with the post.
+        user (User): The user who created the post.
+        comments (List[Comment]): The comments associated with the post.
+    """
     __tablename__ = "posts"
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)

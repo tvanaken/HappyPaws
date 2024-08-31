@@ -11,6 +11,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     await fetchPostDetails(postId);
 });
 
+/**
+ * Displays a notification message on the UI.
+ * 
+ * @param {string} message - The message to be displayed in the notification.
+ * @param {boolean} isError - Indicates whether the notification is an error message.
+ * @returns {void}
+ */
 function showNotification(message, isError) {
     const notification = document.getElementById("notification");
     notification.textContent = message;
@@ -26,6 +33,12 @@ function showNotification(message, isError) {
     }, 3000);
 }
 
+/**
+ * Converts URLs and web addresses in the input text into clickable links.
+ * 
+ * @param {string} inputText - The text to be linkified.
+ * @returns {string} - The linkified text.
+ */
 async function linkify(inputText) {
     let replacedText; let replacePattern1; let
         replacePattern2;
@@ -43,6 +56,12 @@ async function linkify(inputText) {
     return replacedText;
 }
 
+/**
+ * Toggles the display of login and logout buttons based on the presence of a token in the local storage.
+ * @async
+ * @function toggleLoginLogoutButtons
+ * @returns {void}
+ */
 async function toggleLoginLogoutButtons() {
     const token = localStorage.getItem("token");
     const loginButton = document.getElementById("loginButton");
@@ -61,6 +80,13 @@ async function toggleLoginLogoutButtons() {
     }
 }
 
+/**
+ * Fetches post details and comments from the server.
+ * 
+ * @param {string} postId - The ID of the post to fetch details for.
+ * @returns {Promise<void>} - A promise that resolves when the post details and comments are fetched successfully.
+ * @throws {Error} - If there is an error fetching the post details or comments.
+ */
 async function fetchPostDetails(postId) {
     try {
         console.log(postId);
@@ -114,6 +140,15 @@ async function fetchPostDetails(postId) {
     }
 }
 
+
+/**
+ * Appends a comment to the comments container.
+ * 
+ * @param {Object} comment - The comment object to be appended.
+ * @param {string} comment.content - The content of the comment.
+ * @param {string} comment.created_at - The creation date of the comment.
+ * @returns {void}
+ */
 async function appendComment(comment) {
     console.log(comment);
     const commentsDiv = document.getElementById("comments-container");
@@ -126,6 +161,13 @@ async function appendComment(comment) {
     commentsDiv.appendChild(commentElement);
 }
 
+/**
+ * Sends a POST request to create a new comment for a specific post in the forum.
+ * @param {string} postId - The ID of the post to add the comment to.
+ * @param {string} token - The authorization token for the request.
+ * @param {object} payload - The payload containing the comment data.
+ * @returns {Promise<Response>} - A Promise that resolves to the response of the request.
+ */
 document
     .getElementById("comment-form")
     .addEventListener("submit", async (event) => {

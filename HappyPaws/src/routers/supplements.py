@@ -10,6 +10,12 @@ router = APIRouter()
 
 @router.get("/api/supplements")
 async def get_supplements():
+    """
+    Retrieves a list of supplements.
+
+    Returns:
+        JSONResponse: A JSON response containing the list of supplements.
+    """
     query = select(Supplement)
     session = await get_session()
     supplements = await session.scalars(query)
@@ -20,6 +26,24 @@ async def get_supplements():
 
 @router.post("/api/supplement")
 async def create_supplement(supplement: dict):
+    """
+    Creates a new supplement in the database.
+
+    Args:
+        supplement (dict): A dictionary containing the details of the supplement.
+            - name (str): The name of the supplement.
+            - image_url (str): The URL of the supplement's image.
+            - site_url (str): The URL of the supplement's website.
+            - rating (float): The rating of the supplement.
+            - review_count (int): The number of reviews for the supplement.
+            - description (str): The description of the supplement.
+            - lifestage (str): The lifestage the supplement is suitable for.
+            - ailment (str): The health condition the supplement targets.
+            - breed_size (str): The breed size the supplement is suitable for.
+
+    Returns:
+        JSONResponse: The JSON response containing the details of the created supplement.
+    """
     session = await get_session()
 
     supplement = Supplement(
